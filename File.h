@@ -24,14 +24,13 @@ class stardict_dict :public dictionary{
         ifle_opt fsync;
 };
 
-
-
-
 const unsigned int MAX_PATH_LENGTH=1024;
 //implements genera file operations
-class file_opt {
+class File{
     public :
-        virtual void open(char *path,int mode);
+        File(char *path);
+        File();
+        virtual int open(char *path,int mode);
         virtual int read(char *buf,int len);
         virtual int write(char *buf,int len);
         virtual int lseek(int where,int offset);
@@ -42,11 +41,9 @@ class file_opt {
         char file_path[MAX_PATH_LENGTH];
 };
 
-
-
 //using genera file operations to implements 
 //file opt interface
-class zipfile_opt:public file_opt {
+class zipfile_opt:public File{
     static int check_file_type(char *buf,int len);
 };
 
