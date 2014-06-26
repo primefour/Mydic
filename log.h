@@ -2,7 +2,6 @@
 #define __DIC_LOG_H__
 #include<stdio.h>
 
-#define ALOGE(fmt, args...) \
-    printf("%s:%s:%d: " fmt, __FILE__, __FUNCTION__, __LINE__, args)
+#define ALOGE(fmt,args...) printf("%s:%s:%d: " fmt,__FILE__, __func__, __LINE__,args)
 
 #endif 

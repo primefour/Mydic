@@ -1,6 +1,10 @@
 #ifndef __DIC_FILE_H__
 #define __DIC_FILE_H__
 
+const unsigned int MAX_PATH_LENGTH=1024;
+const unsigned int MAX_CACHE_SIZE=2048;
+class File;
+
 typedef enum DIC_FILE_TYPE{
     ORDINARY_FILE_TYPE,
     DIRECTORY_FILE_TYPE,
@@ -9,15 +13,10 @@ typedef enum DIC_FILE_TYPE{
     DICTZIP_FILE_TYPE,
 }DIC_FILE_TYPE;
 
-
-
-const unsigned int MAX_PATH_LENGTH=1024;
-const unsigned int MAX_CACHE_SIZE=2048;
-
 class BufferCache{
     public:
         BufferCache(unsigned int size,File *file_ops);
-        BufferCache();
+        BufferCache(File *file_ops);
         ~BufferCache();
         int init();
         int read(char *buf,int len);
@@ -33,27 +32,27 @@ class BufferCache{
 };
 
 
-//implements genera file operations
+//implements general file operations
 class File{
     public :
-        File(char *path);
+        File(const char *path);
         File();
+        ~File();
         virtual int open(char *path,int mode);
         virtual int read(char *buf,int len);
-        virtual int write(char *buf,int len);
+        virtual int write(const char *buf,int len);
         virtual int lseek(int where,int offset);
         virtual int readline(char *buf,int len);
         static  int check_file_type(char *path);
-        static File* MakeFileInstance(void *data,file_type_t);
+        static File* MakeFileInstance(void *data,DIC_FILE_TYPE file_type);
     protected:
-        unsigned char cache[MAX_FILE_CACHE_SIZE]
-        int  cache_begin_cursor,cache_end_cursor;
         char file_path[MAX_PATH_LENGTH];
         int  fd;
 };
 
 //using genera file operations to implements 
 //file opt interface
+/*
 class DictzipFile:public File{
     static int check_file_type(char *buf,int len);
 };
@@ -78,6 +77,6 @@ class stardict_dict :public dictionary{
         File *fsync;
 };
 
-
+*/
 
 #endif 

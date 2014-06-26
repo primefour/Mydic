@@ -1,0 +1,9 @@
+This is test program file directory 
+the test file name is follow the pattern that
+Add string "Test" before the origin file name.
+
+File.cpp ==> TestFile.cpp
+
+All Test file should be run separately.
+
+welcome to mydicwelcome to mydicwelcome to mydic
