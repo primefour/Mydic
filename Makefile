@@ -5,9 +5,11 @@ TEST_PATH=./test
 
 
 
-test:TestFile
+test:TestFile TestGzip
 
-TestFile:*.cpp $(TEST_PATH)/*.cpp *.h *.c 
-	$(GCC) $(CFLAGS) $(LDFLAGS) *.cpp $(TEST_PATH)/*.cpp -o $(TEST_PATH)/TestFile
+TestFile:*.cpp $(TEST_PATH)/TestFile.cpp *.h *.c 
+	$(GCC) $(CFLAGS) $(LDFLAGS) *.cpp $(TEST_PATH)/TestFile.cpp -o $(TEST_PATH)/TestFile
+TestGzip:*.cpp $(TEST_PATH)/TestGzip.cpp *.h *.c
+	$(GCC) $(CFLAGS) $(LDFLAGS) *.cpp $(TEST_PATH)/TestGzip.cpp -o $(TEST_PATH)/TestGzip
 
 	

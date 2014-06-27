@@ -8,7 +8,9 @@
 
 
 int main(int argc,char **argv){
-
+    const char *file_name="/home/crazyhorse/MyProject/GoldenDict/GitDict/test/langdao-ec-gb.dict.dz";
+    GzipFile gzip_file(file_name);
+    gzip_file.open(NULL,0);
     return 0;
 }
 

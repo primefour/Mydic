@@ -5,7 +5,7 @@
 #include<sys/types.h>
 
 
-GzipFile::GzipFile(const char *file_path){
+GzipFile::GzipFile(const char *file_path):File(file_path){
 
 }
 
@@ -22,7 +22,8 @@ int GzipFile::check_file_type(char *buf,int len){
     if(len < 2){
         return 0;
     }
-    if (*buf == ID1_VALUE && *(buf+1)== ID2_VAlUE) {
+    unsigned char *ptr = (unsigned char *)buf;
+    if (*ptr == ID1_VALUE && *(ptr+1)== ID2_VAlUE) {
         return 1;
     }else{
         return 0;
@@ -49,14 +50,17 @@ int GzipFile::read(char *buf,int len){
 
 
 int GzipFile::ParserHeader(){
+    printf("%s \n",__func__);
     int ret = File::read((char*)fixed_head,sizeof(fixed_head));
 
     if(!check_file_type((char*)fixed_head,8)){
+        printf("not a Gzip file \n");
         return -1;
     }
 
     head_length += sizeof(fixed_head);
     if(fixed_head[FLG] & FLAG_EXTRA_VALUE ){
+        ALOGE("%s\n","has extra value");
         ret = File::read((char *)extra_info_header,sizeof(extra_info_header));
         head_length += sizeof(extra_info_header);
         unsigned int extra_length=0;
@@ -68,6 +72,7 @@ int GzipFile::ParserHeader(){
     }
 
     if(fixed_head[FLG] & FLAG_NAME_VALUE){
+        ALOGE("%s\n","FLAG_NAME_VALUE");
         //string
         File::readline(zip_name,sizeof(zip_name));
         ALOGE("%s \n",zip_name);
@@ -75,6 +80,8 @@ int GzipFile::ParserHeader(){
     }
 
     if(fixed_head[FLG]&FLAG_COMMENT_VALUE){
+
+        ALOGE("%s\n","FLAG_COMMENT_VALUE");
         //string
         File::readline(comment,sizeof(comment));
         ALOGE("%s \n",comment);
@@ -82,6 +89,7 @@ int GzipFile::ParserHeader(){
     }
 
     if(fixed_head[FLG]&FLAG_HCRC_VALUE){
+        ALOGE("%s\n","FLAG_HCRC_VALUE");
         File::read((char *)crc16_head,sizeof(crc16_head));
         head_length += sizeof(crc16_head);
 
@@ -92,8 +100,8 @@ int GzipFile::ParserHeader(){
 
 int GzipFile::open(char *path,int mode){
     int ret = File::open(NULL,O_RDWR);
-    ret += ParserHeader();
     if(ret < 0){
         return -1;
     }
+    ret += ParserHeader();
 }
