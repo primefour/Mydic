@@ -7,7 +7,7 @@
 
 
 int main(int argc,char *argv[]){
-    const char *file_name="/home/crazyhorse/MyProject/GoldenDict/GitDict/test/ReadMe";
+    const char *file_name="./ReadMe";
     File readme(file_name);
     char buffer[2048]={0};
     readme.open(NULL,0);
@@ -41,6 +41,11 @@ int main(int argc,char *argv[]){
     ret = readme.read(buffer,2048);
     printf("read charecator count is ret = %d \n",ret);
     printf("%s\n",buffer);
+    printf("############################\n");
+    readme.lseek(SEEK_SET,0);
+    while(readme.readline(buffer,2048)){
+        printf("%s",buffer);
+    }
 
     return 0;
 }

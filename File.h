@@ -37,7 +37,7 @@ class File{
     public :
         File(const char *path);
         File();
-        ~File();
+        virtual ~File();
         virtual int open(char *path,int mode);
         virtual int read(char *buf,int len);
         virtual int write(const char *buf,int len);
@@ -50,21 +50,11 @@ class File{
         int  fd;
 };
 
-//using genera file operations to implements 
-//file opt interface
-/*
-class DictzipFile:public File{
-    static int check_file_type(char *buf,int len);
-};
-
-class GzipFile:public File{
-    static int check_file_type(char *buf,int len);
-};
 
 
 class dictionary{
 
-}
+};
 
 class stardict_dict :public dictionary{
     public:
@@ -77,6 +67,5 @@ class stardict_dict :public dictionary{
         File *fsync;
 };
 
-*/
 
 #endif 
