@@ -43,7 +43,8 @@ class GzipFile:public File{
         char comment[1024];
         unsigned char crc16_head[2];
         unsigned char crc32_info[8];//crc32,isize
-        unsigned char extra_info_header[2];//len(2byte)
+        unsigned char extra_len[2];//len(2byte)
+        unsigned char *extra_info;
         int head_length;
 };
 

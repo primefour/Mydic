@@ -3,6 +3,7 @@
 #include<string.h>
 #include<fcntl.h>
 #include<sys/types.h>
+#include<stdlib.h>
 
 
 GzipFile::GzipFile(const char *file_path):File(file_path){
@@ -67,13 +68,20 @@ int GzipFile::ParserHeader(){
     head_length += sizeof(fixed_head);
     if(fixed_head[FLG] & FLAG_EXTRA_VALUE ){
         ALOGE("%s\n","has extra value");
-        ret = File::read((char *)extra_info_header,sizeof(extra_info_header));
-        head_length += sizeof(extra_info_header);
+        ret = File::read((char *)extra_len,sizeof(extra_len));
+        head_length += sizeof(extra_len);
         unsigned int extra_length=0;
-        extra_length |= extra_info_header[0];
-        extra_length |= extra_info_header[1]<<8;
+        extra_length |= extra_len[0];
+        extra_length |= extra_len[1]<<8;
         ALOGE("extra length = %d \n",extra_length);
-        File::lseek(SEEK_CUR,extra_length);
+        //File::lseek(SEEK_CUR,extra_length);
+        if(extra_info != NULL){
+            free(extra_info);
+            extra_info = NULL;
+        }
+        extra_info = (unsigned char *)malloc(extra_length);
+        memset(extra_info,0,extra_length);
+        ret = File::read((char *)extra_info,extra_length);
         head_length += extra_length;
     }
 
@@ -100,9 +108,17 @@ int GzipFile::ParserHeader(){
         File::read((char *)crc16_head,sizeof(crc16_head));
         head_length += sizeof(crc16_head);
 
-        File::lseek(SEEK_END,-8);
-        File::read((char*)crc32_info,sizeof(crc32_info));
     }
+
+    File::lseek(SEEK_END,-8);
+    File::read((char*)crc32_info,sizeof(crc32_info));
+    unsigned int size =0;
+    size |= crc32_info[4];
+    size |= crc32_info[5]<<8;
+    size |= crc32_info[6]<<16;
+    size |= crc32_info[7]<<24;
+    printf("size = %d \n",size);
+
 }
 
 int GzipFile::open(char *path,int mode){
