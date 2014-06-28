@@ -84,14 +84,16 @@ int File::readline(char *buf,int len){
     char *ptr = buf;
     memset(buf,0,len);
     int i = 0;
-    while((ret = read(ptr,1) > 0) && (*ptr != '\0') && ++i < len){ 
+
+    while((ret = ::read(fd,ptr,1) > 0) && (*ptr != '\0') && ++i < len){ 
+        printf("%c",*ptr);
         ptr++;
     }
 
     if(*ptr == '\0' && i != len){
         return i;
     }else{
-        return -1;
+        return ret;
     }
 }
 
@@ -130,7 +132,7 @@ int File::write(const char *buf,int len){
 int File::read(char *buf,int len){
     int ret = -1;
     memset(buf,0,len);
-
+    printf("%s \n",__func__);
     if(fd >= 0){
        ret = ::read(fd,buf,len); 
     }else{

@@ -31,20 +31,26 @@ int GzipFile::check_file_type(char *buf,int len){
 }
 
 int GzipFile::readline(char *buf,int len){
+    printf("%s,%s\n",__FILE__,__func__);
     return 0;
 }
 
 
 int GzipFile::lseek(int whence,int offset){
+
+    printf("%s,%s\n",__FILE__,__func__);
     return 0;
 }
 
 int GzipFile::write(const char *buf,int len){
+
+    printf("%s,%s\n",__FILE__,__func__);
     return 0;
 }
 
 
 int GzipFile::read(char *buf,int len){
+    printf("%s,%s\n",__FILE__,__func__);
     return 0;
 }
 
@@ -64,8 +70,8 @@ int GzipFile::ParserHeader(){
         ret = File::read((char *)extra_info_header,sizeof(extra_info_header));
         head_length += sizeof(extra_info_header);
         unsigned int extra_length=0;
-        extra_length |= extra_info_header[2];
-        extra_length |= extra_info_header[3]<<8;
+        extra_length |= extra_info_header[0];
+        extra_length |= extra_info_header[1]<<8;
         ALOGE("extra length = %d \n",extra_length);
         File::lseek(SEEK_CUR,extra_length);
         head_length += extra_length;
@@ -74,6 +80,7 @@ int GzipFile::ParserHeader(){
     if(fixed_head[FLG] & FLAG_NAME_VALUE){
         ALOGE("%s\n","FLAG_NAME_VALUE");
         //string
+        ALOGE("%x \n",File::lseek(SEEK_CUR,0));
         File::readline(zip_name,sizeof(zip_name));
         ALOGE("%s \n",zip_name);
         head_length += strlen(zip_name) + 1;
