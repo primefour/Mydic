@@ -45,7 +45,7 @@ TAR=tar
 SHELL=/bin/sh
 EXE=
 
-prefix =/home/crazyhorse/test/golden_dic/MyDict/lib/libSource/
+prefix =/home/crazyhorse/MyProject/GoldenDict/GitDict/lib/
 exec_prefix =${prefix}
 libdir =${exec_prefix}/lib
 sharedlibdir =${libdir}

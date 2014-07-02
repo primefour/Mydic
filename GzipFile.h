@@ -3,6 +3,10 @@
 #include"File.h"
 #include<unistd.h>
 #include<time.h>
+extern "C"{
+#include"zlib.h"
+}
+
 enum GZIP_FIXED_HEAD_INDEX{
     ID1,
     ID2,
@@ -36,6 +40,7 @@ class GzipFile:public File{
         virtual int lseek(int where,int offset);
         virtual int readline(char *buf,int len);
         static int check_file_type(char *buf,int len);
+        int uncompress_file(File *outFile);
     protected:
         int ParserHeader();
         unsigned char fixed_head[10];

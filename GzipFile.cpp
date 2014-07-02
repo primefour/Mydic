@@ -4,6 +4,9 @@
 #include<fcntl.h>
 #include<sys/types.h>
 #include<stdlib.h>
+extern "C"{
+#include"zlib.h"
+}
 
 
 GzipFile::GzipFile(const char *file_path):File(file_path){
@@ -54,6 +57,49 @@ int GzipFile::read(char *buf,int len){
     printf("%s,%s\n",__FILE__,__func__);
     return 0;
 }
+#define BUFFER_COMMPRESS 40960
+int GzipFile::uncompress_file(File *outFile){
+    int ret;
+    z_stream strm;
+    unsigned char input[BUFFER_COMMPRESS];
+    unsigned char output[BUFFER_COMMPRESS];
+    if(outFile == NULL){
+        printf("output file invalidate\n");
+        return -1;
+    }
+
+    strm.zalloc = Z_NULL;
+    strm.zfree = Z_NULL;
+    strm.opaque = Z_NULL;
+    strm.next_in = Z_NULL;
+    ret = inflateInit(&strm);
+    if(ret != Z_OK){
+        printf("%s init inflate failed \n",__func__);
+        return -1;
+    }
+    File::lseek(SEEK_SET,head_length);
+    do{
+        strm.avail_in = File::read((char *)input,sizeof(input));
+        if(strm.avail_in == 0){
+            printf("read file eof ");
+            inflateEnd(&strm);
+            break;
+        }else if(strm.avail_in < 0){
+            printf("read file error !");
+            inflateEnd(&strm);
+            return -1;
+        }
+        strm.next_in = input;
+        strm.avail_out = sizeof(output);
+        strm.next_out = output;
+        ret = inflate(&strm,Z_NO_FLUSH);
+        if((ret == Z_NEED_DICT) || (Z_DATA_ERROR == ret) || (Z_MEM_ERROR ==ret)){
+            inflateEnd(&strm);
+            return -1;
+        }
+        outFile->write((char *)output,sizeof(output) - strm.avail_out);
+    }while(1);
+}
 
 
 int GzipFile::ParserHeader(){
@@ -74,7 +120,6 @@ int GzipFile::ParserHeader(){
         extra_length |= extra_len[0];
         extra_length |= extra_len[1]<<8;
         ALOGE("extra length = %d \n",extra_length);
-        //File::lseek(SEEK_CUR,extra_length);
         if(extra_info != NULL){
             free(extra_info);
             extra_info = NULL;
