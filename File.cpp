@@ -146,7 +146,11 @@ int File::open(char *path,int mode){
         memset(file_path,0,MAX_PATH_LENGTH);
         strncpy(file_path,path,MAX_PATH_LENGTH);
     }
-    fd = ::open(file_path,O_RDWR);
+    int default_mode = O_RDWR;
+    if(mode != 0){
+        default_mode = mode;
+    }
+    fd = ::open(file_path,default_mode);
     if(fd < 0){
         printf("open file error %s \n",file_path);
         return -1;

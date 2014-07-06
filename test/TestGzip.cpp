@@ -8,9 +8,15 @@
 
 
 int main(int argc,char **argv){
-    const char *file_name="/home/crazyhorse/MyProject/GoldenDict/GitDict/test/langdao-ec-gb.dict.dz";
+    const char *file_name="./kkkk.gz";
     GzipFile gzip_file(file_name);
     gzip_file.open(NULL,0);
+    File original_file("./raw.data");
+    original_file.open(NULL,O_CREAT|O_RDWR);
+    gzip_file.uncompress_file(&original_file);
     return 0;
 }
+
+
+
 
