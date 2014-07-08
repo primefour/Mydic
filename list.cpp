@@ -1,0 +1,62 @@
+#include"list.h"
+
+#define offset(type,item)   ((int)((unsigned char *)&(((type *)0)->item)))
+#define contain_of(ptr,type,item) ((type *)(((unsigned char *)ptr) - offset(type,item)))
+
+
+typedef int (*compare_func)(list_head_t *item1,list_head_t *item2);
+typedef void (*release_func)(void *);
+
+void init_list_head(list_head_t *list_head_ptr){
+    list_head_ptr->prev = list_head_ptr;
+    list_head_ptr->next = list_head_ptr;
+}
+
+
+void release_list(list_head_t *head,release_func){
+    list_head_t *tmp_head = (&head)->next; 
+    while(tmp_head != &head){ 
+        tmp_head = tmp_head->next;
+        remove_list_item(tmp
+        release_func(tmp_head); 
+        tmp_head = tmp_head->next; 
+        free(tmp_head):
+    } 
+}
+
+
+
+list_head_t* find_list_item(list_head_t *list_head_ptr,list_head_t *item,compare_func func){
+    list_head_t *tmp = list_head_ptr->next ; 
+    while(tmp != list_head_ptr){
+        if(func(tmp,item) == 0){
+            return tmp;
+        }
+        tmp  = tmp->next;
+    }
+    return NULL;
+}
+
+
+void insert_list_item_behind(list_head_t *item,list_head_t *insert_item){
+    insert_item->prev = item;
+    insert_item->next = item->next;
+    item->next = insert_item;
+}
+
+void insert_list_item_before(list_head_t *item,list_head_t *insert_item){
+    insert_item->next = item;
+    insert_item->prev = item->prev;
+    item->prev = insert_item;
+}
+
+list_head_t *remove_list_item(list_head_t *remove_item){
+    if(remove_item->prev == remove_item){
+        printf("xxxx get a unqueue item or head \n");
+        return remove_item;
+    }
+    remove_item->prev->next = remove_item->next;
+    remove_item->next->prev = remove_item->prev;
+    return remove_item;
+}
+

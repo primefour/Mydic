@@ -32,13 +32,13 @@ enum GZIP_FIXED_HEAD_INDEX{
 
 
 typedef struct ACCESS_PIONT{
+    list_head list;
     int original_offset;
     int original_size;
     int file_chunk_offset;
     int file_chunk_size;
     int bits;
     unsigned char window[WINSIZE];
-    struct ACCESS_PIONT *next;
 }access_point_t;
 
 
@@ -55,7 +55,7 @@ class GzipFile:public File{
         int uncompress_file(File *outFile);
     private:
         int build_access_point();
-        access_point_t *access_point;
+        list_head access_point_list;
 
 };
 

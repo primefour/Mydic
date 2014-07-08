@@ -10,11 +10,10 @@ extern "C"{
 
 
 GzipFile::GzipFile(const char *file_path):File(file_path){
-    access_point = NULL;
+    init_access_point();
 }
 
 GzipFile::~GzipFile(){
-    reset_access_point();
 }
 
 
@@ -62,46 +61,32 @@ int GzipFile::open(int mode){
     }
 }
 
-int GzipFile::reset_access_point(){
-    access_point_t *tmp;
-    while(access_point != NULL){
-        tmp = access_point->next;
-        free(access_point);
-        access_point = tmp;
-    }
-    access_point = NULL;
+void GzipFile::init_access_point_list(){
+    init_list_head(&access_point_list);
 }
+
+
+
+void GzipFile::reset_access_point_list(){
+}
+
+
+
 
 void GzipFile::set_access_point(access_point_t *ap,int bits, off_t in, off_t out, 
                                                 unsigned left, unsigned char *window)
 {
-
     ap->original_offset = out;
     ap->file_chunk_offset = in;
     ap->bits = bits;
-
     if (left)
-        memcpy(next->window, window + WINSIZE - left, left);
+        memcpy(ap->window, window + WINSIZE - left, left);
     if (left < WINSIZE)
-        memcpy(next->window + left, window, WINSIZE - left);
-    index->have++;
-
-    /* return list, possibly reallocated */
-    return index;
+        memcpy(ap->window + left, window, WINSIZE - left);
 }
 
 
 int GzipFile::build_access_point(){
-
-
-    reset_access_point();
-    access_point = (access_point_t *)malloc(sizeof(access_point_t));
-    if(access_point == NULL){
-        return -1;
-    }
-
-    memset(access_point,0,sizeof(access_point_t));
-
     int ret;
     off_t file_total_in, original_total_out; 
     off_t original_last;
@@ -123,6 +108,14 @@ int GzipFile::build_access_point(){
     original_total_out = 0;
     original_last = 0;
     strm.avail_out = 0;
+
+    reset_access_point();
+    access_point = (access_point_t *)malloc(sizeof(access_point_t));
+    if(access_point == NULL){
+        return -1;
+    }
+    memset(access_point,0,sizeof(access_point_t));
+    access_point_t *curr_ptr = access_point; 
     do {
         /* get some compressed data from input file */
         strm.avail_in = File::read(input,CHUNK);
@@ -165,9 +158,8 @@ int GzipFile::build_access_point(){
             if ((strm.data_type & 128) && !(strm.data_type & 64) &&
                 (original_total_out == 0 || original_total_out - original_last > SPAN)) {
 
-                index = addpoint(index, strm.data_type & 7, totin,
+                index = set_access_point(curr_ptr, strm.data_type & 7, totin,
                                  totout, strm.avail_out, window);
-
                 last = original_total_out;
             }
         } while (strm.avail_in != 0);
