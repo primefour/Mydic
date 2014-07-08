@@ -26,31 +26,37 @@ enum GZIP_FIXED_HEAD_INDEX{
 #define FLAG_NAME_VALUE (1<<3)
 #define FLAG_COMMENT_VALUE (1<<4)
 
+#define SPAN 1048576L       /* desired distance between access points */
+#define WINSIZE 32768U      /* sliding window size */
+#define CHUNK 16384         /* file input buffer size */
 
+
+typedef struct ACCESS_PIONT{
+    int original_offset;
+    int original_size;
+    int file_chunk_offset;
+    int file_chunk_size;
+    int bits;
+    unsigned char window[WINSIZE];
+    struct ACCESS_PIONT *next;
+}access_point_t;
 
 
 class GzipFile:public File{
     public:
         GzipFile(const char *file_path);
-        GzipFile();
         virtual ~GzipFile();
-        virtual int open(char *path,int mode);
+        virtual int open(int mode);
         virtual int read(char *buf,int len);
         virtual int write(const char *buf,int len);
         virtual int lseek(int where,int offset);
         virtual int readline(char *buf,int len);
         static int check_file_type(char *buf,int len);
         int uncompress_file(File *outFile);
-    protected:
-        int ParserHeader();
-        unsigned char fixed_head[10];
-        char zip_name[1024];
-        char comment[1024];
-        unsigned char crc16_head[2];
-        unsigned char crc32_info[8];//crc32,isize
-        unsigned char extra_len[2];//len(2byte)
-        unsigned char *extra_info;
-        int head_length;
+    private:
+        int build_access_point();
+        access_point_t *access_point;
+
 };
 
 #endif //

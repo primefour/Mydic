@@ -36,9 +36,8 @@ class BufferCache{
 class File{
     public :
         File(const char *path);
-        File();
         virtual ~File();
-        virtual int open(char *path,int mode);
+        virtual int open(int mode);
         virtual int read(char *buf,int len);
         virtual int write(const char *buf,int len);
         virtual int lseek(int where,int offset);

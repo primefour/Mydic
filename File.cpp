@@ -63,10 +63,6 @@ File::File(const char *path){
     }
 }
 
-File::File(){
-    fd =-1;
-    memset(file_path,0,MAX_PATH_LENGTH);
-}
 
 File::~File(){
     if(fd >= 0){
@@ -141,11 +137,7 @@ int File::read(char *buf,int len){
     return ret;
 }
 
-int File::open(char *path,int mode){
-    if(path != NULL){
-        memset(file_path,0,MAX_PATH_LENGTH);
-        strncpy(file_path,path,MAX_PATH_LENGTH);
-    }
+int File::open(int mode){
     int default_mode = O_RDWR;
     if(mode != 0){
         default_mode = mode;
@@ -157,11 +149,4 @@ int File::open(char *path,int mode){
     }
     return 0;
 }
-
-
-
-
-
-
-
 
