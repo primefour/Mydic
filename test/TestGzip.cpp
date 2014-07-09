@@ -8,12 +8,12 @@
 
 
 int main(int argc,char **argv){
-    const char *file_name="./kkkk.gz";
+    const char *file_name="./langdao-ec-gb.dict.dz";
     GzipFile gzip_file(file_name);
-    gzip_file.open(NULL,0);
+    gzip_file.open(0);
     File original_file("./raw.data");
-    original_file.open(NULL,O_CREAT|O_RDWR);
-    gzip_file.uncompress_file(&original_file);
+    original_file.open(O_CREAT|O_RDWR);
+    gzip_file.build_access_point();
     return 0;
 }
 

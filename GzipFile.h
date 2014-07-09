@@ -3,6 +3,7 @@
 #include"File.h"
 #include<unistd.h>
 #include<time.h>
+#include"list.h"
 extern "C"{
 #include"zlib.h"
 }
@@ -53,8 +54,13 @@ class GzipFile:public File{
         virtual int readline(char *buf,int len);
         static int check_file_type(char *buf,int len);
         int uncompress_file(File *outFile);
-    private:
         int build_access_point();
+    private:
+        void init_access_point_list();
+        void reset_access_point_list();
+        void set_access_point(access_point_t *ap,int bits, off_t in, off_t out, 
+                unsigned left, unsigned char *window);
+
         list_head access_point_list;
 
 };

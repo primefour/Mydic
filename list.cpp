@@ -1,11 +1,7 @@
 #include"list.h"
-
-#define offset(type,item)   ((int)((unsigned char *)&(((type *)0)->item)))
-#define contain_of(ptr,type,item) ((type *)(((unsigned char *)ptr) - offset(type,item)))
-
-
-typedef int (*compare_func)(list_head_t *item1,list_head_t *item2);
-typedef void (*release_func)(void *);
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
 
 void init_list_head(list_head_t *list_head_ptr){
     list_head_ptr->prev = list_head_ptr;
@@ -13,14 +9,18 @@ void init_list_head(list_head_t *list_head_ptr){
 }
 
 
-void release_list(list_head_t *head,release_func){
-    list_head_t *tmp_head = (&head)->next; 
-    while(tmp_head != &head){ 
-        tmp_head = tmp_head->next;
-        remove_list_item(tmp
-        release_func(tmp_head); 
-        tmp_head = tmp_head->next; 
-        free(tmp_head):
+void release_list(list_head_t *list_head_ptr,release_func pfn){
+    list_head_t *tmp_head = list_head_ptr->next; 
+    while(tmp_head != list_head_ptr){ 
+        remove_list_item(tmp_head);
+        if(pfn != NULL){
+            pfn(tmp_head); 
+        }else{
+            printf("release list head point as default\n");
+            free(tmp_head);
+        }
+        tmp_head = NULL;
+        tmp_head = list_head_ptr->next;
     } 
 }
 

@@ -10,7 +10,7 @@ int main(int argc,char *argv[]){
     const char *file_name="./ReadMe";
     File readme(file_name);
     char buffer[2048]={0};
-    readme.open(NULL,0);
+    readme.open(0);
     int ret = readme.read(buffer,2048);
     printf("read charecator count is ret = %d \n",ret);
     printf("%s",buffer);
