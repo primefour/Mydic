@@ -35,7 +35,7 @@ enum GZIP_FIXED_HEAD_INDEX{
 typedef struct ACCESS_PIONT{
     list_head list;
     int original_offset;
-    int original_size;
+    int chunk_size;
     int file_chunk_offset;
     int file_chunk_size;
     int bits;
@@ -55,14 +55,15 @@ class GzipFile:public File{
         static int check_file_type(char *buf,int len);
         int uncompress_file(File *outFile);
         int build_access_point();
+        static int access_piont_compare(list_head_t *item1,void *data);
+        int extract(off_t offset,unsigned char *buf, int len);
     private:
         void init_access_point_list();
         void reset_access_point_list();
-        void set_access_point(access_point_t *ap,int bits, off_t in, off_t out, 
+        void set_access_point(access_point_t *ap,int bits, off_t in, 
+                off_t out,int chunk_size,
                 unsigned left, unsigned char *window);
-
         list_head access_point_list;
-
 };
 
 #endif //

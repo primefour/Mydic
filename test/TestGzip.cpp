@@ -14,6 +14,9 @@ int main(int argc,char **argv){
     File original_file("./raw.data");
     original_file.open(O_CREAT|O_RDWR);
     gzip_file.build_access_point();
+    unsigned char buff[1024*1024]={0};
+    gzip_file.extract(0,buff,sizeof(buff));
+    printf("%s ",buff);
     return 0;
 }
 

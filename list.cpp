@@ -26,10 +26,10 @@ void release_list(list_head_t *list_head_ptr,release_func pfn){
 
 
 
-list_head_t* find_list_item(list_head_t *list_head_ptr,list_head_t *item,compare_func func){
+list_head_t* find_list_item(list_head_t *list_head_ptr,void *data,compare_func func){
     list_head_t *tmp = list_head_ptr->next ; 
     while(tmp != list_head_ptr){
-        if(func(tmp,item) == 0){
+        if(func(tmp,data) == 0){
             return tmp;
         }
         tmp  = tmp->next;

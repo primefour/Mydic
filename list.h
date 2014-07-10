@@ -6,11 +6,11 @@ typedef struct list_head{
     struct list_head *next;
 }list_head_t; 
 
-#define offset(type,item)   ((int)((unsigned char *)&(((type *)0)->item)))
+#define offset(type,item)   ((unsigned long)((unsigned char *)&(((type *)0)->item)))
 #define contain_of(ptr,type,item) ((type *)(((unsigned char *)ptr) - offset(type,item)))
 
 
-typedef int (*compare_func)(list_head_t *item1,list_head_t *item2);
+typedef int (*compare_func)(list_head_t *item1,void *data);
 typedef void (*release_func)(void *);
 
 #define for_each_item(head,ptr_fun) do{ \
@@ -23,7 +23,7 @@ typedef void (*release_func)(void *);
 
 void init_list_head(list_head_t *list_head_ptr);
 void release_list(list_head_t *list_head_ptr,release_func);
-list_head_t* find_list_item(list_head_t *list_head_ptr,list_head_t *item,compare_func func);
+list_head_t* find_list_item(list_head_t *list_head_ptr,void *data,compare_func func);
 void insert_list_item_behind(list_head_t *item,list_head_t *insert_item);
 void insert_list_item_before(list_head_t *item,list_head_t *insert_item);
 list_head_t *remove_list_item(list_head_t *remove_item);

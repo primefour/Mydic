@@ -77,10 +77,12 @@ int GzipFile::open(int mode){
 
 
 
-void GzipFile::set_access_point(access_point_t *ap,int bits, off_t in, off_t out, 
+void GzipFile::set_access_point(access_point_t *ap,int bits, off_t in, off_t out,int chunk_size,
                                                 unsigned left, unsigned char *window)
 {
     ap->original_offset = out;
+    ap->chunk_size = chunk_size;
+
     ap->file_chunk_offset = in;
     ap->bits = bits;
     if (left){
@@ -170,8 +172,9 @@ int GzipFile::build_access_point(){
                 }
                 memset(access_point,0,sizeof(access_point_t));
                 init_list_head(&(access_point->list));
-                set_access_point(access_point, strm.data_type & 7, file_total_in,original_total_out, 
-                        strm.avail_out, window);
+                set_access_point(access_point, strm.data_type & 7,
+                                    file_total_in,original_total_out,original_total_out - original_last,
+                                    strm.avail_out, window);
                 insert_list_item_behind(&access_point_list,&(access_point->list));
                 original_last = original_total_out;
 
@@ -184,6 +187,121 @@ int GzipFile::build_access_point(){
 
     /* return error */
 build_index_error:
+    (void)inflateEnd(&strm);
+    return ret;
+}
+
+
+int GzipFile::access_piont_compare(list_head_t *item1,void *data){
+    access_point_t *list_item = contain_of(item1,access_point_t,list);
+    off_t offset = *((off_t *)data);
+    if(list_item->original_offset <= offset && 
+            offset <= list_item->original_offset + list_item->chunk_size){
+        return 0;
+    }else{
+        return 1;
+    }
+}
+
+
+
+int GzipFile::extract(off_t offset,unsigned char *buf, int len){
+    int ret, skip;
+    z_stream strm;
+    unsigned char input[CHUNK];
+    unsigned char discard[WINSIZE];
+
+    /* proceed only if something reasonable to do */
+    if (len < 0){
+        return 0;
+    }
+    list_head_t *find_item = find_list_item(&access_point_list,&offset,access_piont_compare);
+    if(find_item == NULL){
+        printf("can't find the offset in the list\n");
+        return -1;
+    }
+    access_point_t *first_item = contain_of(find_item,access_point_t,list);
+
+
+    /* initialize file and inflate state to start there */
+    strm.zalloc = Z_NULL;
+    strm.zfree = Z_NULL;
+    strm.opaque = Z_NULL;
+    strm.avail_in = 0;
+    strm.next_in = Z_NULL;
+    ret = inflateInit2(&strm, -15);         /* raw inflate */
+    if (ret != Z_OK){
+        return ret;
+    }
+    ret = File::lseek(SEEK_SET,first_item->file_chunk_offset - (first_item->bits ? 1 : 0));
+    if (ret == -1){
+        goto extract_ret;
+    }
+    if (first_item->bits) {
+        ret = File::read((char *)(&ret),1);
+        if (ret == -1) {
+            goto extract_ret;
+        }
+        (void)inflatePrime(&strm, first_item->bits, ret >> (8 - first_item->bits));
+    }
+    (void)inflateSetDictionary(&strm, first_item->window, WINSIZE);
+
+    /* skip uncompressed bytes until offset reached, then satisfy request */
+    offset -= first_item->original_offset;
+    strm.avail_in = 0;
+    skip = 1;                               /* while skipping to offset */
+    do {
+        /* define where to put uncompressed data, and how much */
+        if (offset == 0 && skip) {          /* at offset now */
+            strm.avail_out = len;
+            strm.next_out = buf;
+            skip = 0;                       /* only do this once */
+        }
+        if (offset > WINSIZE) {             /* skip WINSIZE bytes */
+            strm.avail_out = WINSIZE;
+            strm.next_out = discard;
+            offset -= WINSIZE;
+        } else if (offset != 0) {             /* last skip */
+            strm.avail_out = (unsigned)offset;
+            strm.next_out = discard;
+            offset = 0;
+        }
+
+        /* uncompress until avail_out filled, or end of stream */
+        do {
+            if (strm.avail_in == 0) {
+                strm.avail_in = File::read((char *)input,CHUNK);
+                if (strm.avail_in < 0 ) {
+                    ret = Z_ERRNO;
+                    goto extract_ret;
+                }
+                if (strm.avail_in == 0) {
+                    ret = Z_DATA_ERROR;
+                    goto extract_ret;
+                }
+                strm.next_in = input;
+            }
+            ret = inflate(&strm, Z_NO_FLUSH);       /* normal inflate */
+            if (ret == Z_NEED_DICT)
+                ret = Z_DATA_ERROR;
+            if (ret == Z_MEM_ERROR || ret == Z_DATA_ERROR)
+                goto extract_ret;
+            if (ret == Z_STREAM_END)
+                break;
+        } while (strm.avail_out != 0);
+
+        /* if reach end of stream, then don't keep trying to get more */
+        if (ret == Z_STREAM_END)
+            break;
+
+        /* do until offset reached and requested data read, or stream ends */
+    } while (skip);
+
+    /* compute number of uncompressed bytes read after offset */
+    ret = skip ? 0 : len - strm.avail_out;
+
+    /* clean up and return bytes read or error */
+  extract_ret:
     (void)inflateEnd(&strm);
     return ret;
 }
