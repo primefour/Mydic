@@ -17,6 +17,7 @@ int main(int argc,char **argv){
     unsigned char buff[1024*1024]={0};
     gzip_file.extract(0,buff,sizeof(buff));
     printf("%s ",buff);
+    gzip_file.uncompress_file(&original_file);
     return 0;
 }
 

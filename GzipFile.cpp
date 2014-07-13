@@ -93,8 +93,74 @@ void GzipFile::set_access_point(access_point_t *ap,int bits, off_t in, off_t out
     }
 }
 
+
+#define DATA_CACHE_SIZE 1024
 int GzipFile::uncompress_file(File *outFile){
-    return 0;
+    int ret = 0;
+    unsigned char input[DATA_CACHE_SIZE]; 
+    unsigned char output[DATA_CACHE_SIZE];
+    z_stream strm;
+    /* initialize inflate */
+    strm.zalloc = Z_NULL;
+    strm.zfree = Z_NULL;
+    strm.opaque = Z_NULL;
+    strm.avail_in = 0;
+    strm.next_in = Z_NULL;
+    ret = inflateInit2(&strm, 47);
+    if (ret != Z_OK){
+        return ret;
+    }
+    File::lseek(SEEK_SET,0);
+    do {
+        /* get some compressed data from input file */
+        strm.avail_in = File::read((char *)input,DATA_CACHE_SIZE);
+        if (strm.avail_in < 0){
+            printf("file read fail \n");
+            ret = -1;
+            break;
+        }
+        //should not get zero
+        if (strm.avail_in == 0) {
+            printf("file get end \n");
+            ret = -1;
+            break;
+        }
+        strm.next_in = input;
+        /* process all of that, or until end of stream */
+        do {
+            strm.avail_out = DATA_CACHE_SIZE;
+            strm.next_out = output;
+            /* inflate until out of input, output, or at end of block --
+               update the total input and output counters */
+            ret = inflate(&strm, Z_BLOCK);      /* return at end of block */
+
+            if (ret == Z_NEED_DICT){
+                printf("ret == Z_NEED_DICT ####\n");
+                ret = -1;
+                break;
+            }
+            if (ret == Z_MEM_ERROR || ret == Z_DATA_ERROR){
+                printf("get z mem error or z data error \n");
+                ret = -1;
+            }
+            if (ret == Z_STREAM_END){
+                ret = 0;
+                break;
+            }
+            if(strm.avail_out != DATA_CACHE_SIZE){
+                outFile->write((char *)output,DATA_CACHE_SIZE - strm.avail_out);
+            }
+
+        } while (strm.avail_in != 0);
+    } while (ret != Z_STREAM_END);
+
+    /* clean up and return index (release unused entries in list) */
+    (void)inflateEnd(&strm);
+
+    /* return error */
+build_index_error:
+    (void)inflateEnd(&strm);
+    return ret;
 }
 
 
@@ -120,7 +186,7 @@ int GzipFile::build_access_point(){
     original_total_out = 0;
     original_last = 0;
     strm.avail_out = 0;
-
+    File::lseek(SEEK_SET,0);
     do {
         /* get some compressed data from input file */
         strm.avail_in = File::read((char *)input,CHUNK);

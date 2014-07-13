@@ -106,7 +106,7 @@ int File::lseek(int whence,int offset){
 int File::write(const char *buf,int len){
     int ret = -1;
     const char *ptr = buf;
-    printf("buf = %s len = %d ",buf,len);
+    //printf("buf = %s len = %d ",buf,len);
     if(fd >= 0 && ptr != NULL){
         while(len > 0){
             ret = ::write(fd,ptr,len);
