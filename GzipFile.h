@@ -48,11 +48,11 @@ class GzipFile:public File{
         GzipFile(const char *file_path);
         virtual ~GzipFile();
         virtual int open(int mode);
-        virtual int read(char *buf,int len);
-        virtual int write(const char *buf,int len);
+        virtual int read(unsigned char *buf,int len);
+        virtual int write(const unsigned char *buf,int len);
         virtual int lseek(int where,int offset);
-        virtual int readline(char *buf,int len);
-        static int check_file_type(char *buf,int len);
+        virtual int readline(unsigned char *buf,int len);
+        static int check_file_type(unsigned char *buf,int len);
         int uncompress_file(File *outFile);
         int build_access_point();
         static int access_piont_compare(list_head_t *item1,void *data);

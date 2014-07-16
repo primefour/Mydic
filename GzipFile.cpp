@@ -28,7 +28,7 @@ GzipFile::~GzipFile(){
 }
 
 
-int GzipFile::check_file_type(char *buf,int len){
+int GzipFile::check_file_type(unsigned char *buf,int len){
     if(len < 2){
         return 0;
     }
@@ -41,7 +41,7 @@ int GzipFile::check_file_type(char *buf,int len){
 }
 
 
-int GzipFile::readline(char *buf,int len){
+int GzipFile::readline(unsigned char *buf,int len){
     printf("%s,%s\n",__FILE__,__func__);
     return 0;
 }
@@ -53,14 +53,14 @@ int GzipFile::lseek(int whence,int offset){
     return 0;
 }
 
-int GzipFile::write(const char *buf,int len){
+int GzipFile::write(const unsigned char *buf,int len){
 
     printf("%s,%s\n",__FILE__,__func__);
     return 0;
 }
 
 
-int GzipFile::read(char *buf,int len){
+int GzipFile::read(unsigned char *buf,int len){
     printf("%s,%s\n",__FILE__,__func__);
     return 0;
 }
@@ -113,7 +113,7 @@ int GzipFile::uncompress_file(File *outFile){
     File::lseek(SEEK_SET,0);
     do {
         /* get some compressed data from input file */
-        strm.avail_in = File::read((char *)input,DATA_CACHE_SIZE);
+        strm.avail_in = File::read(input,DATA_CACHE_SIZE);
         if (strm.avail_in < 0){
             printf("file read fail \n");
             ret = -1;
@@ -148,7 +148,7 @@ int GzipFile::uncompress_file(File *outFile){
                 break;
             }
             if(strm.avail_out != DATA_CACHE_SIZE){
-                outFile->write((char *)output,DATA_CACHE_SIZE - strm.avail_out);
+                outFile->write(output,DATA_CACHE_SIZE - strm.avail_out);
             }
 
         } while (strm.avail_in != 0);
@@ -189,7 +189,7 @@ int GzipFile::build_access_point(){
     File::lseek(SEEK_SET,0);
     do {
         /* get some compressed data from input file */
-        strm.avail_in = File::read((char *)input,CHUNK);
+        strm.avail_in = File::read(input,CHUNK);
         if (strm.avail_in < 0){
             ret = Z_ERRNO;
             goto build_index_error;
@@ -304,7 +304,7 @@ int GzipFile::extract(off_t offset,unsigned char *buf, int len){
         goto extract_ret;
     }
     if (first_item->bits) {
-        ret = File::read((char *)(&ret),1);
+        ret = File::read((unsigned char *)(&ret),1);
         if (ret == -1) {
             goto extract_ret;
         }
@@ -336,7 +336,7 @@ int GzipFile::extract(off_t offset,unsigned char *buf, int len){
         /* uncompress until avail_out filled, or end of stream */
         do {
             if (strm.avail_in == 0) {
-                strm.avail_in = File::read((char *)input,CHUNK);
+                strm.avail_in = File::read(input,CHUNK);
                 if (strm.avail_in < 0 ) {
                     ret = Z_ERRNO;
                     goto extract_ret;

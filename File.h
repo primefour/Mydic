@@ -32,7 +32,7 @@ class BufferCache{
         unsigned char *cache_data_end;
 };
 
-typedef int (*pfn_check_file_type)(unsigned char *buff);
+typedef int (*pfn_check_file_type)(unsigned char *buff,int *len);
 
 typedef struct pfn_check_file_list{
     list_head list;
@@ -52,10 +52,10 @@ class File{
         virtual int readline(unsigned char *buf,int len);
 
         static  int  check_file_type(const char *path);
-        static  void add_check_func(pfn_check_file_type pfd,int type);
+        static  void add_check_func(pfn_check_file_type pfd,DIC_FILE_TYPE_T type);
         static File* MakeFileInstance(void *data,DIC_FILE_TYPE file_type);
-    protected:
         static list_head_t check_list; 
+    protected:
         char file_path[MAX_PATH_LENGTH];
         DIC_FILE_TYPE_T file_type;
         int  fd;

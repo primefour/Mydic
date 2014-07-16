@@ -8,6 +8,9 @@
 
 
 int main(int argc,char **argv){
+
+    //init
+    File::add_check_func(GzipFile::check_file_type,GZIP_FILE_TYPE);
     const char *file_name="./langdao-ec-gb.dict.dz";
     GzipFile gzip_file(file_name);
     gzip_file.open(0);

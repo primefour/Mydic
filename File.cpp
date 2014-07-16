@@ -10,6 +10,10 @@
 #include<errno.h>
 #include"log.h"
 #include<assert.h>
+#include"GzipFile.h"
+#include"list.h"
+
+list_head_t File::check_list ={&File::check_list,&File::check_list};
 
 BufferCache::BufferCache(unsigned int size,File *file_ops){
     cache = NULL;
@@ -42,7 +46,7 @@ int BufferCache::read(unsigned char *buf,int len){
     return 0;
 }
 
-int BufferCache::write(unsigned char *buf,int len){
+int BufferCache::write(const unsigned char *buf,int len){
     return 0;
 }
 int BufferCache::lseek(int whence,int offset){
@@ -74,7 +78,8 @@ File::~File(){
 
 int file_compare_func(list_head_t *item1,void *data){
     pfn_check_file_list *tmp_check_item = contain_of(item1,pfn_check_file_list,list);
-    if(tmp_check_item->pfn((unsigned char*)data)){
+    int buff_len = 1024;
+    if(tmp_check_item->pfn((unsigned char*)data,&buff_len)){
         return 0;
     }else{
         return 1;
@@ -84,7 +89,7 @@ int file_compare_func(list_head_t *item1,void *data){
 
 int File::readline(unsigned char *buf,int len){
     int ret = -1;
-    char *ptr = buf;
+    unsigned char *ptr = buf;
     memset(buf,0,len);
     int i = 0;
 
@@ -112,7 +117,7 @@ int File::lseek(int whence,int offset){
 
 int File::write(const unsigned char *buf,int len){
     int ret = -1;
-    const char *ptr = buf;
+    const unsigned char *ptr = buf;
     //printf("buf = %s len = %d ",buf,len);
     if(fd >= 0 && ptr != NULL){
         while(len > 0){
@@ -157,12 +162,12 @@ int File::open(int mode){
     return 0;
 }
 
-int File::check_file_type(char *path){
+int File::check_file_type(const char *path){
     File tmp_file(path);
     unsigned char buff[1024]={0};
     tmp_file.open(0);
     tmp_file.read(buff,sizeof(buff));
-    list_head_t *result = find_list_item(&check_list,buff,file_compare_func,);
+    list_head_t *result = find_list_item(&check_list,buff,file_compare_func);
     if(result != NULL){
         pfn_check_file_list *tmp_check_item = contain_of(result,pfn_check_file_list,list);
         return tmp_check_item->type;
@@ -171,7 +176,7 @@ int File::check_file_type(char *path){
     }
 }
 
-static  void add_check_func(pfn_check_file_type pfn,int type){
+void File::add_check_func(pfn_check_file_type pfn,DIC_FILE_TYPE_T type){
     pfn_check_file_list *tmp = (pfn_check_file_list *)malloc(sizeof(pfn_check_file_list));
     if(tmp == NULL){
         printf("%s error %d \n",__func__,__LINE__);
@@ -181,11 +186,12 @@ static  void add_check_func(pfn_check_file_type pfn,int type){
         init_list_head(&(tmp->list));
         tmp->pfn = pfn;
         tmp->type = type;
+        insert_list_item_behind(&check_list,&(tmp->list));
     }
 }
 
 static File* MakeFileInstance(void *data,DIC_FILE_TYPE file_type){
-    File *tmp = NULL:
+    File *tmp = NULL;
     switch(file_type){
         case GZIP_FILE_TYPE:
             tmp = new GzipFile((char *)data);
