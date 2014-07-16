@@ -28,8 +28,9 @@ GzipFile::~GzipFile(){
 }
 
 
-int GzipFile::check_file_type(unsigned char *buf,int len){
-    if(len < 2){
+int GzipFile::check_file_type(unsigned char *buf,int *len){
+    if(*len < 2){
+        *len = 2;
         return 0;
     }
     unsigned char *ptr = (unsigned char *)buf;

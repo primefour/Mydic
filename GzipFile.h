@@ -52,7 +52,7 @@ class GzipFile:public File{
         virtual int write(const unsigned char *buf,int len);
         virtual int lseek(int where,int offset);
         virtual int readline(unsigned char *buf,int len);
-        static int check_file_type(unsigned char *buf,int len);
+        static int check_file_type(unsigned char *buf,int *len);
         int uncompress_file(File *outFile);
         int build_access_point();
         static int access_piont_compare(list_head_t *item1,void *data);

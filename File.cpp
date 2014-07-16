@@ -190,7 +190,7 @@ void File::add_check_func(pfn_check_file_type pfn,DIC_FILE_TYPE_T type){
     }
 }
 
-static File* MakeFileInstance(void *data,DIC_FILE_TYPE file_type){
+File* File:: MakeFileInstance(const void *data,DIC_FILE_TYPE file_type){
     File *tmp = NULL;
     switch(file_type){
         case GZIP_FILE_TYPE:

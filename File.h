@@ -53,7 +53,7 @@ class File{
 
         static  int  check_file_type(const char *path);
         static  void add_check_func(pfn_check_file_type pfd,DIC_FILE_TYPE_T type);
-        static File* MakeFileInstance(void *data,DIC_FILE_TYPE file_type);
+        static File* MakeFileInstance(const void *data,DIC_FILE_TYPE file_type);
         static list_head_t check_list; 
     protected:
         char file_path[MAX_PATH_LENGTH];
