@@ -34,7 +34,7 @@ enum GZIP_FIXED_HEAD_INDEX{
 
 typedef struct ACCESS_PIONT{
     list_head list;
-    int original_offset;
+    int original_end;
     int chunk_size;
     int file_chunk_offset;
     int file_chunk_size;

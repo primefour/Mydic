@@ -137,7 +137,8 @@ int GzipFile::open(int mode){
 void GzipFile::set_access_point(access_point_t *ap,int bits, off_t in, off_t out,int chunk_size,
                                                 unsigned left, unsigned char *window)
 {
-    ap->original_offset = out;
+    printf("in = %ld,out =%ld ,chunk_size = %d \n",in,out,chunk_size);
+    ap->original_end = out;
     ap->chunk_size = chunk_size;
     ap->file_chunk_offset = in;
     ap->bits = bits;
@@ -296,6 +297,7 @@ int GzipFile::build_access_point(){
                 }
                 memset(access_point,0,sizeof(access_point_t));
                 init_list_head(&(access_point->list));
+                printf("original_total_out = %ld \n",original_total_out);
                 set_access_point(access_point, strm.data_type & 7,
                                     file_total_in,original_total_out,original_total_out - original_last,
                                     strm.avail_out, window);
@@ -317,8 +319,11 @@ build_index_error:
 int GzipFile::access_piont_compare(list_head_t *item1,void *data){
     access_point_t *list_item = contain_of(item1,access_point_t,list);
     off_t offset = *((off_t *)data);
-    if(list_item->original_offset <= offset && 
-            offset <= list_item->original_offset + list_item->chunk_size){
+
+    printf("###########################%d \n",__LINE__);
+    printf("list_item->original_end = %d ,offset = %ld \n",list_item->original_end,offset);
+    if(list_item->original_end > offset){ 
+        printf("###########################\n");
         return 0;
     }else{
         return 1;
@@ -338,7 +343,11 @@ int GzipFile::extract(off_t offset,unsigned char *buf, int len){
         return 0;
     }
     printf("offset = %ld \n",offset);
+    printf("###################################%d \n",__LINE__);
+
     list_head_t *find_item = find_list_item(&access_point_list,&offset,access_piont_compare);
+
+    printf("###################################%d ",__LINE__);
     if(find_item == NULL){
         printf("can't find the offset in the list\n");
         return -1;
@@ -370,7 +379,7 @@ int GzipFile::extract(off_t offset,unsigned char *buf, int len){
     (void)inflateSetDictionary(&strm, first_item->window, WINSIZE);
 
     /* skip uncompressed bytes until offset reached, then satisfy request */
-    offset -= first_item->original_offset;
+    offset -= first_item->original_end;
     strm.avail_in = 0;
     skip = 1;                               /* while skipping to offset */
     do {
@@ -389,7 +398,7 @@ int GzipFile::extract(off_t offset,unsigned char *buf, int len){
             strm.next_out = discard;
             offset = 0;
         }
-
+        printf("###################################%d ",__LINE__);
         /* uncompress until avail_out filled, or end of stream */
         do {
             if (strm.avail_in == 0) {
