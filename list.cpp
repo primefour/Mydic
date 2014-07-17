@@ -37,6 +37,14 @@ list_head_t* find_list_item(list_head_t *list_head_ptr,void *data,compare_func f
     return NULL;
 }
 
+list_head_t *get_last_item(list_head_t *list_head_ptr){
+    if(list_head_ptr != NULL &&  list_head_ptr != list_head_ptr->prev){
+        return list_head_ptr->prev;
+    }else{
+        return NULL;
+    }
+}
+
 
 void insert_list_item_behind(list_head_t *item,list_head_t *insert_item){
     insert_item->prev = item;

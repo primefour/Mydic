@@ -140,7 +140,7 @@ int File::write(const unsigned char *buf,int len){
 int File::read(unsigned char *buf,int len){
     int ret = -1;
     memset(buf,0,len);
-    printf("%s \n",__func__);
+    //printf("%s \n",__func__);
     if(fd >= 0){
        ret = ::read(fd,buf,len); 
     }else{
