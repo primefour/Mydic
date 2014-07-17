@@ -50,6 +50,9 @@ class File{
         virtual int write(const unsigned char *buf,int len);
         virtual int lseek(int where,int offset);
         virtual int readline(unsigned char *buf,int len);
+        int is_open(){
+            return (fd>=0) ? 1:0;
+        }
 
         static  int  check_file_type(const char *path);
         static  void add_check_func(pfn_check_file_type pfd,DIC_FILE_TYPE_T type);

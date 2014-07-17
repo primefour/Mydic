@@ -64,6 +64,8 @@ class GzipFile:public File{
                 off_t out,int chunk_size,
                 unsigned left, unsigned char *window);
         list_head access_point_list;
+        off_t position;
+        off_t original_file_size;
 };
 
 #endif //

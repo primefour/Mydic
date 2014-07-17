@@ -17,15 +17,14 @@ int main(int argc,char **argv){
     File *inst = File::MakeFileInstance((const void *)file_name,(DIC_FILE_TYPE)type);
     inst->open(0);
     File original_file("./raw.data");
-
     original_file.open(O_CREAT|O_RDWR);
-
-    inst->build_access_point();
-
-    unsigned char buff[1024]={0};
-    inst->extract(0,buff,sizeof(buff));
-    printf("%s ",buff);
-    inst->uncompress_file(&original_file);
+    unsigned char buff[1024*10]={0};
+    inst->read(buff,sizeof(buff));
+    printf("%s \n",buff);
+    inst->lseek(SEEK_SET,0);
+    memset(buff,0,sizeof(buff));
+    inst->readline(buff,sizeof(buff));
+    printf("%s\n",buff);
     return 0;
 }
 

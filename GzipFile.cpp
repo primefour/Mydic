@@ -10,7 +10,6 @@ extern "C"{
 }
 
 void GzipFile::init_access_point_list(){
-
     init_list_head(&access_point_list);
 }
 
@@ -20,6 +19,8 @@ void GzipFile::reset_access_point_list(){
 
 
 GzipFile::GzipFile(const char *file_path):File(file_path){
+    position = 0;
+    original_file_size = 0;
     init_access_point_list();
 }
 
@@ -44,34 +45,89 @@ int GzipFile::check_file_type(unsigned char *buf,int *len){
 
 int GzipFile::readline(unsigned char *buf,int len){
     printf("%s,%s\n",__FILE__,__func__);
-    return 0;
+    unsigned char rbuff[1024] = {0};
+    int j = 0;
+    int i = 0;
+    int ret = 0;
+    while(j < len){
+        memset(rbuff,0,sizeof(rbuff));
+        ret = read(rbuff,sizeof(rbuff));
+        if(ret < 0){
+            printf("read line error \n");
+            return ret;
+        }
+        i = 0;
+        while(i < ret && j < len && rbuff[i] != '\0'){
+            buf[j] = rbuff[i];
+            i++;
+            j++;
+        }
+        if(i < ret ){
+            position = position - ret + i + 1;
+            //get line complete
+            break;
+        }
+    }
+    if(j >= len){
+        return len;
+    }else{
+        return j + 1;
+    }
 }
 
 
 int GzipFile::lseek(int whence,int offset){
-
     printf("%s,%s\n",__FILE__,__func__);
-    return 0;
+    if(whence == SEEK_SET){
+        if(offset >  original_file_size){
+            return -1;
+        }
+        position = offset;
+    }else if(whence == SEEK_CUR){
+        if(position + offset > original_file_size){
+            return -1;
+        }
+        position += offset;
+    }else{
+        if(original_file_size + offset > original_file_size){
+            return -1;
+        }
+        position = original_file_size + offset;
+    }
+    return position;
 }
 
-int GzipFile::write(const unsigned char *buf,int len){
 
+int GzipFile::write(const unsigned char *buf,int len){
     printf("%s,%s\n",__FILE__,__func__);
-    return 0;
+    return -1;
 }
 
 
 int GzipFile::read(unsigned char *buf,int len){
     printf("%s,%s\n",__FILE__,__func__);
-    return 0;
+    int ret = extract(position,buf,len);
+    if(ret > 0){
+        position += ret;
+    }
+    printf("gzipfile read ret = %d ####################\n",ret);
+    return ret;
 }
 
 
 int GzipFile::open(int mode){
+    if(is_open()){
+        return 0;
+    }
     int ret = File::open(O_RDWR);
     if(ret < 0){
         return -1;
     }
+    position = 0;
+    original_file_size = 0;
+    ret = build_access_point();
+    printf("build_access_point ret = %d \n",ret);
+    return ret;
 }
 
 
@@ -83,7 +139,6 @@ void GzipFile::set_access_point(access_point_t *ap,int bits, off_t in, off_t out
 {
     ap->original_offset = out;
     ap->chunk_size = chunk_size;
-
     ap->file_chunk_offset = in;
     ap->bits = bits;
     if (left){
@@ -188,6 +243,7 @@ int GzipFile::build_access_point(){
     original_last = 0;
     strm.avail_out = 0;
     File::lseek(SEEK_SET,0);
+    original_file_size = 0;
     do {
         /* get some compressed data from input file */
         strm.avail_in = File::read(input,CHUNK);
@@ -196,6 +252,7 @@ int GzipFile::build_access_point(){
             goto build_index_error;
         }
         if (strm.avail_in == 0) {
+            printf("#######################################build index error\n");
             ret = Z_DATA_ERROR;
             goto build_index_error;
         }
@@ -227,7 +284,7 @@ int GzipFile::build_access_point(){
             if (ret == Z_STREAM_END){
                 break;
             }
-            printf("strm.data_type = %d,original_total_out = %ld ,file_total_in = %ld  \n",strm.data_type,original_total_out,file_total_in);
+            //printf("strm.data_type = %d,original_total_out = %ld ,file_total_in = %ld  \n",strm.data_type,original_total_out,file_total_in);
 
             if ((strm.data_type & 128) && !(strm.data_type & 64) &&
                     (original_total_out == 0 || original_total_out - original_last > SPAN)) {
@@ -248,12 +305,10 @@ int GzipFile::build_access_point(){
             }
         } while (strm.avail_in != 0);
     } while (ret != Z_STREAM_END);
-
-    /* clean up and return index (release unused entries in list) */
-    (void)inflateEnd(&strm);
-
+    original_file_size = original_total_out;
     /* return error */
 build_index_error:
+    File::lseek(SEEK_SET,0);
     (void)inflateEnd(&strm);
     return ret;
 }
@@ -282,6 +337,7 @@ int GzipFile::extract(off_t offset,unsigned char *buf, int len){
     if (len < 0){
         return 0;
     }
+    printf("offset = %ld \n",offset);
     list_head_t *find_item = find_list_item(&access_point_list,&offset,access_piont_compare);
     if(find_item == NULL){
         printf("can't find the offset in the list\n");
