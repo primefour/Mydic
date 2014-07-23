@@ -5,6 +5,7 @@
 #include<errno.h>
 #include<fcntl.h>
 #include<stdlib.h>
+#include<assert.h>
 
 
 void print_type_capblity(){
@@ -20,6 +21,91 @@ typedef struct bmp_file_info_t {
     unsigned int bf_size;
     unsigned int bf_image_data_offset;
 }bmp_file_info_t;
+
+
+unsigned char test_data[768] ={
+1,2,3,4,5,6,7,8,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
+4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,
+5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
+6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,
+7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,
+8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,
+9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,9,
+10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,
+11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11, 11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11, 11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,
+12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,
+12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,
+12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,
+13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,
+14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,
+14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,
+14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,
+15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,
+15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,
+15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,
+16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,
+16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,
+16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16
+};
+
+void reverse_bmp_data(unsigned char *data,int stride,int height,int pixel_count){
+    int i = 0;
+    int j = 0;
+    for(i = 0 ;i < height/2 ;i++){
+        for(j = 0 ;j < stride ;j ++){
+            if(pixel_count == 3){
+                int offset = i *stride + j;
+                int offset_exch = (height -i-1)*stride + j;
+                unsigned char *tmp = (data + offset * pixel_count);
+                unsigned char *tmp_exch = (data + offset_exch * pixel_count); 
+                unsigned char data_tmp = *tmp ;
+                *tmp = *tmp_exch;
+                *tmp_exch = data_tmp;
+                tmp ++;
+                tmp_exch ++;
+                data_tmp = *tmp ;
+                *tmp = *tmp_exch;
+                *tmp_exch = data_tmp;
+                tmp ++;
+                tmp_exch ++;
+                data_tmp = *tmp ;
+                *tmp = *tmp_exch;
+                *tmp_exch = data_tmp;
+            }else{
+                int offset = i *stride + j;
+                int offset_exch = (height -i-1)*stride + j;
+
+                unsigned char *tmp = (data + offset * pixel_count);
+                unsigned char *tmp_exch = (data + offset_exch * pixel_count); 
+                unsigned char data_tmp = *tmp ;
+                *tmp = *tmp_exch;
+                *tmp_exch = data_tmp;
+                tmp ++;
+                tmp_exch ++;
+
+                data_tmp = *tmp ;
+                *tmp = *tmp_exch;
+                *tmp_exch = data_tmp;
+                tmp ++;
+                tmp_exch ++;
+
+                data_tmp = *tmp ;
+                *tmp = *tmp_exch;
+                *tmp_exch = data_tmp;
+
+                tmp ++;
+                tmp_exch ++;
+                data_tmp = *tmp ;
+                *tmp = *tmp_exch;
+                *tmp_exch = data_tmp;
+            }
+        }
+    }
+}
 
 
 void parse_bmp_header_info(unsigned char *phead_data,void *data){
@@ -116,8 +202,8 @@ void read_bmp_file(bmp_t *pbmp,char *file_name){
     unsigned char tmp_buffer[1024]={0};
     int ret = read(fd,tmp_buffer,14);
     parse_bmp_header_info(tmp_buffer,&pbmp->bmp_file_info);
-    memset(tmp_buffer,0,1024);
-    ret = read(fd,tmp_buffer,1024);
+    memset(tmp_buffer,0,sizeof(tmp_buffer));
+    ret = read(fd,tmp_buffer,sizeof(tmp_buffer));
     parse_bmp_data_info(tmp_buffer,&pbmp->bmp_info);
     int stride = ((pbmp->bmp_info.width+3)>>2)<<2;
     printf("stride = %d \n",stride);
@@ -128,7 +214,12 @@ void read_bmp_file(bmp_t *pbmp,char *file_name){
     unsigned char *ptmp_data = (unsigned char *)malloc(data_bytes);
     long int loc = lseek(fd,pbmp->bmp_file_info.bf_image_data_offset,SEEK_SET);
     ret = read(fd,ptmp_data,data_bytes);
+    if(ret != data_bytes ){
+        printf("ERROR ################## READ BMP FILE FAILED\n");
+        assert(0);
+    }
     pbmp->data = ptmp_data;
+    reverse_bmp_data(ptmp_data,stride,height,pixel_depth>>3);
     close(fd);
 }
 
@@ -138,6 +229,7 @@ void write_bmp_file(bmp_t *pbmp,char *file_name){
     int fd = open(file_name,O_WRONLY|O_CREAT,0777);
     unsigned char *phead_info = (unsigned char *)malloc(pbmp->bmp_file_info.bf_image_data_offset);
     if(phead_info == NULL){
+        printf("write bmp file failed no memory \n");
         return ;
     }
     memset(phead_info,0,pbmp->bmp_file_info.bf_image_data_offset);
@@ -145,10 +237,12 @@ void write_bmp_file(bmp_t *pbmp,char *file_name){
     create_bmp_data_info(&(pbmp->bmp_info),phead_info+14);
     int ret = write(fd,phead_info,pbmp->bmp_file_info.bf_image_data_offset);
     printf("pbmp->bmp_info.image_size = %d \n",pbmp->bmp_info.image_size);
+    reverse_bmp_data(pbmp->data,pbmp->bmp_info.width,pbmp->bmp_info.height,pbmp->bmp_info.bit_count>>3);
     ret = write(fd,pbmp->data,pbmp->bmp_info.image_size);
     if(ret < 0){
         perror("write failed");
     }
+    free(phead_info);
 }
 
 
@@ -178,7 +272,7 @@ bmp_t *move_bmp(bmp_t *pbmp,int x,int y){
                 y0 = j - y;
                 x0 = i - x;
                 //printf("y0 = %d,x0 = %d,j=%d,i=%d,y=%d,x=%d\n",y0,x0,j,i,y,x);
-                if(y0 >= 0 && x0 >= 0){
+                if(y0 >= 0 && x0 >= 0 && y0 < pbmp->bmp_info.height && x0 < stride){
                     pixel_value = *(unsigned int *)(pdata + ((y0 * stride + x0)*pixel_byte));
                 }
                 if(pixel_byte == 3){
@@ -231,9 +325,25 @@ int main(int argc,char **argv){
     char file_name[1024] = "copy";
     strncat(file_name,argv[1],1024);
     //test_bmp(&bmp);
-    cpy_bmp = move_bmp(&bmp,0,0);
+    cpy_bmp = move_bmp(&bmp,10,10);
     write_bmp_file(cpy_bmp,file_name);
-    free(bmp.data);
+
+    int i = 0;
+    int j = 0;
+    for( i = 0;i < 16 ;i++){
+        for( j = 0 ;j < 16 * 3; j ++){
+            printf("%d ",*(test_data + i * 16 * 3 + j));
+        }
+        printf("\n");
+    }
+    reverse_bmp_data(test_data,16,16,3);
+    printf("\n");
+    for( i = 0;i < 16 ;i++){
+        for( j = 0 ;j < 16 * 3; j ++){
+            printf("%d ",*(test_data + i * 16 * 3 + j));
+        }
+        printf("\n");
+    }
     return 0;
 }
 
