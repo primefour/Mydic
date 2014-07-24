@@ -184,6 +184,20 @@ void create_bmp_data_info(bmp_info_t *pinfo_data,unsigned char *data){
     *(unsigned int *)(data + 32) = pdata_info_data->color_used;
 }
 
+typedef struct ycrcb_t{
+    int width;
+    int stride;
+    int height;
+    unsigned char *data;
+}ycrcb_t;
+
+typedef struct yuv_t{
+    int width;
+    int stride;
+    int height;
+    unsigned char *data;
+}yuv_t;
+
 
 typedef struct bmp_t{
     bmp_file_info_t bmp_file_info;
@@ -191,8 +205,149 @@ typedef struct bmp_t{
     unsigned char *data;
 }bmp_t;
 
+//default 420
+void read_ycrcb_flat(const char *file_name,ycrcb_t *pycrcb){
+    memset(pycrcb,0,sizeof(ycrcb_t));
+    int fd = open(file_name,O_RDONLY);
+    if(fd < 0){
+        perror("open error");
+        return;
+    }
 
-void read_bmp_file(bmp_t *pbmp,char *file_name){
+    int width = atoi(file_name);
+    char *pheight = strchr(file_name,'x');
+    pheight++;
+    if(pheight == NULL){
+        printf("no resolution provider \n");
+        assert(0);
+    }
+    int height = atoi(pheight);
+    int stride = ((width + 3)>>2)<<2;
+    printf("width x height = %d x %d  stride = %d \n",width,height,stride);
+
+    int data_bytes = (stride * height * 3)>>1;
+    printf("data bytes = %d \n",data_bytes);
+    unsigned char *ptmp_data = (unsigned char *)malloc(data_bytes);
+    int ret = read(fd,ptmp_data,data_bytes);
+    if(ret != data_bytes ){
+        printf("ERROR ################## READ YCRCB FILE FAILED\n");
+        assert(0);
+    }
+    pycrcb->data = ptmp_data;
+    pycrcb->stride = stride;
+    pycrcb->width = width;
+    pycrcb->height = height;
+    close(fd);
+    printf("%s complete \n",__func__);
+}
+
+void bmp_to_ycrcb(bmp_t *pbmp,ycrcb_t *pycrcb){
+
+}
+
+void ycrcb_to_bmp(ycrcb_t *pycrcb,bmp_t *pbmp){
+    int bmp_width = pycrcb->width;
+    int bmp_height = pycrcb->height;
+    int bmp_stride = pycrcb->stride;
+    int bmp_data_bytes = (bmp_stride *bmp_height * 24)>>3;
+    unsigned char *bmp_data = (unsigned char *)malloc(bmp_data_bytes);
+    int i = 0;
+    int j = 0;
+    for(i = 0 ;i < bmp_height ;i += 2){
+        for(j = 0;j < bmp_stride;j += 2){
+            int bmp_offset00 = (i * bmp_stride + j ) * 3;//pixel count is 24
+            int bmp_offset01 = bmp_offset00+3;
+            int bmp_offset10 = bmp_offset00  + bmp_stride *3 ;
+            int bmp_offset11 = bmp_offset10 + 3;
+
+            int y_offset00 = i * pycrcb->stride + j;
+            int y_offset01 = y_offset00 + 1;
+            int y_offset10 = y_offset00 + pycrcb->stride;
+            int y_offset11 = y_offset10 + 1;
+
+            int cb_offset = pycrcb->stride * pycrcb->height + ((i * pycrcb->stride + j)>>2);
+            int cr_offset = cr_offset + 1;//pycrcb->stride * pycrcb->height + ((pycrcb->stride * pycrcb->height)>>2)  + ((i * pycrcb->stride + j)>>2);
+
+            int y = *(pycrcb->data + y_offset00);
+            int cb = *(pycrcb->data + cb_offset);
+            int cr =*(pycrcb->data + cr_offset);
+#if 0//1
+            *(bmp_data + bmp_offset00) = 1.164 *(y-16) + 1.596 *(cr - 128);
+            *(bmp_data + bmp_offset00+1) = 1.164 *(y-16) - 0.813 *(cr - 128) - 0.392 *(cb-128); 
+            *(bmp_data + bmp_offset00+2) = 1.164*(y-16) + 2.017 * (cb - 128); 
+
+
+            y = *(pycrcb->data + y_offset01);
+            *(bmp_data + bmp_offset01) = 1.164 *(y-16) + 1.596 *(cr - 128);
+            *(bmp_data + bmp_offset01+1) = 1.164 *(y-16) - 0.813 *(cr - 128) - 0.392 *(cb-128); 
+            *(bmp_data + bmp_offset01+2) = 1.164*(y-16) + 2.017 * (cb - 128); 
+
+            y = *(pycrcb->data + y_offset10);
+            *(bmp_data + bmp_offset10) = 1.164 *(y-16) + 1.596 *(cr - 128);
+            *(bmp_data + bmp_offset10+1) = 1.164 *(y-16) - 0.813 *(cr - 128) - 0.392 *(cb-128); 
+            *(bmp_data + bmp_offset10+2) = 1.164*(y-16) + 2.017 * (cb - 128); 
+
+            y = *(pycrcb->data + y_offset11);
+            *(bmp_data + bmp_offset11) = 1.164 *(y-16) + 1.596 *(cr - 128);
+            *(bmp_data + bmp_offset11+1) = 1.164 *(y-16) - 0.813 *(cr - 128) - 0.392 *(cb-128); 
+            *(bmp_data + bmp_offset11+2) = 1.164*(y-16) + 2.017 * (cb - 128); 
+#else
+
+            *(bmp_data + bmp_offset00) = 1.164 *(y-16) + 1.596 *(cr - 128);
+            *(bmp_data + bmp_offset00+1) = *(bmp_data + bmp_offset00);//1.164 *(y-16) - 0.813 *(cr - 128) - 0.392 *(cb-128); 
+            *(bmp_data + bmp_offset00+2) = *(bmp_data + bmp_offset00) ;//1.164*(y-16) + 2.017 * (cb - 128); 
+
+
+            y = *(pycrcb->data + y_offset01);
+            *(bmp_data + bmp_offset01) = 1.164 *(y-16) + 1.596 *(cr - 128);
+            *(bmp_data + bmp_offset01+1) = *(bmp_data + bmp_offset01);// 1.164 *(y-16) - 0.813 *(cr - 128) - 0.392 *(cb-128); 
+            *(bmp_data + bmp_offset01+2) = *(bmp_data + bmp_offset01);//1.164*(y-16) + 2.017 * (cb - 128); 
+
+            y = *(pycrcb->data + y_offset10);
+            *(bmp_data + bmp_offset10) = 1.164 *(y-16) + 1.596 *(cr - 128);
+            *(bmp_data + bmp_offset10+1) = *(bmp_data + bmp_offset10);//1.164 *(y-16) - 0.813 *(cr - 128) - 0.392 *(cb-128); 
+            *(bmp_data + bmp_offset10+2) = *(bmp_data + bmp_offset10);//1.164*(y-16) + 2.017 * (cb - 128); 
+
+            y = *(pycrcb->data + y_offset11);
+            *(bmp_data + bmp_offset11) = 1.164 *(y-16) + 1.596 *(cr - 128);
+            *(bmp_data + bmp_offset11+1) = *(bmp_data + bmp_offset11);//1.164 *(y-16) - 0.813 *(cr - 128) - 0.392 *(cb-128); 
+            *(bmp_data + bmp_offset11+2) = *(bmp_data + bmp_offset11);//1.164*(y-16) + 2.017 * (cb - 128); 
+#endif
+        }
+    }
+
+    pbmp->bmp_info.info_size = 40;
+    pbmp->bmp_info.width = bmp_width;
+    pbmp->bmp_info.height =bmp_height;
+    pbmp->bmp_info.planes = 1;
+    pbmp->bmp_info.bit_count = 24;
+    pbmp->bmp_info.compressed = 0;
+    pbmp->bmp_info.image_size= (bmp_stride * bmp_height) * 3;
+    pbmp->bmp_info.color_used = 0;
+    pbmp->bmp_file_info.bf_size = 54 +  pbmp->bmp_info.image_size;
+    pbmp->bmp_file_info.bf_image_data_offset = 54;
+    pbmp->data = bmp_data;
+    printf("width x height = %d x %d imagesize = %d bf_size = %d \n",bmp_width,bmp_height,pbmp->bmp_info.image_size,pbmp->bmp_file_info.bf_size);
+}
+
+void y_to_bmp(ycrcb_t *pycrcb,bmp_t *pbmp){
+
+}
+
+void crcb_to_bmp(ycrcb_t *pycrcb,bmp_t *pbmp){
+
+}
+
+
+
+void bmp_to_yuv(bmp_t *pbmp,yuv_t *pyuv){
+
+}
+
+
+
+
+void read_bmp_file(char *file_name,bmp_t *pbmp){
     memset(pbmp,0,sizeof(bmp_t));
     int fd = open(file_name,O_RDONLY);
     if(fd < 0){
@@ -210,7 +365,7 @@ void read_bmp_file(bmp_t *pbmp,char *file_name){
     int height = pbmp->bmp_info.height;
     int pixel_depth = pbmp->bmp_info.bit_count;
     int data_bytes = (stride *height * pixel_depth)>>3;
-    printf("data bytes = %d \n",data_bytes);
+    //printf("data bytes = %d \n",data_bytes);
     unsigned char *ptmp_data = (unsigned char *)malloc(data_bytes);
     long int loc = lseek(fd,pbmp->bmp_file_info.bf_image_data_offset,SEEK_SET);
     ret = read(fd,ptmp_data,data_bytes);
@@ -225,7 +380,7 @@ void read_bmp_file(bmp_t *pbmp,char *file_name){
 
 
 
-void write_bmp_file(bmp_t *pbmp,char *file_name){
+void write_bmp_file(bmp_t *pbmp,const char *file_name){
     int fd = open(file_name,O_WRONLY|O_CREAT,0777);
     unsigned char *phead_info = (unsigned char *)malloc(pbmp->bmp_file_info.bf_image_data_offset);
     if(phead_info == NULL){
@@ -237,7 +392,7 @@ void write_bmp_file(bmp_t *pbmp,char *file_name){
     create_bmp_data_info(&(pbmp->bmp_info),phead_info+14);
     int ret = write(fd,phead_info,pbmp->bmp_file_info.bf_image_data_offset);
     printf("pbmp->bmp_info.image_size = %d \n",pbmp->bmp_info.image_size);
-    reverse_bmp_data(pbmp->data,pbmp->bmp_info.width,pbmp->bmp_info.height,pbmp->bmp_info.bit_count>>3);
+    //reverse_bmp_data(pbmp->data,pbmp->bmp_info.width,pbmp->bmp_info.height,pbmp->bmp_info.bit_count>>3);
     ret = write(fd,pbmp->data,pbmp->bmp_info.image_size);
     if(ret < 0){
         perror("write failed");
@@ -289,6 +444,11 @@ bmp_t *move_bmp(bmp_t *pbmp,int x,int y){
 
 }
 
+bmp_t* scaler_bmp(bmp_t *pbmp,int stride,int height,int scaler_width,int scaler_height){
+    return NULL;
+}
+
+
 void test_bmp(bmp_t *pbmp){
     int pixel_byte = pbmp->bmp_info.bit_count >>3;
     int stride = ((pbmp->bmp_info.width+3) >>2)<<2;
@@ -321,13 +481,12 @@ int main(int argc,char **argv){
     }
     bmp_t bmp, *cpy_bmp;
     memset(&bmp,0,sizeof(bmp));
-    read_bmp_file(&bmp,argv[1]);
+    read_bmp_file(argv[1],&bmp);
     char file_name[1024] = "copy";
     strncat(file_name,argv[1],1024);
     //test_bmp(&bmp);
     cpy_bmp = move_bmp(&bmp,10,10);
     write_bmp_file(cpy_bmp,file_name);
-
     int i = 0;
     int j = 0;
     for( i = 0;i < 16 ;i++){
@@ -344,6 +503,14 @@ int main(int argc,char **argv){
         }
         printf("\n");
     }
+    ycrcb_t *pycrcb = (ycrcb_t *)malloc(sizeof(ycrcb_t));
+    memset(pycrcb,0,sizeof(ycrcb_t));
+    read_ycrcb_flat("960x544.yuv",pycrcb);
+    bmp_t *new_bmp = (bmp_t *)malloc(sizeof(bmp_t));
+    memset(new_bmp,0,sizeof(bmp_t));
+    ycrcb_to_bmp(pycrcb,new_bmp);
+    write_bmp_file(new_bmp,"960x544.bmp");
+
     return 0;
 }
 
