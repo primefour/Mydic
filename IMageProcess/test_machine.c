@@ -253,8 +253,10 @@ void ycrcb_to_bmp(ycrcb_t *pycrcb,bmp_t *pbmp){
     unsigned char *bmp_data = (unsigned char *)malloc(bmp_data_bytes);
     int i = 0;
     int j = 0;
+    int cbcr_base_offset = pycrcb->stride * pycrcb->height;
     for(i = 0 ;i < bmp_height ;i += 2){
         for(j = 0;j < bmp_stride;j += 2){
+
             int bmp_offset00 = (i * bmp_stride + j ) * 3;//pixel count is 24
             int bmp_offset01 = bmp_offset00+3;
             int bmp_offset10 = bmp_offset00  + bmp_stride *3 ;
@@ -265,13 +267,15 @@ void ycrcb_to_bmp(ycrcb_t *pycrcb,bmp_t *pbmp){
             int y_offset10 = y_offset00 + pycrcb->stride;
             int y_offset11 = y_offset10 + 1;
 
-            int cb_offset = pycrcb->stride * pycrcb->height + ((i * pycrcb->stride + j)>>2);
-            int cr_offset = cr_offset + 1;//pycrcb->stride * pycrcb->height + ((pycrcb->stride * pycrcb->height)>>2)  + ((i * pycrcb->stride + j)>>2);
+            //int cb_offset = pycrcb->stride * pycrcb->height + ((i * pycrcb->stride + j)>>2);
+            //int cr_offset = cb_offset + 1;//pycrcb->stride * pycrcb->height + ((pycrcb->stride * pycrcb->height)>>2)  + ((i * pycrcb->stride + j)>>2);
 
             int y = *(pycrcb->data + y_offset00);
-            int cb = *(pycrcb->data + cb_offset);
-            int cr =*(pycrcb->data + cr_offset);
-#if 0//1
+            int cb = *(pycrcb->data + cbcr_base_offset );
+            cbcr_base_offset++;
+            int cr =*(pycrcb->data + cbcr_base_offset);
+            cbcr_base_offset++;
+#if 0 
             *(bmp_data + bmp_offset00) = 1.164 *(y-16) + 1.596 *(cr - 128);
             *(bmp_data + bmp_offset00+1) = 1.164 *(y-16) - 0.813 *(cr - 128) - 0.392 *(cb-128); 
             *(bmp_data + bmp_offset00+2) = 1.164*(y-16) + 2.017 * (cb - 128); 
