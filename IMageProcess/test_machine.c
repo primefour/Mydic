@@ -245,6 +245,39 @@ void bmp_to_ycrcb(bmp_t *pbmp,ycrcb_t *pycrcb){
 
 }
 
+
+void bmp_filter(bmp_t *pbmp){
+
+}
+
+void ycrcb_histogram(ycrcb_t *pycrcb,float *fhistogram,int pixel){
+    int phistogram[256]={0};
+    int yuv_width = pycrcb->width;
+    int yuv_height = pycrcb->height;
+    int yuv_stride = pycrcb->stride;
+    int i,j;
+    for(i = 0 ;i < yuv_height ;i ++){
+        for(j= 0;j < yuv_stride;j++){
+            phistogram[*(pycrcb->data + i *yuv_stride + j)] ++;
+        }
+    }
+    float total = 0.0;
+    for(i = 0 ;i < 256 ;i ++){
+       fhistogram[i] = phistogram[i]/(float)(yuv_stride * yuv_height);
+       printf("phistogram[i] = %f i = %d \n",fhistogram[i],i);
+       total += fhistogram[i];
+    }
+    printf("total = %f \n",total);
+}
+
+void create_histogram_bmp(ycrcb_t *pycrcb,bmp_t *pbmp){
+    float histogram[256]={0.0};
+    ycrcb_histogram(pycrcb,histogram,100);
+    ycrcb_to_bmp(pycrcb,pbmp);
+    //draw histogram using r 255 g 0 b 0 at the right-bottom region => using 10x10 
+}
+
+
 void ycrcb_to_bmp(ycrcb_t *pycrcb,bmp_t *pbmp){
     int bmp_width = pycrcb->width;
     int bmp_height = pycrcb->height;
@@ -563,8 +596,6 @@ void bmp_to_yuv(bmp_t *pbmp,yuv_t *pyuv){
             int g11 = *(bmp_data + bmp_offset11+1);
             int b11 = *(bmp_data + bmp_offset11+2);
 
-        //    int y00 = 
-
         }
     }
 }
@@ -745,6 +776,10 @@ int main(int argc,char **argv){
     memset(crnew_bmp,0,sizeof(bmp_t));
     cb_to_bmp(pycrcb,crnew_bmp);
     write_bmp_file(ynew_bmp,"cr960x544.bmp");
+
+    bmp_t *hnew_bmp = (bmp_t *)malloc(sizeof(bmp_t));
+    memset(hnew_bmp,0,sizeof(bmp_t));
+    create_histogram_bmp(pycrcb,hnew_bmp);
 
     return 0;
 }
