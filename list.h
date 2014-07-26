@@ -25,7 +25,7 @@ void init_list_head(list_head_t *list_head_ptr);
 void release_list(list_head_t *list_head_ptr,release_func);
 list_head_t* find_list_item(list_head_t *list_head_ptr,void *data,compare_func func);
 void insert_list_item_behind(list_head_t *item,list_head_t *insert_item);
-void insert_list_item_before(list_head_t *item,list_head_t *insert_item);
+void insert_list_item_ahead(list_head_t *item,list_head_t *insert_item);
 list_head_t *remove_list_item(list_head_t *remove_item);
 
 

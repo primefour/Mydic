@@ -55,9 +55,12 @@ int GzipFile::readline(unsigned char *buf,int len){
         if(ret < 0){
             printf("read line error \n");
             return ret;
+        }else if(ret == 0){
+            printf("read end of file  \n");
+            return ret;
         }
         i = 0;
-        while(i < ret && j < len && rbuff[i] != '\0'){
+        while(i < ret && j < len && rbuff[i] != '\0' && rbuff[i] != '\n'){
             buf[j] = rbuff[i];
             i++;
             j++;
@@ -137,9 +140,9 @@ int GzipFile::open(int mode){
 void GzipFile::set_access_point(access_point_t *ap,int bits, off_t in, off_t out,int chunk_size,
                                                 unsigned left, unsigned char *window)
 {
-    printf("in = %ld,out =%ld ,chunk_size = %d \n",in,out,chunk_size);
+    printf("in = %ld,out =%ld \n",in,out);
     ap->original_end = out;
-    ap->chunk_size = chunk_size;
+    //ap->chunk_size = chunk_size;
     ap->file_chunk_offset = in;
     ap->bits = bits;
     if (left){
@@ -297,19 +300,21 @@ int GzipFile::build_access_point(){
                 }
                 memset(access_point,0,sizeof(access_point_t));
                 init_list_head(&(access_point->list));
-                printf("original_total_out = %ld \n",original_total_out);
-                set_access_point(access_point, strm.data_type & 7,
+                //printf("original_total_out = %ld \n",original_total_out);
+                set_access_point(access_point,strm.data_type & 7,
                                     file_total_in,original_total_out,original_total_out - original_last,
                                     strm.avail_out, window);
-                insert_list_item_behind(&access_point_list,&(access_point->list));
+                insert_list_item_ahead(&access_point_list,&(access_point->list));
                 original_last = original_total_out;
 
             }
         } while (strm.avail_in != 0);
     } while (ret != Z_STREAM_END);
     original_file_size = original_total_out;
+    (void)inflateEnd(&strm);
     /* return error */
 build_index_error:
+    printf("###################%s %d \n",__func__,__LINE__);
     File::lseek(SEEK_SET,0);
     (void)inflateEnd(&strm);
     return ret;
@@ -320,12 +325,12 @@ int GzipFile::access_piont_compare(list_head_t *item1,void *data){
     access_point_t *list_item = contain_of(item1,access_point_t,list);
     off_t offset = *((off_t *)data);
 
-    printf("###########################%d \n",__LINE__);
     printf("list_item->original_end = %d ,offset = %ld \n",list_item->original_end,offset);
     if(list_item->original_end > offset){ 
-        printf("###########################\n");
+        printf("OK in = %d ,out = %d \n",list_item->file_chunk_offset,list_item->original_end);
         return 0;
     }else{
+        printf("in = %d ,out = %d \n",list_item->file_chunk_offset,list_item->original_end);
         return 1;
     }
 }
@@ -343,18 +348,15 @@ int GzipFile::extract(off_t offset,unsigned char *buf, int len){
         return 0;
     }
     printf("offset = %ld \n",offset);
-    printf("###################################%d \n",__LINE__);
 
     list_head_t *find_item = find_list_item(&access_point_list,&offset,access_piont_compare);
-
-    printf("###################################%d ",__LINE__);
     if(find_item == NULL){
         printf("can't find the offset in the list\n");
         return -1;
     }
+    find_item = find_item->prev;
     access_point_t *first_item = contain_of(find_item,access_point_t,list);
-
-
+    printf("first item in = %d ,out = %d \n",first_item->file_chunk_offset,first_item->original_end);
     /* initialize file and inflate state to start there */
     strm.zalloc = Z_NULL;
     strm.zfree = Z_NULL;

@@ -1,5 +1,5 @@
 GCC=g++
-CFLAGS= -I ./lib/include -I ./
+CFLAGS= -g -I ./lib/include -I ./
 LDFLAGS= -L ./lib/lib/ 
 TEST_PATH= ./test
 
