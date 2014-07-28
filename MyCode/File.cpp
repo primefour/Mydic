@@ -93,14 +93,16 @@ int File::readline(unsigned char *buf,int len){
     memset(buf,0,len);
     int i = 0;
 
-    while((ret = ::read(fd,ptr,1) > 0) && (*ptr != '\0') && ++i < len){ 
-        printf("%c",*ptr);
+    while((ret = ::read(fd,ptr,1) > 0) && (*ptr != '\n') && ++i < len){ 
+        //printf("%c",*ptr);
         ptr++;
     }
 
-    if(*ptr == '\0' && i != len){
+    if(*ptr == '\n'){
+        *ptr = '\0';
         return i;
     }else{
+        *(buf+len-1)= '\0';
         return ret;
     }
 }

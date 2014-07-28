@@ -1,23 +1,20 @@
 #ifndef __STARDICT_INFO_H__
 #define __STARDICT_INFO_H__
-#define INFO_STRING_LENGTH 1024
-const char *ind_ver="version";
-const char *ind_name="bookname";
-const char *ind_count="wordcount";
-const char *ind_syn="synwordcount";
-const char *ind_size="idxfilesize";
-const char *ind_offset="idxoffsetbits";
-const char *ind_author="author";
-const char *ind_email="email";
-const char *ind_website="website";
-const char *ind_descrip="description";
-const char *ind_date="date";
-const char *ind_sts="sametypesequence";
+#include<stdlib.h>
+#include<stdio.h>
+#include<string.h>
+#include"File.h"
 
 class StardictInfo{
     public:
         StardictInfo(const char *file_path):info_file(file_path){
-
+            version = NULL;
+            book_name = NULL;
+            author = NULL;
+            email = NULL;
+            website = NULL;
+            description = NULL;
+            date = NULL;
         }
         ~StardictInfo(){
             if(version){
@@ -42,7 +39,7 @@ class StardictInfo{
                 free(date);
             }
         }
-        void init();
+        int init();
         char *get_versoin(){
             return version;
         }
@@ -76,9 +73,14 @@ class StardictInfo{
         int get_offset_bits(){
             return  offset_is_64bit?64:32;
         }
-        int get_same_types_sequence(){
+        char *get_same_types_sequence(){
             return same_types_sequence;
         }
+        void dump();
+    private:
+        char *get_string_value(char *str_line);
+        int   get_integer_value(char *str_line);
+        void parse_line(char *str_line);
     private:
         char *version;
         char *book_name;
@@ -91,7 +93,7 @@ class StardictInfo{
         long syn_word_count;
         long idx_file_size;
         short offset_is_64bit;
-        short same_types_sequence; 
+        char *same_types_sequence; 
         File info_file;
-}
+};
 #endif //
