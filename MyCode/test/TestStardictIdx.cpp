@@ -7,7 +7,7 @@ int main(){
     si->init();
     si->dump();
 
-    StardictIdx *sidx = new StardictIdx("langdao-ec-gb.idx",si->get_word_count());
+    StardictIdx *sidx = new StardictIdx("langdao-ec-gb.idx",si->get_word_count(),si->get_idx_file_size());
     int ret = sidx->init();
     printf("##########################ret = %d    \n",ret);
     word_item_t *tmp = sidx->get_word("hello");

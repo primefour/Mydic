@@ -14,14 +14,15 @@ typedef struct word_item_t{
 
 class StardictIdx{
     public:
-        StardictIdx(const char *file_path,long word_count,int offsetbit = 32);
+        StardictIdx(const char *file_path,long word_count,long file_size,int offsetbit = 32);
         ~StardictIdx();
         int init();
         word_item_t *get_word(const  char *str);
     private:
-        long word_count;
         word_item_t *array;
         File idx_file;
         int offsetbit;
+        long word_count;
+        long file_size;
 };
 #endif

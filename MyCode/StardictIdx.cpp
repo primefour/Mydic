@@ -4,6 +4,8 @@
 #include<string.h>
 #include <arpa/inet.h>
 #include<assert.h>
+#include<sys/types.h>
+#include<fcntl.h>
 
 /*
 uint32_t htonl(uint32_t hostlong);
@@ -14,9 +16,10 @@ uint32_t ntohl(uint32_t netlong);
 uint16_t ntohs(uint16_t netshort);
 */
 
-StardictIdx:: StardictIdx(const char *file_path,long word_count,int offsetbit):idx_file(file_path){
+StardictIdx:: StardictIdx(const char *file_path,long word_count,long file_size,int offsetbit):idx_file(file_path){
     this->word_count = word_count;
     this->offsetbit = offsetbit;
+    this->file_size = file_size;
     array= NULL;
 }
 
@@ -76,13 +79,14 @@ int StardictIdx::init(){
         }
         i++;
     }
+    printf("file offset = %d \n",idx_file.lseek(SEEK_CUR,0));
     return ret;
 }
 
 word_item_t* StardictIdx::get_word(const char *str){
     int i = 0;
     while(i < word_count){
-        if(strcmp((array + i)->word_str,str)){
+        if(strcmp((array + i)->word_str,str) == 0){
             break;
         }
         i++;
@@ -93,4 +97,6 @@ word_item_t* StardictIdx::get_word(const char *str){
         return(array + i); 
     }
 }
+
+
        
