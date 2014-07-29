@@ -50,6 +50,7 @@ class File{
         virtual int write(const unsigned char *buf,int len);
         virtual int lseek(int where,int offset);
         virtual int readline(unsigned char *buf,int len);
+        int read_terminating_by(unsigned char *buff,int len,unsigned char terminate);
         int is_open(){
             return (fd>=0) ? 1:0;
         }

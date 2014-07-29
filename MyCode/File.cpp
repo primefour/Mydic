@@ -107,6 +107,26 @@ int File::readline(unsigned char *buf,int len){
     }
 }
 
+int File::read_terminating_by(unsigned char *buf,int len,unsigned char terminate){
+    int ret = -1;
+    unsigned char *ptr = buf;
+    memset(buf,0,len);
+    int i = 0;
+
+    while((ret = ::read(fd,ptr,1) > 0) && (*ptr != terminate ) && ++i < len){ 
+        //printf("%c",*ptr);
+        ptr++;
+    }
+
+    if(*ptr == terminate){
+        *ptr = '\0';
+        return i;
+    }else{
+        *(buf+len-1)= '\0';
+        return ret;
+    }
+}
+
 
 int File::lseek(int whence,int offset){
     if(fd >= 0){

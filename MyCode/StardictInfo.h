@@ -71,7 +71,7 @@ class StardictInfo{
             return idx_file_size;
         }
         int get_offset_bits(){
-            return  offset_is_64bit?64:32;
+            return  (offset_is_64bit == 64)?64:32;
         }
         char *get_same_types_sequence(){
             return same_types_sequence;
