@@ -7,7 +7,6 @@ int main(){
     StardictInfo *si = new StardictInfo("langdao-ec-gb.ifo");
     si->init();
     si->dump();
-
     StardictIdx *sidx = new StardictIdx("langdao-ec-gb.idx",si->get_word_count(),si->get_idx_file_size());
     int ret = sidx->init();
     printf("##########################ret = %d    \n",ret);
@@ -17,5 +16,6 @@ int main(){
     }else{
         printf("can't find the word \n");
     }
+
     return 0;
 }

@@ -6,6 +6,7 @@
 #include<assert.h>
 #include<sys/types.h>
 #include<fcntl.h>
+#include"Stardict.h"
 
 
 StardictDict::StardictDict(const char*file_name,const char *same_type_seq){
@@ -38,17 +39,6 @@ int StardictDict::init(){
     printf("type = %d \n",type);
     dict_file = File::MakeFileInstance((const void *)file_path,(DIC_FILE_TYPE)type);
     return dict_file->open(0);
-}
-
-meta_data_t *StardictDict::get_new_meta_item(){
-        meta_data_t *tmp_meta = (meta_data_t *)malloc(sizeof(meta_data_t));
-        if(tmp_meta == NULL){
-            printf("get item failed %s \n",__func__);
-            assert(0);
-        }
-        memset(tmp_meta,0,sizeof(meta_data_t));
-        init_list_head(&(tmp_meta->list));
-        return tmp_meta ;
 }
 
 void StardictDict::parse_meta_data(meta_data_head_t *word_data){
@@ -144,7 +134,8 @@ int StardictDict::read_word_data(meta_data_head_t *word_data){
 int StardictDict::parse_m_data(meta_data_t *meta,unsigned char *data){
     meta->type = DICT_STRING_TYPE;
     meta->data = data;
-    return strlen((const char *)(meta->data)) +1;
+    meta->data_length = strlen((const char *)(meta->data)) +1;
+    return meta->data_length;
 
 }
 //word's pure text meaning
@@ -154,7 +145,8 @@ int StardictDict::parse_l_data(meta_data_t *meta,unsigned char *data){
     //fix me
     meta->type = DICT_STRING_TYPE;
     meta->data = data;
-    return strlen((const char *)(meta->data)) +1;
+    meta->data_length = strlen((const char *)(meta->data)) +1;
+    return meta->data_length;
 }
 
 
@@ -166,7 +158,8 @@ int StardictDict::parse_g_data(meta_data_t *meta,unsigned char *data){
     //fix me
     meta->type = DICT_STRING_TYPE;
     meta->data = data;
-    return strlen((const char *)(meta->data)) +1;
+    meta->data_length = strlen((const char *)(meta->data)) +1;
+    return meta->data_length;
 }
 
 //Englist phonetic string
@@ -174,7 +167,8 @@ int StardictDict::parse_g_data(meta_data_t *meta,unsigned char *data){
 int StardictDict::parse_t_data(meta_data_t *meta,unsigned char *data){
     meta->type = DICT_PHONETIC_TYPE;
     meta->data = data;
-    return strlen((const char *)(meta->data)) +1;
+    meta->data_length = strlen((const char *)(meta->data)) +1;
+    return meta->data_length;
 }
 
 
@@ -185,7 +179,8 @@ int StardictDict::parse_t_data(meta_data_t *meta,unsigned char *data){
 int StardictDict::parse_x_data(meta_data_t *meta,unsigned  char *data){
     meta->type = DICT_STRING_TYPE ;
     meta->data = data;
-    return strlen((const char *)(meta->data)) +1;
+    meta->data_length = strlen((const char *)(meta->data)) +1;
+    return meta->data_length;
 }
 
 //chinese YinBiao or japanese KANA
@@ -193,27 +188,31 @@ int StardictDict::parse_x_data(meta_data_t *meta,unsigned  char *data){
 int StardictDict::parse_y_data(meta_data_t *meta,unsigned char *data){
     meta->type = DICT_PINYIN_TYPE;
     meta->data = data;
-    return strlen((const char *)(meta->data)) +1;
+    meta->data_length = strlen((const char *)(meta->data)) +1;
+    return meta->data_length;
 }
 //Kingsoft PowerWord's data,the data is a utf-8 string ending with '\0'
 //it is in xml format
 int StardictDict::parse_k_data(meta_data_t *meta,unsigned char *data){
     meta->type = DICT_STRING_TYPE ;
     meta->data = data;
-    return strlen((const char *)(meta->data)) +1;
+    meta->data_length = strlen((const char *)(meta->data)) +1;
+    return meta->data_length;
 }
 //MediaWiki markup lanaguage
 //http://meta.wikimedia.org/wiki/Help:Editing#The_wiki_markup
 int StardictDict::parse_w_data(meta_data_t *meta,unsigned char *data){
     meta->type = DICT_WIKI_TYPE;
     meta->data = data;
-    return strlen((const char *)(meta->data)) +1;
+    meta->data_length = strlen((const char *)(meta->data)) +1;
+    return meta->data_length;
 }
 //html codecs
 int StardictDict::parse_h_data(meta_data_t *meta,unsigned char *data){
     meta->type = DICT_HTML_TYPE;
     meta->data = data;
-    return strlen((const char *)(meta->data)) +1;
+    meta->data_length = strlen((const char *)(meta->data)) +1;
+    return meta->data_length;
 }
 //Resouce file list:
 //the content can be:
@@ -242,7 +241,8 @@ int StardictDict::parse_r_data(meta_data_t *meta,unsigned char *data){
         meta->type = DICT_ATTACH_PATH_TYPE;
     }
     meta->data = data+4;
-    return strlen((const char *)(meta->data)) +1;
+    meta->data_length = strlen((const char *)(meta->data)) +1;
+    return meta->data_length;
 }
 
 //wave file 
@@ -252,7 +252,8 @@ int StardictDict::parse_W_data(meta_data_t *meta,unsigned char *data){
     meta->type = DICT_SOUND_TYPE;
     int length = ntohl(*((unsigned int*)data));
     meta->data = data +4;
-    return length + 4;
+    meta->data_length =  length + 4;
+    return meta->data_length; 
 }
 //Picture file
 //the data begins with a network byte-ordered int32 to identify the picture
@@ -261,7 +262,8 @@ int StardictDict::parse_P_data(meta_data_t *meta,unsigned char *data){
     meta->type = DICT_PIC_TYPE;
     int length = ntohl(*((unsigned int *)data));
     meta->data = data +4;
-    return length + 4;
+    meta->data_length =  length + 4;;;;
+    return meta->data_length; 
 }
 //this type identifier is reserved  for experimental extensions
 int StardictDict::parse_X_data(meta_data_t *meta,unsigned char *data){

@@ -3,35 +3,7 @@
 #include"list.h"
 #include"File.h"
 #include"sys/types.h"
-
-
-typedef enum DICT_META_TYPE_T{
-    DICT_ATTACH_PATH_TYPE, 
-    DICT_SOUND_PATH_TYPE, 
-    DICT_PIC_PATH_TYPE, 
-    DICT_VIDEO_PATH_TYPE,
-    DICT_HTML_TYPE,
-    DICT_WIKI_TYPE,
-    DICT_ATTACH_TYPE,
-    DICT_PIC_TYPE,
-    DICT_SOUND_TYPE,
-    DICT_PHONETIC_TYPE,
-    DICT_STRING_TYPE,
-    DICT_PINYIN_TYPE,
-}DICT_META_TYPE_T;
-
-typedef struct meta_data_head{
-    unsigned char *data;
-    off_t original_offset;
-    int data_size;
-    list_head_t head;
-}meta_data_head_t;
-
-typedef struct meta_data_t{
-    list_head_t list;
-    int type;
-    unsigned char *data;
-}meta_data_t;
+#include"Stardict.h"
 
 
 class StardictDict{
@@ -41,8 +13,8 @@ class StardictDict{
         int init(); 
         void parse_meta_data(meta_data_head_t *word_data);
         int  read_word_data(meta_data_head_t *word_data);
+
     private:
-        meta_data_t *get_new_meta_item();
         //word's pure text meaing
         //utf-8 string terminate with '\0'
         int parse_m_data(meta_data_t *meta,unsigned char *data);
