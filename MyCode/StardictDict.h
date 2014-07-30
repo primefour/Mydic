@@ -1,8 +1,11 @@
 #ifndef __STARDICT_DICT__
 #define __STARDICT_DICT__
+#include"list.h"
+#include"File.h"
+#include"sys/types.h"
 
 
-typedef DICT_META_TYPE_T{
+typedef enum DICT_META_TYPE_T{
     DICT_ATTACH_PATH_TYPE, 
     DICT_SOUND_PATH_TYPE, 
     DICT_PIC_PATH_TYPE, 
@@ -33,12 +36,13 @@ typedef struct meta_data_t{
 
 class StardictDict{
     public:
-        StardictDict(const char*file_name,char *same_type_seq);
+        StardictDict(const char*file_name,const char *same_type_seq);
         ~StardictDict();
         int init(); 
-        void parse_meta_data(meta_data_t *meta);
+        void parse_meta_data(meta_data_head_t *word_data);
         int  read_word_data(meta_data_head_t *word_data);
     private:
+        meta_data_t *get_new_meta_item();
         //word's pure text meaing
         //utf-8 string terminate with '\0'
         int parse_m_data(meta_data_t *meta,unsigned char *data);

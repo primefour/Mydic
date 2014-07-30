@@ -7,21 +7,8 @@
 #include<sys/types.h>
 #include<fcntl.h>
 
-typedef struct meta_data_head{
-    unsigned char *data;
-    off_t original_offset;
-    int data_size;
-    list_head_t head;
-}meta_data_head_t;
 
-typedef struct meta_data_t{
-    list_head_t list;
-    char type;
-    unsigned char *data;
-}meta_data_t;
-
-
-StardictDict::StardictDict(const char*file_name,const char *same_type_seq):dict_file(file_name){
+StardictDict::StardictDict(const char*file_name,const char *same_type_seq){
     if(same_type_seq != NULL){
         same_seqence = strdup(same_type_seq);
     }else{
@@ -40,21 +27,115 @@ StardictDict::~StardictDict(){
     if(same_seqence != NULL){
         free(same_seqence);
     }
+
+    if(dict_file != NULL){
+        delete dict_file;
+    }
 }
+
 int StardictDict::init(){
     int type = (int)File::check_file_type(file_path);
     printf("type = %d \n",type);
-    dict_file = File::MakeFileInstance((const void *)file_name,(DIC_FILE_TYPE)type);
+    dict_file = File::MakeFileInstance((const void *)file_path,(DIC_FILE_TYPE)type);
     return dict_file->open(0);
 }
 
-void StardictDict::parse_meta_data(meta_data_t *meta){
+meta_data_t *StardictDict::get_new_meta_item(){
+        meta_data_t *tmp_meta = (meta_data_t *)malloc(sizeof(meta_data_t));
+        if(tmp_meta == NULL){
+            printf("get item failed %s \n",__func__);
+            assert(0);
+        }
+        memset(tmp_meta,0,sizeof(meta_data_t));
+        init_list_head(&(tmp_meta->list));
+        return tmp_meta ;
+}
 
+void StardictDict::parse_meta_data(meta_data_head_t *word_data){
+    unsigned char *pData = word_data->data;
+    unsigned char *pData_end = word_data->data + word_data->data_size;
+    init_list_head(&(word_data->head));
+    meta_data_t * tmp = get_new_meta_item();
+    while(pData < pData_end){
+        switch(*pData){
+            case 'm':
+                pData++;
+                pData += parse_m_data(tmp,pData);
+            break;
+            case 'l':
+                pData++;
+                pData += parse_l_data(tmp,pData);
+            break;
+            case 'g':
+                pData++;
+                pData += parse_g_data(tmp,pData);
+            break;
+            case 't':
+                pData++;
+                pData += parse_t_data(tmp,pData);
+            break;
+            case 'x':
+                pData++;
+                pData += parse_x_data(tmp,pData);
+            break;
+            case 'y':
+                pData++;
+                pData += parse_y_data(tmp,pData);
+            break;
+            case 'k':
+                pData++;
+                pData += parse_k_data(tmp,pData);
+            break;
+            case 'w':
+                pData++;
+                pData += parse_w_data(tmp,pData);
+            break;
+            case 'h':
+                pData++;
+                pData += parse_h_data(tmp,pData);
+            break;
+            case 'r':
+                pData++;
+                pData += parse_r_data(tmp,pData);
+            break;
+            case 'W':
+                pData++;
+                pData += parse_W_data(tmp,pData);
+            break;
+            case 'P':
+                pData++;
+                pData += parse_P_data(tmp,pData);
+            break;
+            case 'X':
+                pData++;
+                pData += parse_X_data(tmp,pData);
+            break;
+            default:
+                pData++;
+                printf("get a error format \n");
+            break;
+        }
+        if(tmp->data){
+            insert_list_item_ahead(&(word_data->head),&(tmp->list));
+            tmp = get_new_meta_item();
+        }
+    }
 }
 
 
-int  StardictDict::read_word_data(meta_data_head_t *word_data){
-
+int StardictDict::read_word_data(meta_data_head_t *word_data){
+    dict_file->lseek(SEEK_CUR,word_data->original_offset);
+    word_data->data = (unsigned char *)malloc(word_data->data_size);
+    if(word_data->data == NULL){
+        printf("word_data->data_size = %d  \n",word_data->data_size);
+        assert(0);
+    }
+    int ret =  dict_file->read(word_data->data,word_data->data_size);
+    if(ret != word_data->data_size){
+        printf("%s ret = %d \n",__func__,ret); 
+        assert(0);
+    }
+    return ret;
 }
 
 
@@ -63,7 +144,7 @@ int  StardictDict::read_word_data(meta_data_head_t *word_data){
 int StardictDict::parse_m_data(meta_data_t *meta,unsigned char *data){
     meta->type = DICT_STRING_TYPE;
     meta->data = data;
-    return strlen(meta->data) +1;
+    return strlen((const char *)(meta->data)) +1;
 
 }
 //word's pure text meaning
@@ -73,7 +154,7 @@ int StardictDict::parse_l_data(meta_data_t *meta,unsigned char *data){
     //fix me
     meta->type = DICT_STRING_TYPE;
     meta->data = data;
-    return strlen(meta->data) +1;
+    return strlen((const char *)(meta->data)) +1;
 }
 
 
@@ -85,7 +166,7 @@ int StardictDict::parse_g_data(meta_data_t *meta,unsigned char *data){
     //fix me
     meta->type = DICT_STRING_TYPE;
     meta->data = data;
-    return strlen(meta->data) +1;
+    return strlen((const char *)(meta->data)) +1;
 }
 
 //Englist phonetic string
@@ -93,7 +174,7 @@ int StardictDict::parse_g_data(meta_data_t *meta,unsigned char *data){
 int StardictDict::parse_t_data(meta_data_t *meta,unsigned char *data){
     meta->type = DICT_PHONETIC_TYPE;
     meta->data = data;
-    return strlen(meta->data) +1;
+    return strlen((const char *)(meta->data)) +1;
 }
 
 
@@ -104,7 +185,7 @@ int StardictDict::parse_t_data(meta_data_t *meta,unsigned char *data){
 int StardictDict::parse_x_data(meta_data_t *meta,unsigned  char *data){
     meta->type = DICT_STRING_TYPE ;
     meta->data = data;
-    return strlen(meta->data) +1;
+    return strlen((const char *)(meta->data)) +1;
 }
 
 //chinese YinBiao or japanese KANA
@@ -112,27 +193,27 @@ int StardictDict::parse_x_data(meta_data_t *meta,unsigned  char *data){
 int StardictDict::parse_y_data(meta_data_t *meta,unsigned char *data){
     meta->type = DICT_PINYIN_TYPE;
     meta->data = data;
-    return strlen(meta->data) +1;
+    return strlen((const char *)(meta->data)) +1;
 }
 //Kingsoft PowerWord's data,the data is a utf-8 string ending with '\0'
 //it is in xml format
 int StardictDict::parse_k_data(meta_data_t *meta,unsigned char *data){
     meta->type = DICT_STRING_TYPE ;
     meta->data = data;
-    return strlen(meta->data) +1;
+    return strlen((const char *)(meta->data)) +1;
 }
 //MediaWiki markup lanaguage
 //http://meta.wikimedia.org/wiki/Help:Editing#The_wiki_markup
 int StardictDict::parse_w_data(meta_data_t *meta,unsigned char *data){
     meta->type = DICT_WIKI_TYPE;
     meta->data = data;
-    return strlen(meta->data) +1;
+    return strlen((const char *)(meta->data)) +1;
 }
 //html codecs
 int StardictDict::parse_h_data(meta_data_t *meta,unsigned char *data){
     meta->type = DICT_HTML_TYPE;
     meta->data = data;
-    return strlen(meta->data) + 1;
+    return strlen((const char *)(meta->data)) +1;
 }
 //Resouce file list:
 //the content can be:
@@ -151,17 +232,17 @@ int StardictDict::parse_h_data(meta_data_t *meta,unsigned char *data){
 //and windows use local encoding,so you'b better just use ASCII file name
 //or use database to store utf8 file name
 int StardictDict::parse_r_data(meta_data_t *meta,unsigned char *data){
-    if(strncmp(data,"img",3) == 0){
+    if(strncmp((const char *)data,"img",3) == 0){
         meta->type = DICT_PIC_PATH_TYPE;
-    }else if(strncmp(data,"snd",3) == 0){
+    }else if(strncmp((const char *)data,"snd",3) == 0){
         meta->type = DICT_SOUND_PATH_TYPE;
-    }else if(strncmp(data,"vdo",3) == 0){
+    }else if(strncmp((const char *)data,"vdo",3) == 0){
         meta->type = DICT_VIDEO_PATH_TYPE;
-    }else if(strncmp(data,"att",3) == 0){
+    }else if(strncmp((const char *)data,"att",3) == 0){
         meta->type = DICT_ATTACH_PATH_TYPE;
     }
     meta->data = data+4;
-    return strlen(meta->data) + 1; 
+    return strlen((const char *)(meta->data)) +1;
 }
 
 //wave file 
@@ -169,7 +250,7 @@ int StardictDict::parse_r_data(meta_data_t *meta,unsigned char *data){
 //file's size,immediately followed by the file's content
 int StardictDict::parse_W_data(meta_data_t *meta,unsigned char *data){
     meta->type = DICT_SOUND_TYPE;
-    int length = ntohl((unsigned int )data);
+    int length = ntohl(*((unsigned int*)data));
     meta->data = data +4;
     return length + 4;
 }
@@ -178,7 +259,7 @@ int StardictDict::parse_W_data(meta_data_t *meta,unsigned char *data){
 //file's size,immediately followed by the file's content
 int StardictDict::parse_P_data(meta_data_t *meta,unsigned char *data){
     meta->type = DICT_PIC_TYPE;
-    int length = ntohl((unsigned int )data);
+    int length = ntohl(*((unsigned int *)data));
     meta->data = data +4;
     return length + 4;
 }

@@ -50,7 +50,7 @@ int StardictSyn::init(){
             break;
         }
         (array + i)->synnonym_word = strdup((char *)word_buff);
-        (array + i)->original_word_index= ::ntohl((long)index_buff);
+        (array + i)->original_word_index= ::ntohl((*(long*)index_buff));
         if(i < 10){
             printf("synnoym word = %s index %d   \n",(array + i)->synnonym_word,(array + i)->original_word_index);
         }
