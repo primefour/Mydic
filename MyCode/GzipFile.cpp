@@ -400,7 +400,7 @@ int GzipFile::extract(off_t offset,unsigned char *buf, int len){
             strm.next_out = discard;
             offset = 0;
         }
-        printf("###################################%d ",__LINE__);
+        //printf("###################################%d ",__LINE__);
         /* uncompress until avail_out filled, or end of stream */
         do {
             if (strm.avail_in == 0) {

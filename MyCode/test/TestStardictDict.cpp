@@ -1,9 +1,18 @@
 #include "StardictIdx.h"
 #include "StardictInfo.h"
 #include "StardictDict.h"
+#include"GzipFile.h"
+#include<stdio.h>
+#include<unistd.h>
+#include<sys/types.h>
+#include<fcntl.h>
+#include<stdio.h>
+#include<string.h>
+
 
 
 int main(){
+    File::add_check_func(GzipFile::check_file_type,GZIP_FILE_TYPE);
     StardictInfo *si = new StardictInfo("langdao-ec-gb.ifo");
     si->init();
     si->dump();
@@ -16,6 +25,14 @@ int main(){
     }else{
         printf("can't find the word \n");
     }
+    StardictDict *sd = new StardictDict("langdao-ec-gb.dict.dz",si->get_same_types_sequence());
+    ret = sd->init();
+    printf("ret = %d \n",ret);
+    meta_data_head *tmp_head = get_new_meta_head();
+    tmp_head->original_offset = tmp->word_data_offset.bit32;
+    tmp_head->data_size = tmp->word_data_size;
+    sd->read_word_data(tmp_head);
+    dump_meta_head(tmp_head);
 
     return 0;
 }

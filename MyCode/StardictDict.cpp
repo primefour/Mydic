@@ -42,76 +42,99 @@ int StardictDict::init(){
 }
 
 void StardictDict::parse_meta_data(meta_data_head_t *word_data){
+    if(same_seqence != NULL){
+        parse_meta_data_with_seq(word_data);
+    }else{
+        parse_meta_data_no_seq(word_data);
+    }
+}
+
+void StardictDict::parse_meta_data_with_seq(meta_data_head_t *word_data){
+    char *seq = same_seqence;
+    unsigned char *pData = word_data->data;
+    unsigned char *pData_end = word_data->data + word_data->data_size;
+    init_list_head(&(word_data->head));
+    meta_data_t * tmp = get_new_meta_item();
+    while(*seq != '\0' && pData < pData_end ){
+        pData += parse_common_flag(tmp,*seq,pData);
+        if(tmp->data){
+            insert_list_item_ahead(&(word_data->head),&(tmp->list));
+            tmp = get_new_meta_item();
+        }
+        seq ++;
+    }
+
+    if(tmp->data == NULL){
+        free(tmp);
+    }
+}
+
+
+int StardictDict::parse_common_flag(meta_data_t *tmp,char flag,unsigned char *data){
+    printf("%s flag = %c \n",__func__,flag);
+    int length = 0;
+    switch(flag){
+        case 'm':
+            length = parse_m_data(tmp,data);
+            break;
+        case 'l':
+            length = parse_l_data(tmp,data);
+            break;
+        case 'g':
+            length = parse_g_data(tmp,data);
+            break;
+        case 't':
+            length = parse_t_data(tmp,data);
+            break;
+        case 'x':
+            length = parse_x_data(tmp,data);
+            break;
+        case 'y':
+            length = parse_y_data(tmp,data);
+            break;
+        case 'k':
+            length = parse_k_data(tmp,data);
+            break;
+        case 'w':
+            length = parse_w_data(tmp,data);
+            break;
+        case 'h':
+            length = parse_h_data(tmp,data);
+            break;
+        case 'r':
+            length = parse_r_data(tmp,data);
+            break;
+        case 'W':
+            length = parse_W_data(tmp,data);
+            break;
+        case 'P':
+            length = parse_P_data(tmp,data);
+            break;
+        case 'X':
+            length = parse_X_data(tmp,data);
+            break;
+        default:
+            printf("get a error format \n");
+            break;
+    }
+}
+
+void StardictDict::parse_meta_data_no_seq(meta_data_head_t *word_data){
     unsigned char *pData = word_data->data;
     unsigned char *pData_end = word_data->data + word_data->data_size;
     init_list_head(&(word_data->head));
     meta_data_t * tmp = get_new_meta_item();
     while(pData < pData_end){
-        switch(*pData){
-            case 'm':
-                pData++;
-                pData += parse_m_data(tmp,pData);
-            break;
-            case 'l':
-                pData++;
-                pData += parse_l_data(tmp,pData);
-            break;
-            case 'g':
-                pData++;
-                pData += parse_g_data(tmp,pData);
-            break;
-            case 't':
-                pData++;
-                pData += parse_t_data(tmp,pData);
-            break;
-            case 'x':
-                pData++;
-                pData += parse_x_data(tmp,pData);
-            break;
-            case 'y':
-                pData++;
-                pData += parse_y_data(tmp,pData);
-            break;
-            case 'k':
-                pData++;
-                pData += parse_k_data(tmp,pData);
-            break;
-            case 'w':
-                pData++;
-                pData += parse_w_data(tmp,pData);
-            break;
-            case 'h':
-                pData++;
-                pData += parse_h_data(tmp,pData);
-            break;
-            case 'r':
-                pData++;
-                pData += parse_r_data(tmp,pData);
-            break;
-            case 'W':
-                pData++;
-                pData += parse_W_data(tmp,pData);
-            break;
-            case 'P':
-                pData++;
-                pData += parse_P_data(tmp,pData);
-            break;
-            case 'X':
-                pData++;
-                pData += parse_X_data(tmp,pData);
-            break;
-            default:
-                pData++;
-                printf("get a error format \n");
-            break;
-        }
+        pData += parse_common_flag(tmp,*pData,++pData);
         if(tmp->data){
             insert_list_item_ahead(&(word_data->head),&(tmp->list));
             tmp = get_new_meta_item();
         }
     }
+    if(tmp->data == NULL){
+        free(tmp);
+    }
 }
-
 
 int StardictDict::read_word_data(meta_data_head_t *word_data){
     dict_file->lseek(SEEK_CUR,word_data->original_offset);
@@ -124,6 +147,8 @@ int StardictDict::read_word_data(meta_data_head_t *word_data){
     if(ret != word_data->data_size){
         printf("%s ret = %d \n",__func__,ret); 
         assert(0);
+    }else{
+        parse_meta_data(word_data);
     }
     return ret;
 }

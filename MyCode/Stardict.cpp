@@ -18,9 +18,9 @@ meta_data_t *get_new_meta_item(){
 void dump_meta_item(meta_data_t *meta_item){
     if(meta_item->type != DICT_ATTACH_TYPE && meta_item->type != DICT_PIC_TYPE &&
             meta_item->type !=  DICT_SOUND_TYPE){
-        printf("data length = %d ,data = %s type = %d ",meta_item->data_length,meta_item->data,meta_item->type);
+        printf("data length = %d ,data = %s type = %d \n",meta_item->data_length,meta_item->data,meta_item->type);
     }else{
-        printf("###special type data length = %d , type = %d ",meta_item->data_length,meta_item->type);
+        printf("###special type data length = %d , type = %d \n",meta_item->data_length,meta_item->type);
     }
 }
 
@@ -52,5 +52,6 @@ void dump_meta_head(meta_data_head *phead){
     while(tmp_next != &(phead->head)){
         meta_data_t *tmp_meta = contain_of(tmp_next,meta_data_t,list);
         dump_meta_item(tmp_meta);
+        tmp_next = tmp_next->next;
     }
 }
