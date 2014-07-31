@@ -3,6 +3,7 @@
 #include<string.h>
 #include<pthread.h>
 #include"list.h"
+#include<assert.h>
 
 /* functions of memory */
 #define TOOLS_TEST_SPACE (sizeof(unsigned int))
@@ -38,7 +39,8 @@ void *tools_malloc(int size,const char *file_name,int line);
 int tools_check_free_point(mem_item_info_t *mem_ptr);
 void tools_dump_item_info();
 void tools_dump_item_error_info(mem_item_info_t *ptr,const char *str);
-void tools_free(void *ptr);
+void tools_free(void *ptr,const char *file,int line );
+//void tools_free(void *ptr);
 void tools_get_leak_mem();
 char* tools_strdup( const char *str, const char*file_name, int line);
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -122,6 +124,7 @@ void *tools_malloc(int size,const char *file_name,int line){
         printf("xxxx get a allocation memory size is zero");
         return NULL;
     }
+    //printf("######################################%s###################3\n",__func__);
     int mem_size = size + TOOLS_TEST_SPACE *2;
 
     mem_item_info_t *mem_item_ptr = get_mem_list_item();
@@ -130,6 +133,7 @@ void *tools_malloc(int size,const char *file_name,int line){
     mem_item_ptr->line = line;
     mem_item_ptr->size = size;
     mem_item_ptr->addr = malloc(mem_size);
+    //printf("######################################%s###################%p\n",__func__,mem_item_ptr->addr);
     mem_item_ptr->ref ++;
     memset(mem_item_ptr->addr,TOOLS_INIT_PATTERN,mem_size);
 
@@ -156,7 +160,7 @@ void *tools_malloc(int size,const char *file_name,int line){
     //insert to queue
     insert_mem_list_item(&mem_list_head,&(mem_item_ptr->item));
     pthread_mutex_unlock(&(mem_list_head.mutex));
-    return  (void *)(mem_item_ptr->addr + TOOLS_TEST_SPACE);
+    return  (void *)((unsigned char *)(mem_item_ptr->addr) + TOOLS_TEST_SPACE);
 }
 
 
@@ -173,7 +177,7 @@ int tools_check_free_point(mem_item_info_t *mem_ptr){
         i++;
     }
     //check tail overwrite
-    unsigned char *tmp_tail = (unsigned char *)(mem_ptr->addr + mem_ptr->size +TOOLS_TEST_SPACE);
+    unsigned char *tmp_tail = (unsigned char *)((unsigned char *)(mem_ptr->addr) + mem_ptr->size +TOOLS_TEST_SPACE);
     i = 0;
     while(i < TOOLS_TEST_SPACE){
         if(*tmp_tail != TOOLS_INIT_PATTERN ){
@@ -208,13 +212,15 @@ void tools_dump_item_error_info(mem_item_info_t *ptr,const char *str){
     printf("%s error file %s line %ld \n",str,ptr->file,ptr->line);
 }
 
-void tools_free(void *ptr){
+void tools_free(void *ptr,const char *file,int line ){
     int ret = 0;
+    printf("%s %s %d \n",__func__,file,line); 
     mem_item_info_t tmp_mem_item = {0};
-    tmp_mem_item.addr = ptr - TOOLS_TEST_SPACE;
+    //printf("###################%s ########################%p \n",__func__,ptr);
+    tmp_mem_item.addr = ((unsigned char *)ptr - TOOLS_TEST_SPACE);
+    //printf("######################################%s###################%p\n",__func__,tmp_mem_item.addr);
     mem_item_info_t *result_mem_item_ptr = NULL;
     list_head_t *result_item_ptr = NULL;
-
     pthread_mutex_lock(&(mem_list_head.mutex));
     result_item_ptr = find_mem_list_item(&mem_list_head,&(tmp_mem_item.item));
     if(result_item_ptr != NULL){
@@ -224,18 +230,28 @@ void tools_free(void *ptr){
             tools_dump_item_error_info(result_mem_item_ptr,"multiple free");
         }else{
             //check head and tail overwrite
+
             if(tools_check_free_point(result_mem_item_ptr) < 0){
                 tools_dump_item_error_info(result_mem_item_ptr,"overwrite");
             }
+        
             //free the addr and don't assign NULL to it
             free(result_mem_item_ptr->addr);
         }
         result_mem_item_ptr->ref-- ;
+        /*
+        if(result_mem_item_ptr->ref == 0){
+            //remove the item
+            remove_list_item(&(result_mem_item_ptr->item));
+            free(result_mem_item_ptr);
+            mem_list_head.item_count --;
+        }
+        */
     }else{
         //point from outside or error point
-        printf("point from outside or error point %p",ptr);
+        printf("point from outside or error point %p\n",ptr);
         //try to free it
-        free(ptr);
+        //free(ptr);
     }
     pthread_mutex_unlock(&(mem_list_head.mutex));
 }
@@ -266,6 +282,7 @@ char* tools_strdup( const char *str, const char*file_name, int line){
     if(str == NULL){
         printf("tools_strdup get a null point\n");
     }
+    //printf("######################%s#################3\n",__func__);
     int length = strlen(str);
     //printf("length = %d \n",length);
     if(length > 1024 *8){

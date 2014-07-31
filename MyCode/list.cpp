@@ -2,6 +2,8 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include"memory_test_tool.h"
+
 
 void init_list_head(list_head_t *list_head_ptr){
     list_head_ptr->prev = list_head_ptr;
@@ -28,6 +30,7 @@ void release_list(list_head_t *list_head_ptr,release_func pfn){
 
 list_head_t* find_list_item(list_head_t *list_head_ptr,void *data,compare_func func){
     list_head_t *tmp = list_head_ptr->next ; 
+    //printf("list_head_ptr = %ld ,tmp = %ld \n",list_head_ptr,tmp);
     while(tmp != list_head_ptr){
         if(func(tmp,data) == 0){
             return tmp;

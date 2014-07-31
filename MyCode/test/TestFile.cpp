@@ -44,7 +44,7 @@ int main(int argc,char *argv[]){
     printf("############################\n");
     readme.lseek(SEEK_SET,0);
     while(readme.readline(buffer,2048)){
-        printf("%s",buffer);
+        printf("%s\n",buffer);
     }
 
     return 0;

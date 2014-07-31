@@ -55,8 +55,9 @@ class File{
             return (fd>=0) ? 1:0;
         }
 
-        static  int  check_file_type(const char *path);
-        static  void add_check_func(pfn_check_file_type pfd,DIC_FILE_TYPE_T type);
+        static int  check_file_type(const char *path);
+        static void add_check_func(pfn_check_file_type pfd,DIC_FILE_TYPE_T type);
+        static void release_check_func();
         static File* MakeFileInstance(const void *data,DIC_FILE_TYPE file_type);
         static list_head_t check_list; 
     protected:

@@ -6,6 +6,7 @@
 #include<assert.h>
 #include<sys/types.h>
 #include<fcntl.h>
+#include"memory_test_tool.h"
 
 
 StardictSyn::StardictSyn(const char *file_path,long word_count):syn_file(file_path){

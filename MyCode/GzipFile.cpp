@@ -8,6 +8,7 @@
 extern "C"{
 #include"zlib.h"
 }
+#include"memory_test_tool.h"
 
 void GzipFile::init_access_point_list(){
     init_list_head(&access_point_list);

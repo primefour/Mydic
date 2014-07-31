@@ -12,6 +12,8 @@
 #include<assert.h>
 #include"GzipFile.h"
 #include"list.h"
+#include"memory_test_tool.h"
+
 
 list_head_t File::check_list ={&File::check_list,&File::check_list};
 
@@ -209,6 +211,15 @@ void File::add_check_func(pfn_check_file_type pfn,DIC_FILE_TYPE_T type){
         tmp->pfn = pfn;
         tmp->type = type;
         insert_list_item_behind(&check_list,&(tmp->list));
+    }
+}
+
+void File::release_check_func(){
+    list_head_t *tmp = check_list.next;
+    while(tmp != &check_list){
+        pfn_check_file_list *tmp_item = contain_of(tmp,pfn_check_file_list,list);
+        tmp = tmp->next;
+        free(tmp_item);
     }
 }
 

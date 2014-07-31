@@ -5,10 +5,11 @@
 #include<fcntl.h>
 #include<stdio.h>
 #include<string.h>
+#include"memory_test_tool.h"
 
 
 int main(int argc,char **argv){
-
+    init_global_env();
     //init
     File::add_check_func(GzipFile::check_file_type,GZIP_FILE_TYPE);
     const char *file_name="./langdao-ec-gb.dict.dz";
@@ -36,7 +37,9 @@ int main(int argc,char **argv){
     }
     printf("ret = %d \n",ret);
     printf("%s\n",buff);
-
+    delete inst;
+    File::release_check_func();
+    release_global_env();
     return 0;
 }
 

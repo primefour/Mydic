@@ -15,6 +15,7 @@
 #include<stdio.h>
 #include<string.h>
 #include"utils.h"
+#include"memory_test_tool.h"
 
 StardictDirectory::StardictDirectory(const char *directory_path){
     int len = strlen(directory_path) + 1;

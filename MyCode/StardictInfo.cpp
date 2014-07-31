@@ -2,6 +2,7 @@
 #include<stdlib.h>
 #include<stdio.h>
 #include<string.h>
+#include"memory_test_tool.h"
 
 const char *ind_ver="version";
 const char *ind_name="bookname";

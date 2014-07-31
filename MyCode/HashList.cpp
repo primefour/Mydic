@@ -1,4 +1,5 @@
 #include"HashList.h"
+#include"memory_test_tool.h"
 
 
 unsigned long HashList::default_hash_func(void *data){

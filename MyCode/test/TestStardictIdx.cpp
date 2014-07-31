@@ -1,8 +1,10 @@
 #include "StardictIdx.h"
 #include "StardictInfo.h"
+#include"memory_test_tool.h"
 
 
 int main(){
+    init_global_env();
     StardictInfo *si = new StardictInfo("langdao-ec-gb.ifo");
     si->init();
     si->dump();
@@ -16,5 +18,7 @@ int main(){
     }else{
         printf("can't find the word \n");
     }
+    delete sidx;
+    release_global_env();
     return 0;
 }

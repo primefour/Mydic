@@ -9,10 +9,12 @@
 #include<stdio.h>
 #include<string.h>
 #include"Stardict.h"
+#include"memory_test_tool.h"
 
 
 
 int main(){
+    init_global_env();
     File::add_check_func(GzipFile::check_file_type,GZIP_FILE_TYPE);
     StardictDirectory *sd = new StardictDirectory("./langdao-ec-gb.dict.dz");
     int ret = sd->init();
@@ -27,5 +29,8 @@ int main(){
         return -1;
     }
     dump_meta_head(tmp_head);
+    release_meta_head(tmp_head);
+    delete sd;
+    release_global_env();
     return 0;
 }

@@ -6,6 +6,7 @@
 #include<assert.h>
 #include<sys/types.h>
 #include<fcntl.h>
+#include"memory_test_tool.h"
 
 /*
 uint32_t htonl(uint32_t hostlong);
@@ -74,8 +75,8 @@ int StardictIdx::init(){
             (array + i)->word_data_size = ::ntohl(*((long*)(offset_buff+4)));
         }
 
-        if(i < 10){
-            printf("word = %s offset %d ,length %d  \n",(array + i)->word_str,(array + i)->word_data_offset.bit32,(array + i)->word_data_size);
+        if(i % 100 == 0){
+            printf("i = %d word = %s offset %d ,length %d  \n",i,(array + i)->word_str,(array + i)->word_data_offset.bit32,(array + i)->word_data_size);
         }
         i++;
     }

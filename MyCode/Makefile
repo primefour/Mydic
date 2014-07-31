@@ -2,20 +2,20 @@ GCC=g++
 CFLAGS= -g -I ./lib/include -I ./
 LDFLAGS= -L ./lib/lib/ 
 TEST_PATH= ./test
+MEM_TEST= memory_test_tool.c 
 
 test:TestFile TestGzip TestStardictInfo TestStardictIdx TestStardictDict mem_test
 TestFile:*.cpp $(TEST_PATH)/TestFile.cpp *.h 
-	$(GCC) $(CFLAGS) $(LDFLAGS) *.cpp $(TEST_PATH)/TestFile.cpp -o $(TEST_PATH)/TestFile -lz
+	$(GCC) $(CFLAGS) $(LDFLAGS) *.cpp $(TEST_PATH)/TestFile.cpp $(MEM_TEST) -o $(TEST_PATH)/TestFile -lz
 TestGzip:*.cpp $(TEST_PATH)/TestGzip.cpp *.h 
-	$(GCC) $(CFLAGS) $(LDFLAGS) *.cpp $(TEST_PATH)/TestGzip.cpp -o $(TEST_PATH)/TestGzip -lz
+	$(GCC) $(CFLAGS) $(LDFLAGS) *.cpp $(TEST_PATH)/TestGzip.cpp $(MEM_TEST) -o $(TEST_PATH)/TestGzip -lz
 TestStardictInfo:*.cpp $(TEST_PATH)/TestStardictInfo.cpp *.h 
-	$(GCC) $(CFLAGS) $(LDFLAGS) *.cpp $(TEST_PATH)/TestStardictInfo.cpp -o $(TEST_PATH)/TestStardictInfo -lz
+	$(GCC) $(CFLAGS) $(LDFLAGS) *.cpp $(TEST_PATH)/TestStardictInfo.cpp $(MEM_TEST) -o $(TEST_PATH)/TestStardictInfo -lz
 TestStardictIdx:*.cpp $(TEST_PATH)/TestStardictIdx.cpp *.h 
-	$(GCC) $(CFLAGS) $(LDFLAGS) *.cpp $(TEST_PATH)/TestStardictIdx.cpp -o $(TEST_PATH)/TestStardictIdx -lz
+	$(GCC) $(CFLAGS) $(LDFLAGS) *.cpp $(TEST_PATH)/TestStardictIdx.cpp $(MEM_TEST)-o $(TEST_PATH)/TestStardictIdx -lz
 TestStardictDict:*.cpp $(TEST_PATH)/TestStardictDict.cpp *.h 
-	$(GCC) $(CFLAGS) $(LDFLAGS) *.cpp $(TEST_PATH)/TestStardictDict.cpp -o $(TEST_PATH)/TestStardictDict -lz
-mem_test:$(TEST_PATH)/mem_test.c  memory_test_tool.c
-	$(GCC) $(CFLAGS) $(TEST_PATH)/mem_test.c -o $(TEST_PATH)/mem_test 
-
+	$(GCC) $(CFLAGS) $(LDFLAGS) *.cpp $(TEST_PATH)/TestStardictDict.cpp $(MEM_TEST)-o $(TEST_PATH)/TestStardictDict -lz
+mem_test:*.cpp $(TEST_PATH)/mem_test.c  memory_test_tool.c memory_test_tool.h
+	$(GCC) $(CFLAGS) $(LDFLAGS) *.cpp $(MEM_TEST) $(TEST_PATH)/mem_test.c -o $(TEST_PATH)/mem_test -lz
 
 	
