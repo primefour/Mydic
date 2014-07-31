@@ -352,8 +352,9 @@ int GzipFile::extract(off_t offset,unsigned char *buf, int len){
 
     list_head_t *find_item = find_list_item(&access_point_list,&offset,access_piont_compare);
     if(find_item == NULL){
-        printf("can't find the offset in the list\n");
-        return -1;
+        printf("can't find the offset in the list,try the last one\n");
+        find_item = access_point_list.prev;
+        //return -1;
     }
     find_item = find_item->prev;
     access_point_t *first_item = contain_of(find_item,access_point_t,list);

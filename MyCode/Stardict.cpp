@@ -96,6 +96,7 @@ int StardictDictionary::query_word(const char *word,meta_data_head *word_meta){
     if(tmp && sd != NULL){
         word_meta->original_offset = tmp->word_data_offset.bit32;
         word_meta->data_size = tmp->word_data_size;
+        printf("word_meta->original_offset = %ld word_meta->data_size = %d \n",word_meta->original_offset,word_meta->data_size);
         sd->read_word_data(word_meta);
         return 0;
     }else{

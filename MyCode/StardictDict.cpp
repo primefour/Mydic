@@ -137,8 +137,9 @@ void StardictDict::parse_meta_data_no_seq(meta_data_head_t *word_data){
 }
 
 int StardictDict::read_word_data(meta_data_head_t *word_data){
-    dict_file->lseek(SEEK_CUR,word_data->original_offset);
-    word_data->data = (unsigned char *)malloc(word_data->data_size);
+    dict_file->lseek(SEEK_SET,word_data->original_offset);
+    word_data->data = (unsigned char *)malloc(word_data->data_size +1);
+    memset(word_data->data,0,word_data->data_size+1);
     if(word_data->data == NULL){
         printf("word_data->data_size = %d  \n",word_data->data_size);
         assert(0);
@@ -148,6 +149,7 @@ int StardictDict::read_word_data(meta_data_head_t *word_data){
         printf("%s ret = %d \n",__func__,ret); 
         assert(0);
     }else{
+        printf("###%s \n",word_data->data);
         parse_meta_data(word_data);
     }
     return ret;

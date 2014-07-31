@@ -75,7 +75,7 @@ int StardictIdx::init(){
             (array + i)->word_data_size = ::ntohl(*((long*)(offset_buff+4)));
         }
 
-        if(i % 100 == 0){
+        if(i < 10){
             printf("i = %d word = %s offset %d ,length %d  \n",i,(array + i)->word_str,(array + i)->word_data_offset.bit32,(array + i)->word_data_size);
         }
         i++;
@@ -86,9 +86,7 @@ int StardictIdx::init(){
 
 word_item_t* StardictIdx::get_word(const char *str){
     int i = 0;
-    //printf("str = %s \n",str);
     while(i < word_count){
-        //printf("(array + i)->word_str = %s \n",(array + i)->word_str);
         if(strcmp((array + i)->word_str,str) == 0){
             break;
         }
