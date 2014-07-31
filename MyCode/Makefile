@@ -3,7 +3,7 @@ CFLAGS= -g -I ./lib/include -I ./
 LDFLAGS= -L ./lib/lib/ 
 TEST_PATH= ./test
 
-test:TestFile TestGzip TestStardictInfo TestStardictIdx TestStardictDict
+test:TestFile TestGzip TestStardictInfo TestStardictIdx TestStardictDict mem_test
 TestFile:*.cpp $(TEST_PATH)/TestFile.cpp *.h 
 	$(GCC) $(CFLAGS) $(LDFLAGS) *.cpp $(TEST_PATH)/TestFile.cpp -o $(TEST_PATH)/TestFile -lz
 TestGzip:*.cpp $(TEST_PATH)/TestGzip.cpp *.h 
@@ -14,5 +14,8 @@ TestStardictIdx:*.cpp $(TEST_PATH)/TestStardictIdx.cpp *.h
 	$(GCC) $(CFLAGS) $(LDFLAGS) *.cpp $(TEST_PATH)/TestStardictIdx.cpp -o $(TEST_PATH)/TestStardictIdx -lz
 TestStardictDict:*.cpp $(TEST_PATH)/TestStardictDict.cpp *.h 
 	$(GCC) $(CFLAGS) $(LDFLAGS) *.cpp $(TEST_PATH)/TestStardictDict.cpp -o $(TEST_PATH)/TestStardictDict -lz
+mem_test:$(TEST_PATH)/mem_test.c  memory_test_tool.c
+	$(GCC) $(CFLAGS) $(TEST_PATH)/mem_test.c -o $(TEST_PATH)/mem_test 
+
 
 	
