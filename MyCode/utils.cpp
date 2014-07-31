@@ -64,6 +64,7 @@ char *get_path_no_suffix(const char *file_path,char *file_name,int len){
     return file_name;
 }
 
+
 meta_data_t *get_new_meta_item(){
     meta_data_t *tmp_meta = (meta_data_t *)malloc(sizeof(meta_data_t));
     if(tmp_meta == NULL){
@@ -82,6 +83,11 @@ void dump_meta_item(meta_data_t *meta_item){
     }else{
         printf("###special type data length = %d , type = %d \n",meta_item->data_length,meta_item->type);
     }
+}
+
+void init_meta_item_head(meta_data_head *tmp_meta_head){
+    memset(tmp_meta_head ,0,sizeof(meta_data_head));
+    init_list_head(&(tmp_meta_head->head));
 }
 
 meta_data_head *get_new_meta_head(){
@@ -103,7 +109,6 @@ void head_release_func(void *data){
 void release_meta_head(meta_data_head *phead){
     release_list(&(phead->head),head_release_func);
     free(phead->data);
-    free(phead);
 }
 
 

@@ -40,5 +40,6 @@ void release_meta_head(meta_data_head *phead);
 void dump_meta_head(meta_data_head *phead);
 int split_path_no_suffix(const char *file_path,char *file_main_path,int path_len ,char *file_name,int len);
 char *get_path_no_suffix(const char *file_path,char *file_name,int len);
+void init_meta_item_head(meta_data_head *tmp_meta_head);
 
 #endif

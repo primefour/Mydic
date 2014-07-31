@@ -22,14 +22,19 @@ int main(){
     if(ret < 0){
         return -1 ;
     }
-    meta_data_head *tmp_head = get_new_meta_head();
-    ret = sd->query_word("hello",tmp_head);
-    printf("ret = %d kkkkk\n",ret);
-    if(ret < 0){
-        return -1;
+    char buff[1024]={0};
+    meta_data_head tmp_head = {0}; 
+    while(1){
+        memset(buff,0,sizeof(buff));
+        printf("Please input words:");
+        scanf("%s",buff);
+        printf("%s",buff);
+        init_meta_item_head(&tmp_head);
+        ret = sd->query_word(buff,&tmp_head);
+        printf("ret = %d kkkkk\n",ret);
+        dump_meta_head(&tmp_head);
+        release_meta_head(&tmp_head);
     }
-    dump_meta_head(tmp_head);
-    release_meta_head(tmp_head);
     delete sd;
     release_global_env();
     return 0;
