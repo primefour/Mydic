@@ -9,10 +9,11 @@ char* tools_strdup( const char *str, const char*file_name, int line);
 void  tools_get_leak_mem();
 void  init_global_env();
 void  release_global_env();
-
+/*
 #define malloc(n)       tools_malloc(n,__FILE__,__LINE__)
 #define strdup(p)       tools_strdup(p,__FILE__,__LINE__)
 #define free(p)         tools_free(p,__FILE__,__LINE__)
+*/
 
 
 

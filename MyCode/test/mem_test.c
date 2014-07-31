@@ -1,4 +1,6 @@
 #include"memory_test_tool.h"
+#include<string.h>
+#include<stdlib.h>
 
 int main(){
     init_global_env();

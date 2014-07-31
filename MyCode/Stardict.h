@@ -2,7 +2,7 @@
 #define __STARDICT_H__
 #include"sys/types.h"
 #include"list.h"
-#include"Directory.h"
+#include"Dictionary.h"
 #include "StardictIdx.h"
 #include "StardictInfo.h"
 #include "StardictDict.h"
@@ -12,18 +12,18 @@
 #include<sys/types.h>
 
 
-class StardictDirectory : public Directory {
+class StardictDictionary : public Dictionary{
     public:
-        StardictDirectory(const char *directory_path);
-        ~StardictDirectory();
+        StardictDictionary(const char *dictionary_path);
+        ~StardictDictionary();
         virtual int init();
         virtual int query_word(const char *word,meta_data_head *word_meta);
-        virtual char* get_directory_name(char *buff,int len);
-        virtual char* get_directory_version(char *buff,int len);
-        virtual char* get_directory_author(char *buff,int len);
-        virtual char* get_directory_date(char *buff,int len);
-        virtual char* get_directory_description(char *buff,int len);
-        virtual int get_directory_word_count();
+        virtual char* get_dictionary_name(char *buff,int len);
+        virtual char* get_dictionary_version(char *buff,int len);
+        virtual char* get_dictionary_author(char *buff,int len);
+        virtual char* get_dictionary_date(char *buff,int len);
+        virtual char* get_dictionary_description(char *buff,int len);
+        virtual int get_dictionary_word_count();
     private:
         StardictInfo *si; 
         StardictIdx *sidx;

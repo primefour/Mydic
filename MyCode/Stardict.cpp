@@ -17,21 +17,21 @@
 #include"utils.h"
 #include"memory_test_tool.h"
 
-StardictDirectory::StardictDirectory(const char *directory_path){
-    int len = strlen(directory_path) + 1;
+StardictDictionary::StardictDictionary(const char *dictionary_path){
+    int len = strlen(dictionary_path) + 1;
     file_main_path = (char *)malloc(len);
     memset(file_main_path,0,len);
-    get_path_no_suffix(directory_path,file_main_path,len);
+    get_path_no_suffix(dictionary_path,file_main_path,len);
 }
 
-StardictDirectory::~StardictDirectory(){
+StardictDictionary::~StardictDictionary(){
     free(file_main_path);
     delete si;
     delete sidx;
     delete sd;
 }
 
-int StardictDirectory::init(){
+int StardictDictionary::init(){
     char info_file_name[1024]={0};
     char idx_file_name[1024]={0}; 
     char dict_file_name[1024]={0}; 
@@ -84,7 +84,7 @@ int StardictDirectory::init(){
     return 0;
 }
 
-int StardictDirectory::query_word(const char *word,meta_data_head *word_meta){
+int StardictDictionary::query_word(const char *word,meta_data_head *word_meta){
     word_item_t *tmp = NULL;
     printf("word = %s \n",word);
     if(sidx != NULL){
@@ -104,7 +104,7 @@ int StardictDirectory::query_word(const char *word,meta_data_head *word_meta){
 }
 
 
-char* StardictDirectory::get_directory_name(char *buff,int len){
+char* StardictDictionary::get_dictionary_name(char *buff,int len){
     if(si != NULL && si->get_book_name()){
         strncpy(buff,si->get_book_name(),len);
         return buff;
@@ -112,7 +112,7 @@ char* StardictDirectory::get_directory_name(char *buff,int len){
         return NULL;
     }
 }
-char* StardictDirectory::get_directory_version(char *buff,int len){
+char* StardictDictionary::get_dictionary_version(char *buff,int len){
     if(si != NULL && si->get_version()){
         strncpy(buff,si->get_version(),len);
         return buff;
@@ -120,7 +120,7 @@ char* StardictDirectory::get_directory_version(char *buff,int len){
         return NULL;
     }
 }
-char* StardictDirectory::get_directory_author(char *buff,int len){
+char* StardictDictionary::get_dictionary_author(char *buff,int len){
     if(si != NULL && si->get_author()){
         strncpy(buff,si->get_author(),len);
         return buff;
@@ -128,7 +128,7 @@ char* StardictDirectory::get_directory_author(char *buff,int len){
         return NULL;
     }
 }
-char* StardictDirectory::get_directory_date(char *buff,int len){
+char* StardictDictionary::get_dictionary_date(char *buff,int len){
     if(si != NULL && si->get_date()){
         strncpy(buff,si->get_date(),len);
         return buff;
@@ -137,7 +137,7 @@ char* StardictDirectory::get_directory_date(char *buff,int len){
     }
 }
 
-char* StardictDirectory::get_directory_description(char *buff,int len){
+char* StardictDictionary::get_dictionary_description(char *buff,int len){
     if(si != NULL && si->get_description()){
         strncpy(buff,si->get_description(),len);
         return buff;
@@ -146,7 +146,7 @@ char* StardictDirectory::get_directory_description(char *buff,int len){
     }
 }
 
-int StardictDirectory::get_directory_word_count(){
+int StardictDictionary::get_dictionary_word_count(){
     if(si != NULL){
         return si->get_word_count();
     }else{
