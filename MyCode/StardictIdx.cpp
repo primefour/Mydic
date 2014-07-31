@@ -85,7 +85,9 @@ int StardictIdx::init(){
 
 word_item_t* StardictIdx::get_word(const char *str){
     int i = 0;
+    //printf("str = %s \n",str);
     while(i < word_count){
+        //printf("(array + i)->word_str = %s \n",(array + i)->word_str);
         if(strcmp((array + i)->word_str,str) == 0){
             break;
         }

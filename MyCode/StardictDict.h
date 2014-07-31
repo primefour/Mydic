@@ -3,8 +3,7 @@
 #include"list.h"
 #include"File.h"
 #include"sys/types.h"
-#include"Stardict.h"
-
+#include"utils.h"
 
 class StardictDict{
     public:

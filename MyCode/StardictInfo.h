@@ -40,7 +40,7 @@ class StardictInfo{
             }
         }
         int init();
-        char *get_versoin(){
+        char *get_version(){
             return version;
         }
         char *get_book_name(){

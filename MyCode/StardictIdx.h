@@ -17,7 +17,7 @@ class StardictIdx{
         StardictIdx(const char *file_path,long word_count,long file_size,int offsetbit = 32);
         ~StardictIdx();
         int init();
-        word_item_t *get_word(const  char *str);
+        word_item_t* get_word(const char *str);
     private:
         word_item_t *array;
         File idx_file;

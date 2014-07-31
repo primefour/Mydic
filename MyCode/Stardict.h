@@ -2,40 +2,33 @@
 #define __STARDICT_H__
 #include"sys/types.h"
 #include"list.h"
-typedef enum DICT_META_TYPE_T{
-    DICT_ATTACH_PATH_TYPE, 
-    DICT_SOUND_PATH_TYPE, 
-    DICT_PIC_PATH_TYPE, 
-    DICT_VIDEO_PATH_TYPE,
-    DICT_HTML_TYPE,
-    DICT_WIKI_TYPE,
-    DICT_ATTACH_TYPE,
-    DICT_PIC_TYPE,
-    DICT_SOUND_TYPE,
-    DICT_PHONETIC_TYPE,
-    DICT_STRING_TYPE,
-    DICT_PINYIN_TYPE,
-}DICT_META_TYPE_T;
-
-typedef struct meta_data_head{
-    unsigned char *data;
-    off_t original_offset;
-    int data_size;
-    list_head_t head;
-}meta_data_head_t;
-
-typedef struct meta_data_t{
-    list_head_t list;
-    int type;
-    int data_length;
-    unsigned char *data;
-}meta_data_t;
+#include"Directory.h"
+#include "StardictIdx.h"
+#include "StardictInfo.h"
+#include "StardictDict.h"
+#include"GzipFile.h"
+#include<stdio.h>
+#include<unistd.h>
+#include<sys/types.h>
 
 
-meta_data_t *get_new_meta_item();
-void dump_meta_item(meta_data_t *meta_item);
-meta_data_head *get_new_meta_head();
-void head_release_func(void *data);
-void release_meta_head(meta_data_head *phead);
-void dump_meta_head(meta_data_head *phead);
+class StardictDirectory : public Directory {
+    public:
+        StardictDirectory(const char *directory_path);
+        ~StardictDirectory();
+        virtual int init();
+        virtual int query_word(const char *word,meta_data_head *word_meta);
+        virtual char* get_directory_name(char *buff,int len);
+        virtual char* get_directory_version(char *buff,int len);
+        virtual char* get_directory_author(char *buff,int len);
+        virtual char* get_directory_date(char *buff,int len);
+        virtual char* get_directory_description(char *buff,int len);
+        virtual int get_directory_word_count();
+    private:
+        StardictInfo *si; 
+        StardictIdx *sidx;
+        StardictDict *sd;
+        char *file_main_path;
+};
+
 #endif 
