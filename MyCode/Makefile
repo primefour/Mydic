@@ -4,7 +4,7 @@ LDFLAGS= -L ./lib/lib/
 TEST_PATH= ./test
 MEM_TEST= memory_test_tool.c 
 
-test:TestFile TestGzip TestStardictInfo TestStardictIdx TestStardictDict mem_test
+test:TestFile TestGzip TestStardictInfo TestStardictIdx TestStardictDict mem_test bin_tree_test
 TestFile:*.cpp $(TEST_PATH)/TestFile.cpp *.h 
 	$(GCC) $(CFLAGS) $(LDFLAGS) *.cpp $(TEST_PATH)/TestFile.cpp $(MEM_TEST) -o $(TEST_PATH)/TestFile -lz
 TestGzip:*.cpp $(TEST_PATH)/TestGzip.cpp *.h 
@@ -17,5 +17,7 @@ TestStardictDict:*.cpp $(TEST_PATH)/TestStardictDict.cpp *.h
 	$(GCC) $(CFLAGS) $(LDFLAGS) *.cpp $(TEST_PATH)/TestStardictDict.cpp $(MEM_TEST)-o $(TEST_PATH)/TestStardictDict -lz
 mem_test:*.cpp $(TEST_PATH)/mem_test.c  memory_test_tool.c memory_test_tool.h
 	$(GCC) $(CFLAGS) $(LDFLAGS) *.cpp $(MEM_TEST) $(TEST_PATH)/mem_test.c -o $(TEST_PATH)/mem_test -lz
+bin_tree_test:*.cpp $(TEST_PATH)/bin_tree_test.cpp  memory_test_tool.c memory_test_tool.h
+	$(GCC) $(CFLAGS) $(LDFLAGS) *.cpp $(MEM_TEST) $(TEST_PATH)/bin_tree_test.cpp -o $(TEST_PATH)/bin_tree_test -lz
 
 	

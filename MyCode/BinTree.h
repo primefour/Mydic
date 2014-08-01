@@ -30,6 +30,7 @@ void bin_tree_insert_right(bin_tree_t *tree,tree_node_t *node,void *data);
 int bin_tree_merge(bin_tree_t *merge,bin_tree_t *left,bin_tree_t *right,void *data);
 int bin_tree_size(const bin_tree_t *tree);
 int bin_tree_isleaf(const tree_node_t *node);
+//#define bin_tree_root(tree) (tree->root)
 tree_node_t* bin_tree_root(const  bin_tree_t *tree);
 int bin_tree_ins_left(bin_tree_t *tree,tree_node_t *node,void *data);
 /*
@@ -42,6 +43,7 @@ void bin_tree_preorder_scan(bin_tree_t *tree,tree_node_t *node);
 void bin_tree_midorder_scan(bin_tree_t *tree,tree_node_t *node);
 void bin_tree_postorder_scan(bin_tree_t *tree,tree_node_t *node);
 void bin_tree_layer_scan(bin_tree_t *tree,tree_node_t **node_parent);
+void bin_tree_find_node(bin_tree_t *tree,tree_node_t *node,void *data,tree_node_t **find_item);
 
 #endif 
 

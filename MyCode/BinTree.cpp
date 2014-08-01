@@ -185,6 +185,7 @@ int bin_tree_isleaf(const tree_node_t *node){
     return node->left == NULL && node->right == NULL;
 }
 
+
 tree_node_t* bin_tree_root(const  bin_tree_t *tree){
     return tree->root;
 }
@@ -224,30 +225,33 @@ void bin_tree_postorder_scan(bin_tree_t *tree,tree_node_t *node){
 void bin_tree_layer_scan(bin_tree_t *tree,tree_node_t **node_parent){
     int i = 0;
     int j = 0;
-    tree_node_t *parent[1024]={0};
-    while(*(node_parent +i)){
-        if((*(node_parent +i))->left){
-            parent[j++] = (*(node_parent +i))->left;
+    tree_node_t *parent[100]={0};
+    while(node_parent[i] != NULL){
+        if(node_parent[i]->left){
+            parent[j++] = node_parent[i]->left;
         }
-        if((*(node_parent +i))->right){
-            parent[j++] = (*(node_parent +i))->right;
+        if(node_parent[i]->right){
+            parent[j++] = node_parent[i]->right;
         }
         if(tree->fpn_dump_data){
-            tree->fpn_dump_data((*(node_parent +i))->data);
+            tree->fpn_dump_data(node_parent[i]->data);
         }
         i++;
     }
-    printf("\n");
+    if(node_parent[0] == NULL){
+        return ;
+    }
     bin_tree_layer_scan(tree,parent);
 }
 
 void bin_tree_find_node(bin_tree_t *tree,tree_node_t *node,void *data,tree_node_t **find_item){
-    if(tree == NULL || data == NULL || find_item != NULL){
+    if(tree == NULL || data == NULL || find_item == NULL){
         return ;
     }
     if(node != NULL){
         if(tree->fpn_compare){
             if(tree->fpn_compare(node->data,data) == 0){
+                printf("####%ld %s \n",(long)(node->data),__func__);
                 *find_item = node ;
             }else{
                 bin_tree_find_node(tree,node->left,data,find_item);
