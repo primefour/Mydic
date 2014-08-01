@@ -1,20 +1,23 @@
 #include"BinTree.h"
 #include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<assert.h>
 
-void bin_tree_init(bin_tree_t *tree,compare_func compare,destroy_func destory){
+void bin_tree_init(bin_tree_t *tree,compare_func compare,destroy_func destory,dump_data_func dump_data){
     if(tree == NULL){
         return ;
     }
+    memset(tree,0,sizeof(bin_tree_t));
     tree->fpn_compare = compare;
     tree->fpn_destory = destory;
-    tree->size = 0;
-    tree->root = NULL;
+    tree->fpn_dump_data = dump_data;
 }
 
 
 
 void bin_tree_destroy(bin_tree_t *tree){
-    bin_tree_remove(tree,NULL);
+    bin_tree_remove_left(tree,NULL);
 }
 
 /*
@@ -23,9 +26,9 @@ void bin_tree_destroy(bin_tree_t *tree){
 void bin_tree_remove_left(bin_tree_t *tree,tree_node_t *node){
     tree_node_t **remove_item = NULL;
     if(node == NULL){
-        *remove_item = &(tree->root);
+        remove_item = &(tree->root);
     }else{
-        *remove_item = &(node->left);
+        remove_item = &(node->left);
     }
 
     if(*remove_item != NULL){
@@ -46,9 +49,9 @@ void bin_tree_remove_left(bin_tree_t *tree,tree_node_t *node){
 void bin_tree_remove_right(bin_tree_t *tree,tree_node_t *node){
     tree_node_t **remove_item = NULL;
     if(node == NULL){
-        *remove_item = &(tree->root);
+        remove_item = &(tree->root);
     }else{
-        *remove_item = &(node->right);
+        remove_item = &(node->right);
     }
 
     if(*remove_item != NULL){
@@ -67,7 +70,7 @@ void bin_tree_remove_right(bin_tree_t *tree,tree_node_t *node){
  * merge the both tree as a new tree's left and rigth branch,data as root
  * node's value
  */
-int bin_tree_merge(bin_tree_t *merge,bin_tree_t *left,bin_tree_t *right,const void *data){
+int bin_tree_merge(bin_tree_t *merge,bin_tree_t *left,bin_tree_t *right,void *data){
     if(bin_tree_ins_left(merge,NULL,data) < 0){
         bin_tree_destroy(merge);
         return -1;
@@ -84,12 +87,12 @@ int bin_tree_merge(bin_tree_t *merge,bin_tree_t *left,bin_tree_t *right,const vo
  * create a new node with the value of data and insert to the node's left
  * if node's left is not NULL will return -1
  */
-int bin_tree_ins_left(bin_tree_t *tree,tree_node_t *node,const void *data){
-    bin_tree_t **insert_position = NULL;
+int bin_tree_ins_left(bin_tree_t *tree,tree_node_t *node,void *data){
+    tree_node_t **insert_position = NULL;
     if(node == NULL){
-        *insert_position = &(tree->root);
+        insert_position = &(tree->root);
     }else{
-        *insert_position = &(node->left);
+        insert_position = &(node->left);
     }
     if(*insert_position == NULL){
         tree_node_t *new_node = (tree_node_t *)malloc(sizeof(tree_node_t));
@@ -107,12 +110,12 @@ int bin_tree_ins_left(bin_tree_t *tree,tree_node_t *node,const void *data){
  * create a new node with the value of data and insert to the node's right 
  * if node's right is not NULL will return -1
  */
-int bin_tree_ins_right(bin_tree_t *tree,tree_node_t *node,const void *data){
-    bin_tree_t **insert_position = NULL;
+int bin_tree_ins_right(bin_tree_t *tree,tree_node_t *node,void *data){
+    tree_node_t **insert_position = NULL;
     if(node == NULL){
-        *insert_position = &(tree->root);
+        insert_position = &(tree->root);
     }else{
-        *insert_position = &(node->right);
+        insert_position = &(node->right);
     }
     if(*insert_position == NULL){
         tree_node_t *new_node = (tree_node_t *)malloc(sizeof(tree_node_t));
@@ -131,12 +134,12 @@ int bin_tree_ins_right(bin_tree_t *tree,tree_node_t *node,const void *data){
  * create a new node with value of data and insert to the 
  * left branch of the node 
  */
-void bin_tree_insert_left(bin_tree_t *tree,tree_node_t *node,const void *data){
-    bin_tree_t **insert_position = NULL;
+void bin_tree_insert_left(bin_tree_t *tree,tree_node_t *node,void *data){
+    tree_node_t **insert_position = NULL;
     if(node == NULL){
-        *insert_position = &(tree->root);
+        insert_position = &(tree->root);
     }else{
-        *insert_position = &(node->left);
+        insert_position = &(node->left);
     }
     if(*insert_position == NULL){
         tree_node_t *new_node = (tree_node_t *)malloc(sizeof(tree_node_t));
@@ -149,12 +152,12 @@ void bin_tree_insert_left(bin_tree_t *tree,tree_node_t *node,const void *data){
     }
 }
 
-void bin_tree_insert_right(bin_tree_t *tree,tree_node_t *node,const void *data){
-    bin_tree_t **insert_position = NULL;
+void bin_tree_insert_right(bin_tree_t *tree,tree_node_t *node,void *data){
+    tree_node_t **insert_position = NULL;
     if(node == NULL){
-        *insert_position = &(tree->root);
+        insert_position = &(tree->root);
     }else{
-        *insert_position = &(node->right);
+        insert_position = &(node->right);
     }
     if(*insert_position == NULL){
         tree_node_t *new_node = (tree_node_t *)malloc(sizeof(tree_node_t));
@@ -184,6 +187,74 @@ int bin_tree_isleaf(const tree_node_t *node){
 
 tree_node_t* bin_tree_root(const  bin_tree_t *tree){
     return tree->root;
+}
+
+
+void bin_tree_preorder_scan(bin_tree_t *tree,tree_node_t *node){
+    if(node != NULL){
+        if(tree->fpn_dump_data){
+            tree->fpn_dump_data(node->data);
+        }
+        bin_tree_preorder_scan(tree,node->left);
+        bin_tree_preorder_scan(tree,node->right);
+    }
+}
+
+
+void bin_tree_midorder_scan(bin_tree_t *tree,tree_node_t *node){
+    if(node != NULL){
+        bin_tree_midorder_scan(tree,node->left);
+        if(tree->fpn_dump_data){
+            tree->fpn_dump_data(node->data);
+        }
+        bin_tree_midorder_scan(tree,node->right);
+    }
+}
+
+void bin_tree_postorder_scan(bin_tree_t *tree,tree_node_t *node){
+    if(node != NULL){
+        bin_tree_postorder_scan(tree,node->left);
+        bin_tree_postorder_scan(tree,node->right);
+        if(tree->fpn_dump_data){
+            tree->fpn_dump_data(node->data);
+        }
+    }
+}
+
+void bin_tree_layer_scan(bin_tree_t *tree,tree_node_t **node_parent){
+    int i = 0;
+    int j = 0;
+    tree_node_t *parent[1024]={0};
+    while(*(node_parent +i)){
+        if((*(node_parent +i))->left){
+            parent[j++] = (*(node_parent +i))->left;
+        }
+        if((*(node_parent +i))->right){
+            parent[j++] = (*(node_parent +i))->right;
+        }
+        if(tree->fpn_dump_data){
+            tree->fpn_dump_data((*(node_parent +i))->data);
+        }
+        i++;
+    }
+    printf("\n");
+    bin_tree_layer_scan(tree,parent);
+}
+
+void bin_tree_find_node(bin_tree_t *tree,tree_node_t *node,void *data,tree_node_t **find_item){
+    if(tree == NULL || data == NULL || find_item != NULL){
+        return ;
+    }
+    if(node != NULL){
+        if(tree->fpn_compare){
+            if(tree->fpn_compare(node->data,data) == 0){
+                *find_item = node ;
+            }else{
+                bin_tree_find_node(tree,node->left,data,find_item);
+                bin_tree_find_node(tree,node->right,data,find_item);
+            }
+        }
+    }
 }
 
 
