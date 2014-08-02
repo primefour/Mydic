@@ -1,16 +1,24 @@
 #include"BinTree.h"
 #include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
 
 
 int compare_test(const void *data1,const void *data2){
     long value1 = (long)data1;
     long value2 = (long)data2;
-    return (value1 == value2)?0:1;
+    if(value1 == value2){
+        return 0;
+    }else if(value1 > value2){
+        return 1;
+    }else{
+        return -1;
+    }
 }
 
 void dump_test_data(void *data){
     long tmp = (long)data;
-    printf(" ##%ld### ",tmp);
+    printf(" ##%ld## ",tmp);
 }
 /*                                   1
  *                        3                      2
@@ -93,6 +101,35 @@ int main(){
     tree_node_t *parent[2]={0};
     parent[0] = bin_tree_root(&test_tree);
     bin_tree_layer_scan(&test_tree,parent);
+    /*
+     *                                    10
+     *                                 0      15
+     *                              -1      13    17
+     *                            -3      11  12     18 
+     */
+
+    bin_tree_t simple_test_tree;
+    bin_tree_init(&simple_test_tree,compare_test,NULL,dump_test_data);
+    bin_tree_simple_search_insert(&simple_test_tree,NULL,(void *)10);
+    bin_tree_simple_search_insert(&simple_test_tree,NULL,(void *)10);
+    bin_tree_simple_search_insert(&simple_test_tree,NULL,(void *)0);
+    bin_tree_simple_search_insert(&simple_test_tree,NULL,(void *)-1);
+    bin_tree_simple_search_insert(&simple_test_tree,NULL,(void *)-3);
+    bin_tree_simple_search_insert(&simple_test_tree,NULL,(void *)15);
+    bin_tree_simple_search_insert(&simple_test_tree,NULL,(void *)13);
+
+    memset(parent,0,sizeof(parent));
+    parent[0] = bin_tree_root(&simple_test_tree);
+    bin_tree_layer_scan(&simple_test_tree,parent);
+    printf("tree size = %d \n",bin_tree_size(&simple_test_tree));
+    find_item = NULL;
+    bin_tree_simple_search_fine(&simple_test_tree,NULL,(void*)-1,&find_item);
+    if(find_item != NULL){
+        printf(" **%ld** \n",(long)(find_item->data));
+    }
+
+
+
     return 0;
 
 }

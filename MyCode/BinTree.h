@@ -8,6 +8,7 @@ typedef void (*dump_data_func)(void *data);
 typedef struct tree_node_t{
     struct tree_node_t *left;
     struct tree_node_t *right;
+    int weight;
     void *data;
 }tree_node_t;
 
@@ -44,6 +45,9 @@ void bin_tree_midorder_scan(bin_tree_t *tree,tree_node_t *node);
 void bin_tree_postorder_scan(bin_tree_t *tree,tree_node_t *node);
 void bin_tree_layer_scan(bin_tree_t *tree,tree_node_t **node_parent);
 void bin_tree_find_node(bin_tree_t *tree,tree_node_t *node,void *data,tree_node_t **find_item);
+
+void bin_tree_simple_search_insert(bin_tree_t *tree,tree_node_t *node,void *data);
+void bin_tree_simple_search_fine(bin_tree_t *tree,tree_node_t *node,void *data,tree_node_t **find_item);
 
 #endif 
 

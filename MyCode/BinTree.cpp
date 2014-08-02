@@ -241,17 +241,18 @@ void bin_tree_layer_scan(bin_tree_t *tree,tree_node_t **node_parent){
     if(node_parent[0] == NULL){
         return ;
     }
+    printf("\n");
     bin_tree_layer_scan(tree,parent);
 }
 
 void bin_tree_find_node(bin_tree_t *tree,tree_node_t *node,void *data,tree_node_t **find_item){
-    if(tree == NULL || data == NULL || find_item == NULL){
+    if(tree == NULL ||  find_item == NULL){
         return ;
     }
     if(node != NULL){
         if(tree->fpn_compare){
             if(tree->fpn_compare(node->data,data) == 0){
-                printf("####%ld %s \n",(long)(node->data),__func__);
+                //printf("####%ld %s \n",(long)(node->data),__func__);
                 *find_item = node ;
             }else{
                 bin_tree_find_node(tree,node->left,data,find_item);
@@ -260,5 +261,199 @@ void bin_tree_find_node(bin_tree_t *tree,tree_node_t *node,void *data,tree_node_
         }
     }
 }
+
+
+
+void bin_tree_simple_search_insert(bin_tree_t *tree,tree_node_t *node,void *data){
+    tree_node_t **compare_item = NULL;
+    if(tree->fpn_compare== NULL){
+        printf("please assign a compare function to the tree\n");
+        return ;
+    }
+    if(node != NULL){
+        compare_item = &node;
+    }else{
+        compare_item = &(tree->root);
+    }
+    if(*compare_item){
+        int ret = tree->fpn_compare((*compare_item)->data,data);
+        if(ret > 0){
+            if((*compare_item)->left != NULL){
+                bin_tree_simple_search_insert(tree,(*compare_item)->left,data);
+            }else{
+                printf("%ld insert to %ld left \n",(long)data,(long)(*compare_item)->data); 
+                bin_tree_ins_left(tree,*compare_item,data);
+            }
+        }else if(ret < 0){
+            if((*compare_item)->right != NULL){
+                bin_tree_simple_search_insert(tree,(*compare_item)->right ,data);
+            }else{
+                printf("%ld insert to %ld right \n",(long)data,(long)(*compare_item)->data); 
+                bin_tree_ins_right(tree,*compare_item,data);
+            }
+        }else{
+            printf("the item have been in the tree %ld \n",(long)data);
+        }
+    }else{
+        if(bin_tree_size(tree)){
+            printf("tree is not empty and insert the data as a root \n");
+            assert(0);
+            return ;
+        }
+        printf("tree is empty and insert the data as a root \n");
+        bin_tree_ins_left(tree,NULL,data);
+    }
+}
+
+
+void bin_tree_simple_search_fine(bin_tree_t *tree,tree_node_t *node,void *data,tree_node_t **find_item){
+    tree_node_t **compare_item = NULL;
+    if(tree->fpn_compare== NULL){
+        printf("please assign a compare function to the tree\n");
+        return ;
+    }
+    if(node != NULL){
+        compare_item = &node;
+    }else{
+        compare_item = &(tree->root);
+    }
+    if(*compare_item){
+        int ret = tree->fpn_compare((*compare_item)->data,data);
+        if(ret > 0){
+            if((*compare_item)->left != NULL){
+                bin_tree_simple_search_fine(tree,(*compare_item)->left,data,find_item);
+            }else{
+                printf("can't find the item %ld \n",(long)data);
+                return;
+            }
+        }else if(ret < 0){
+            if((*compare_item)->right != NULL){
+                bin_tree_simple_search_fine(tree,(*compare_item)->right,data,find_item);
+            }else{
+                printf("can't find the item %ld \n",(long)data);
+                return;
+            }
+        }else{
+            *find_item = *(compare_item);
+            return ;
+        }
+    }
+
+}
+
+
+/*
+ *                                    10
+ *                                 0      15
+ *                              -1      13    17
+ *                            -3      11  12     18 
+ */
+void bin_tree_simple_search_remove(bin_tree_t *tree,tree_node_t *parent_node,tree_node_t *node,void *data){
+    tree_node_t *compare_item = NULL;
+    if(tree->fpn_compare== NULL){
+        printf("please assign a compare function to the tree\n");
+        return ;
+    }
+    if(node != NULL && parent_node != NULL){
+        compare_item = node;
+    }else{
+        compare_item = (tree->root);
+    }
+    if(compare_item){
+        int ret = tree->fpn_compare((compare_item)->data,data);
+        if(ret > 0){
+            if((compare_item)->left != NULL){
+                bin_tree_simple_search_remove(tree,compare_item,(compare_item)->left,data);
+            }else{
+                printf("can't find the item %ld \n",(long)data);
+                return;
+            }
+        }else if(ret < 0){
+            if((compare_item)->right != NULL){
+                bin_tree_simple_search_remove(tree,compare_item,(compare_item)->right,data);
+            }else{
+                printf("can't find the item %ld \n",(long)data);
+                return;
+            }
+        }else{
+            //find the item and remove the item from the tree
+            if((compare_item)->left == NULL && (compare_item)->right == NULL){
+                //no child just remove
+                if(parent_node != NULL){
+                    if(parent_node->left == compare_item){
+                        parent_node->left = NULL;
+                    }else if (parent_node->right == compare_item){
+                        parent_node->right = NULL;
+                    }
+                }else{
+                    //get a empty tree
+                    printf("become an empty tree \n");
+                    tree->root= NULL;
+                }
+
+            }else if ((compare_item)->left != NULL && (compare_item)->right != NULL){
+                //has two child we should find a item to replace the removed item
+                //we select the smallest of right branch as the root of left and right branch
+                tree_node_t *right_branch = (compare_item)->right;
+                tree_node_t *right_branch_parent = right_branch ; 
+                while(right_branch->left != NULL){
+                    right_branch_parent = right_branch;
+                    right_branch = right_branch->left;
+                }
+                if(right_branch_parent == right_branch){
+                    right_branch->left = (compare_item)->left;
+                }else{
+                    right_branch_parent->left = right_branch->right;
+                    right_branch->left = (compare_item)->left;
+                    right_branch->right = (compare_item)->right;
+                }
+                if(parent_node != NULL){
+                    if(parent_node->left == compare_item){
+                        parent_node->left = right_branch;
+                    }else if (parent_node->right == compare_item){
+                        parent_node->right = right_branch;
+                    }
+                }else{
+                    tree->root= right_branch;
+                }
+
+            }else{
+                if((compare_item)->left != NULL){
+                    if(parent_node != NULL){
+                        //no right child just remove
+                        if(parent_node->left == compare_item){
+                            parent_node->left = (compare_item)->left;
+                        }else if (parent_node->right == compare_item){
+                            parent_node->right = (compare_item)->left;
+                        }
+                    }else{
+                        tree->root= (compare_item)->left;
+                    }
+                }else{
+                    //no left child just remove
+                    if(parent_node != NULL){
+                        if(parent_node->left == compare_item){
+                            parent_node->left = (compare_item)->right;
+                        }else if (parent_node->right == compare_item){
+                            parent_node->right = (compare_item)->right;
+                        }
+                    }else{
+                        tree->root= (compare_item)->right;
+                    }
+                }
+            }
+
+            if(tree->fpn_destory != NULL){
+                tree->fpn_destory((compare_item)->data);
+            }
+            free(compare_item);
+            tree->size --;
+            return ;
+        }
+    }
+}
+
+
+
 
 
