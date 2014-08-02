@@ -4,6 +4,7 @@
 #include<pthread.h>
 #include"list.h"
 #include<assert.h>
+#include"BinTree.h"
 
 /* functions of memory */
 #define TOOLS_TEST_SPACE (sizeof(unsigned int))
@@ -12,6 +13,9 @@
 #define PATH_LENGTH_LIMIT (4096)
 
 
+//#define LIST_MEM_TEST
+
+#ifdef LIST_MEM_TEST
 typedef struct mem_item_info {
     list_head_t item;
     void *addr;
@@ -124,7 +128,6 @@ void *tools_malloc(int size,const char *file_name,int line){
         printf("xxxx get a allocation memory size is zero");
         return NULL;
     }
-    //printf("######################################%s###################3\n",__func__);
     int mem_size = size + TOOLS_TEST_SPACE *2;
 
     mem_item_info_t *mem_item_ptr = get_mem_list_item();
@@ -298,20 +301,182 @@ char* tools_strdup( const char *str, const char*file_name, int line){
     }
     return cpy_str;
 }
+#else
+typedef struct mem_item_info {
+    void *addr;
+    long ref;
+    char file[PATH_LENGTH_LIMIT];
+    long line;
+    long size;
+}mem_item_info_t;
+
+bin_tree_t mem_root = {0};
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
+static mem_item_info_t* get_new_mem_item_info(){
+    mem_item_info_t* tmp = (mem_item_info_t*)malloc(sizeof(mem_item_info_t));
+    assert(tmp != NULL);
+    memset(tmp,0,sizeof(mem_item_info_t));
+    return tmp;
+}
+
+static int mem_compare(const void *data1,const void *data2){
+    mem_item_info_t *tmp1 =(mem_item_info_t *)data1;
+    mem_item_info_t *tmp2 =(mem_item_info_t *)data2;
+    if(tmp1->addr > tmp2->addr){
+        return 1;
+    }else if(tmp1->addr > tmp2->addr){
+        return -1;
+    }else{
+        return 0;
+    }
+    
+}
+
+static void mem_destroy(void *data){
+    mem_item_info_t *tmp =(mem_item_info_t *)data;
+    free(tmp->addr);
+    free(tmp);
+}
+
+static void dump_item_error_info(mem_item_info_t *ptr,const char *str){
+    printf("%s error file %s line %ld ref = %ld \n",str,ptr->file,ptr->line,ptr->ref);
+}
+
+static void mem_dump_data(void *data){
+    mem_item_info_t *tmp =(mem_item_info_t *)data;
+    dump_item_error_info(tmp,"memory leak");
+    printf("addr = %p ,ref = %ld ,file = %s ,line = %ld ",tmp->addr,tmp->ref,tmp->file,tmp->line);
+    printf("\n");
+}
+
+static mem_item_info_t* mem_find_item(void *data){
+    tree_node_t *find_item = NULL;
+    bin_tree_simple_search_fine(&mem_root,NULL,data,&find_item);
+    if(find_item == NULL){
+        return NULL;
+    }else{
+        return (mem_item_info_t*)((find_item)->data);
+    }
+}
+
+static void mem_remove_item(void *data){
+    bin_tree_simple_search_remove(&mem_root,NULL,NULL,data);
+}
+
+static void mem_insert_item(void *data){
+    printf("######################%d %s ################\n",__LINE__,__func__);
+    bin_tree_simple_search_insert(&mem_root,NULL,data);
+}
+
+static int mem_check_free_point(mem_item_info_t *mem_ptr){
+    unsigned char *tmp_head = (unsigned char *)(mem_ptr->addr);
+    //check head overwrite
+    int i = 0;
+    int ret = 0;
+    while(i < TOOLS_TEST_SPACE){
+        if(*tmp_head != TOOLS_INIT_PATTERN ){
+            ret = -1;
+        }
+        tmp_head ++;
+        i++;
+    }
+    //check tail overwrite
+    unsigned char *tmp_tail = (unsigned char *)((unsigned char *)(mem_ptr->addr) + mem_ptr->size +TOOLS_TEST_SPACE);
+    i = 0;
+    while(i < TOOLS_TEST_SPACE){
+        if(*tmp_tail != TOOLS_INIT_PATTERN ){
+            ret = -1;
+        }
+        tmp_tail ++;
+        i++;
+    }
+    return ret;
+}
 
 
 
 
+void init_global_env(){
+    bin_tree_init(&mem_root,mem_compare,mem_destroy,mem_dump_data);
+}
 
+void* tools_malloc(int size,const char *file_name,int line){
+    if(size == 0){
+        printf("xxxx get a allocation memory size is zero");
+        return NULL;
+    }
 
+    int mem_size = size + TOOLS_TEST_SPACE *2;
 
+    mem_item_info_t *mem_item_ptr = get_new_mem_item_info();
+    strncpy(mem_item_ptr->file,file_name,PATH_LENGTH_LIMIT);
+    mem_item_ptr->line = line;
+    mem_item_ptr->size = size;
+    mem_item_ptr->addr = malloc(mem_size);
+    mem_item_ptr->ref ++;
+    memset(mem_item_ptr->addr,TOOLS_INIT_PATTERN,mem_size);
 
+    pthread_mutex_lock(&mutex);
+    mem_item_info_t *mem_item = mem_find_item((void *)mem_item_ptr);
+    if(mem_item != NULL){
+        printf("error get item %s \n",__func__);
+        dump_item_error_info(mem_item,"error item");
+        mem_remove_item(mem_item_ptr);
+    }
+    mem_insert_item(mem_item_ptr);
+    pthread_mutex_unlock(&mutex);
+    return  (void *)((unsigned char *)(mem_item_ptr->addr) + TOOLS_TEST_SPACE);
+}
 
+void  tools_free(void *ptr,const char *file,int line ){
+    mem_item_info_t tmp_mem_item = {0};
+    tmp_mem_item.addr = ((unsigned char *)ptr - TOOLS_TEST_SPACE);
 
+    pthread_mutex_lock(&mutex);
+    mem_item_info_t *mem_item = mem_find_item(&tmp_mem_item);
+    if(mem_item == NULL){
+        printf("error free a false address %s  %p \n",__func__,tmp_mem_item.addr);
+    }else{
+        if(mem_item->ref <= 0){
+            printf("error get item %s \n",__func__);
+            dump_item_error_info(mem_item,"error item");
+            mem_remove_item((void *)mem_item);
+        }else{
+            mem_item->ref--; 
+            if(mem_item->ref == 0){
+                if(mem_check_free_point(mem_item) < 0){
+                    dump_item_error_info(mem_item,"overwrite");
+                }
+                mem_remove_item((void *)mem_item);
+            }
+        }
+    }
+    pthread_mutex_unlock(&mutex);
 
+}
 
+char* tools_strdup( const char *str, const char*file_name, int line){
+    if(str == NULL){
+        printf("tools_strdup get a null point\n");
+    }
+    int length = strlen(str);
+    if(length > 1024 *8){
+        printf("Atention get a very long string \n");
+    }
+    length += CHAR_TYPE;
+    char *cpy_str = NULL;
+    cpy_str = (char *)tools_malloc(length,file_name,line);
+    memset(cpy_str,0,length);
+    if(cpy_str != NULL){
+        strncpy(cpy_str,str,strlen(str));
+    }
+    return cpy_str;
+}
 
-
-
-
+void release_global_env(){
+    bin_tree_midorder_scan(&mem_root,bin_tree_root(&mem_root));
+    bin_tree_destroy(&mem_root);
+}
+#endif
 

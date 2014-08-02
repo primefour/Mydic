@@ -24,6 +24,7 @@ char *StardictInfo::get_string_value(char *str_line){
     value ++;
     return strdup(value);
 }
+
 int StardictInfo::get_integer_value(char *str_line){
     char *value = NULL;
     value = strchr(str_line,'=');

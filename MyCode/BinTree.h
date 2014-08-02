@@ -1,7 +1,7 @@
 #ifndef __BIT_TREE_H__ 
 #define __BIT_TREE_H__
 
-typedef int (*compare_func)(const void *data1,const void *data2);
+typedef int (*bin_compare_func)(const void *data1,const void *data2);
 typedef void (*destroy_func)(void *data);
 typedef void (*dump_data_func)(void *data);
 
@@ -14,14 +14,14 @@ typedef struct tree_node_t{
 
 typedef struct bin_tree_t{
     int size ;
-    compare_func fpn_compare;
+    bin_compare_func fpn_compare;
     destroy_func fpn_destory;
     dump_data_func fpn_dump_data;
     tree_node_t *root;
 }bin_tree_t;
 
 
-void bin_tree_init(bin_tree_t *tree,compare_func compare,destroy_func destory,dump_data_func dump_data);
+void bin_tree_init(bin_tree_t *tree,bin_compare_func compare,destroy_func destory,dump_data_func dump_data);
 void bin_tree_destroy(bin_tree_t *tree);
 void bin_tree_remove_left(bin_tree_t *tree,tree_node_t *node);
 void bin_tree_remove_right(bin_tree_t *tree,tree_node_t *node);

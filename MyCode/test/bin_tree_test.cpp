@@ -2,6 +2,7 @@
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
+#include"memory_test_tool.h"
 
 
 int compare_test(const void *data1,const void *data2){
@@ -28,10 +29,12 @@ void dump_test_data(void *data){
 
 
 int main(){
+    init_global_env();
     bin_tree_t test_tree;
     bin_tree_init(&test_tree,compare_test,NULL,dump_test_data);
     int ret = bin_tree_ins_left(&test_tree,NULL,(void *)1);
     printf("line %d ret = %d \n",__LINE__,ret);
+    
     ret = bin_tree_ins_left(&test_tree,bin_tree_root((&test_tree)),(void *)3);
     printf("line %d ret = %d \n",__LINE__,ret);
     ret = bin_tree_ins_right(&test_tree,bin_tree_root((&test_tree)),(void *)2);
@@ -101,6 +104,7 @@ int main(){
     tree_node_t *parent[2]={0};
     parent[0] = bin_tree_root(&test_tree);
     bin_tree_layer_scan(&test_tree,parent);
+    
     /*
      *                                    10
      *                                 0      15
@@ -108,6 +112,7 @@ int main(){
      *                            -3      11  14     18 
      *                                      12          19
      */
+
 
     bin_tree_t simple_test_tree;
     bin_tree_init(&simple_test_tree,compare_test,NULL,dump_test_data);
@@ -143,5 +148,9 @@ int main(){
     parent[0] = bin_tree_root(&simple_test_tree);
     bin_tree_layer_scan(&simple_test_tree,parent);
     printf("tree size = %d \n",bin_tree_size(&simple_test_tree));
+    
+    bin_tree_destroy(&test_tree);
+    bin_tree_destroy(&simple_test_tree);
+    release_global_env();
     return 0;
 }

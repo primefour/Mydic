@@ -4,6 +4,7 @@
 #include<stdio.h>
 #include<string.h>
 #include"File.h"
+#include"memory_test_tool.h"
 
 class StardictInfo{
     public:
