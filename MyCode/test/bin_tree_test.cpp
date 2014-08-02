@@ -105,7 +105,8 @@ int main(){
      *                                    10
      *                                 0      15
      *                              -1      13    17
-     *                            -3      11  12     18 
+     *                            -3      11  14     18 
+     *                                      12          19
      */
 
     bin_tree_t simple_test_tree;
@@ -117,6 +118,12 @@ int main(){
     bin_tree_simple_search_insert(&simple_test_tree,NULL,(void *)-3);
     bin_tree_simple_search_insert(&simple_test_tree,NULL,(void *)15);
     bin_tree_simple_search_insert(&simple_test_tree,NULL,(void *)13);
+    bin_tree_simple_search_insert(&simple_test_tree,NULL,(void *)11);
+    bin_tree_simple_search_insert(&simple_test_tree,NULL,(void *)12);
+    bin_tree_simple_search_insert(&simple_test_tree,NULL,(void *)14);
+    bin_tree_simple_search_insert(&simple_test_tree,NULL,(void *)17);
+    bin_tree_simple_search_insert(&simple_test_tree,NULL,(void *)18);
+    bin_tree_simple_search_insert(&simple_test_tree,NULL,(void *)19);
 
     memset(parent,0,sizeof(parent));
     parent[0] = bin_tree_root(&simple_test_tree);
@@ -127,9 +134,14 @@ int main(){
     if(find_item != NULL){
         printf(" **%ld** \n",(long)(find_item->data));
     }
+    bin_tree_simple_search_remove(&simple_test_tree,NULL,NULL,(void*)15);
+    //bin_tree_simple_search_fine(&simple_test_tree,NULL,(void*)19,&find_item);
+    if(find_item != NULL){
+        printf(" **%ld** \n",(long)(find_item->data));
+    }
 
-
-
+    parent[0] = bin_tree_root(&simple_test_tree);
+    bin_tree_layer_scan(&simple_test_tree,parent);
+    printf("tree size = %d \n",bin_tree_size(&simple_test_tree));
     return 0;
-
 }

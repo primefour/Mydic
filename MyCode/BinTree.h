@@ -48,6 +48,7 @@ void bin_tree_find_node(bin_tree_t *tree,tree_node_t *node,void *data,tree_node_
 
 void bin_tree_simple_search_insert(bin_tree_t *tree,tree_node_t *node,void *data);
 void bin_tree_simple_search_fine(bin_tree_t *tree,tree_node_t *node,void *data,tree_node_t **find_item);
+void bin_tree_simple_search_remove(bin_tree_t *tree,tree_node_t *parent_node,tree_node_t *node,void *data);
 
 #endif 
 
