@@ -323,11 +323,14 @@ static mem_item_info_t* get_new_mem_item_info(){
 static int mem_compare(const void *data1,const void *data2){
     mem_item_info_t *tmp1 =(mem_item_info_t *)data1;
     mem_item_info_t *tmp2 =(mem_item_info_t *)data2;
+    //printf(" %s tmp1->addr = %p tmp2->addr =%p \n",__func__,tmp1->addr,tmp2->addr); 
+    //printf("##########%d \n",(tmp1->addr > tmp2->addr));
     if(tmp1->addr > tmp2->addr){
         return 1;
-    }else if(tmp1->addr > tmp2->addr){
+    }else if(tmp1->addr < tmp2->addr){
         return -1;
     }else{
+        //printf("######%s %d ############\n",__func__,__LINE__);
         return 0;
     }
     
@@ -414,12 +417,14 @@ void* tools_malloc(int size,const char *file_name,int line){
     mem_item_ptr->line = line;
     mem_item_ptr->size = size;
     mem_item_ptr->addr = malloc(mem_size);
+    printf("%s  mem_item_ptr->addr = %p \n",__func__,mem_item_ptr->addr); 
     mem_item_ptr->ref ++;
     memset(mem_item_ptr->addr,TOOLS_INIT_PATTERN,mem_size);
 
     pthread_mutex_lock(&mutex);
     mem_item_info_t *mem_item = mem_find_item((void *)mem_item_ptr);
     if(mem_item != NULL){
+        printf("%s finde addr = %p \n",__func__,mem_item->addr);
         printf("error get item %s \n",__func__);
         dump_item_error_info(mem_item,"error item");
         mem_remove_item(mem_item_ptr);
@@ -434,6 +439,7 @@ void  tools_free(void *ptr,const char *file,int line ){
     tmp_mem_item.addr = ((unsigned char *)ptr - TOOLS_TEST_SPACE);
 
     pthread_mutex_lock(&mutex);
+    printf("%s  tmp_mem_item->addr = %p \n",__func__,tmp_mem_item.addr); 
     mem_item_info_t *mem_item = mem_find_item(&tmp_mem_item);
     if(mem_item == NULL){
         printf("error free a false address %s  %p \n",__func__,tmp_mem_item.addr);
@@ -467,10 +473,9 @@ char* tools_strdup( const char *str, const char*file_name, int line){
     length += CHAR_TYPE;
     char *cpy_str = NULL;
     cpy_str = (char *)tools_malloc(length,file_name,line);
+    assert(cpy_str != NULL);
     memset(cpy_str,0,length);
-    if(cpy_str != NULL){
-        strncpy(cpy_str,str,strlen(str));
-    }
+    strncpy(cpy_str,str,strlen(str));
     return cpy_str;
 }
 

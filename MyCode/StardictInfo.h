@@ -16,6 +16,7 @@ class StardictInfo{
             website = NULL;
             description = NULL;
             date = NULL;
+            same_types_sequence = NULL;
         }
         ~StardictInfo(){
             if(version){
@@ -38,6 +39,9 @@ class StardictInfo{
             }
             if(date){
                 free(date);
+            }
+            if(same_types_sequence != NULL){
+                free(same_types_sequence);
             }
         }
         int init();

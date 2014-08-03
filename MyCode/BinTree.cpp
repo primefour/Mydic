@@ -38,6 +38,7 @@ void bin_tree_remove_left(bin_tree_t *tree,tree_node_t *node){
         if(tree->fpn_destory != NULL){
             tree->fpn_destory((*remove_item)->data);
         }
+        printf("free %s   %d \n",__func__,__LINE__);
         free(*remove_item);
         *remove_item = NULL;
         tree->size --;
@@ -61,6 +62,7 @@ void bin_tree_remove_right(bin_tree_t *tree,tree_node_t *node){
         if(tree->fpn_destory != NULL){
             tree->fpn_destory((*remove_item)->data);
         }
+        printf("free %s   %d \n",__func__,__LINE__);
         free(*remove_item);
         *remove_item = NULL;
         tree->size --;
@@ -89,6 +91,7 @@ int bin_tree_merge(bin_tree_t *merge,bin_tree_t *left,bin_tree_t *right,void *da
  * if node's left is not NULL will return -1
  */
 int bin_tree_ins_left(bin_tree_t *tree,tree_node_t *node,void *data){
+    //printf("%s   %d \n",__func__,__LINE__);
     tree_node_t **insert_position = NULL;
     if(node == NULL){
         insert_position = &(tree->root);
@@ -96,6 +99,7 @@ int bin_tree_ins_left(bin_tree_t *tree,tree_node_t *node,void *data){
         insert_position = &(node->left);
     }
     if(*insert_position == NULL){
+        printf("############malloc #############\n");
         tree_node_t *new_node = (tree_node_t *)malloc(sizeof(tree_node_t));
         memset(new_node,0,sizeof(tree_node_t));
         assert(new_node != NULL);
@@ -113,6 +117,7 @@ int bin_tree_ins_left(bin_tree_t *tree,tree_node_t *node,void *data){
  * if node's right is not NULL will return -1
  */
 int bin_tree_ins_right(bin_tree_t *tree,tree_node_t *node,void *data){
+    //printf("%s   %d \n",__func__,__LINE__);
     tree_node_t **insert_position = NULL;
     if(node == NULL){
         insert_position = &(tree->root);
@@ -120,6 +125,7 @@ int bin_tree_ins_right(bin_tree_t *tree,tree_node_t *node,void *data){
         insert_position = &(node->right);
     }
     if(*insert_position == NULL){
+        printf("%s   %d \n",__func__,__LINE__);
         tree_node_t *new_node = (tree_node_t *)malloc(sizeof(tree_node_t));
         memset(new_node,0,sizeof(tree_node_t));
         assert(new_node != NULL);
@@ -138,6 +144,7 @@ int bin_tree_ins_right(bin_tree_t *tree,tree_node_t *node,void *data){
  * left branch of the node 
  */
 void bin_tree_insert_left(bin_tree_t *tree,tree_node_t *node,void *data){
+    //printf("%s   %d \n",__func__,__LINE__);
     tree_node_t **insert_position = NULL;
     if(node == NULL){
         insert_position = &(tree->root);
@@ -145,6 +152,7 @@ void bin_tree_insert_left(bin_tree_t *tree,tree_node_t *node,void *data){
         insert_position = &(node->left);
     }
     if(*insert_position == NULL){
+        printf("%s   %d \n",__func__,__LINE__);
         tree_node_t *new_node = (tree_node_t *)malloc(sizeof(tree_node_t));
         memset(new_node,0,sizeof(tree_node_t));
         assert(new_node != NULL);
@@ -157,6 +165,7 @@ void bin_tree_insert_left(bin_tree_t *tree,tree_node_t *node,void *data){
 }
 
 void bin_tree_insert_right(bin_tree_t *tree,tree_node_t *node,void *data){
+    //printf("%s   %d \n",__func__,__LINE__);
     tree_node_t **insert_position = NULL;
     if(node == NULL){
         insert_position = &(tree->root);
@@ -164,6 +173,7 @@ void bin_tree_insert_right(bin_tree_t *tree,tree_node_t *node,void *data){
         insert_position = &(node->right);
     }
     if(*insert_position == NULL){
+        printf("%s   %d \n",__func__,__LINE__);
         tree_node_t *new_node = (tree_node_t *)malloc(sizeof(tree_node_t));
         memset(new_node,0,sizeof(tree_node_t));
         assert(new_node != NULL);
@@ -270,7 +280,7 @@ void bin_tree_find_node(bin_tree_t *tree,tree_node_t *node,void *data,tree_node_
 
 
 void bin_tree_simple_search_insert(bin_tree_t *tree,tree_node_t *node,void *data){
-    printf("######################%d %s ################\n",__LINE__,__func__);
+    //printf("######################%d %s ################\n",__LINE__,__func__);
     tree_node_t **compare_item = NULL;
     if(tree->fpn_compare== NULL){
         printf("please assign a compare function to the tree\n");
@@ -285,7 +295,7 @@ void bin_tree_simple_search_insert(bin_tree_t *tree,tree_node_t *node,void *data
         int ret = tree->fpn_compare((*compare_item)->data,data);
         if(ret > 0){
             if((*compare_item)->left != NULL){
-                printf("######################%d %s ################\n",__LINE__,__func__);
+                //printf("######################%d %s ################\n",__LINE__,__func__);
                 bin_tree_simple_search_insert(tree,(*compare_item)->left,data);
             }else{
                 printf("%ld insert to %ld left \n",(long)data,(long)(*compare_item)->data); 
@@ -293,7 +303,7 @@ void bin_tree_simple_search_insert(bin_tree_t *tree,tree_node_t *node,void *data
             }
         }else if(ret < 0){
             if((*compare_item)->right != NULL){
-                printf("######################%d %s ################\n",__LINE__,__func__);
+                //printf("######################%d %s ################\n",__LINE__,__func__);
                 bin_tree_simple_search_insert(tree,(*compare_item)->right ,data);
             }else{
                 printf("%ld insert to %ld right \n",(long)data,(long)(*compare_item)->data); 
@@ -328,6 +338,7 @@ void bin_tree_simple_search_fine(bin_tree_t *tree,tree_node_t *node,void *data,t
     if(*compare_item){
         int ret = tree->fpn_compare((*compare_item)->data,data);
         if(ret > 0){
+            //printf("##############%s ####################left %p #\n",__func__,(*compare_item)->left);
             if((*compare_item)->left != NULL){
                 bin_tree_simple_search_fine(tree,(*compare_item)->left,data,find_item);
             }else{
@@ -335,6 +346,7 @@ void bin_tree_simple_search_fine(bin_tree_t *tree,tree_node_t *node,void *data,t
                 return;
             }
         }else if(ret < 0){
+            //printf("##############%s ####################right %p #\n",__func__,(*compare_item)->right);
             if((*compare_item)->right != NULL){
                 bin_tree_simple_search_fine(tree,(*compare_item)->right,data,find_item);
             }else{
@@ -342,14 +354,13 @@ void bin_tree_simple_search_fine(bin_tree_t *tree,tree_node_t *node,void *data,t
                 return;
             }
         }else{
+            //printf("##############%s ####################%p #\n",__func__,(*(compare_item)));
             *find_item = *(compare_item);
             return ;
         }
     }
 
 }
-
-
 /*
  *                                    10
  *                                 0      15
@@ -454,10 +465,17 @@ void bin_tree_simple_search_remove(bin_tree_t *tree,tree_node_t *parent_node,tre
             if(tree->fpn_destory != NULL){
                 tree->fpn_destory((compare_item)->data);
             }
+
+    printf("free %s   %d \n",__func__,__LINE__);
             free(compare_item);
             tree->size --;
             return ;
         }
     }
 }
+
+
+
+
+
 
