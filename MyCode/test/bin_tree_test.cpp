@@ -3,6 +3,7 @@
 #include<string.h>
 #include<stdlib.h>
 #include"memory_test_tool.h"
+#include"AvlTree.h"
 
 
 int compare_test(const void *data1,const void *data2){
@@ -29,6 +30,7 @@ void dump_test_data(void *data){
 
 
 int main(){
+    /*
     init_global_env();
     bin_tree_t test_tree;
     bin_tree_init(&test_tree,compare_test,NULL,dump_test_data);
@@ -104,6 +106,7 @@ int main(){
     tree_node_t *parent[2]={0};
     parent[0] = bin_tree_root(&test_tree);
     bin_tree_layer_scan(&test_tree,parent);
+    */
     
     /*
      *                                    10
@@ -113,7 +116,7 @@ int main(){
      *                                      12          19
      */
 
-
+/*
     bin_tree_t simple_test_tree;
     bin_tree_init(&simple_test_tree,compare_test,NULL,dump_test_data);
     bin_tree_simple_search_insert(&simple_test_tree,NULL,(void *)10);
@@ -148,9 +151,35 @@ int main(){
     parent[0] = bin_tree_root(&simple_test_tree);
     bin_tree_layer_scan(&simple_test_tree,parent);
     printf("tree size = %d \n",bin_tree_size(&simple_test_tree));
-    
+*/
+    bin_tree_t avl_test_tree;
+    int balance = 1;
+    avl_tree_init(&avl_test_tree,compare_test,NULL,dump_test_data);
+    printf("%s   %d \n",__func__,__LINE__);
+    //avl_tree_insert(bin_tree_t *tree,tree_node_t **node,const void *data,int *balance);
+    avl_tree_insert(&avl_test_tree,NULL,(void *)10,&balance);
+    printf("%s   %d \n",__func__,__LINE__);
+    avl_tree_insert(&avl_test_tree,NULL,(void *)10,&balance);
+    printf("%s   %d \n",__func__,__LINE__);
+    avl_tree_insert(&avl_test_tree,NULL,(void *)0,&balance);
+    avl_tree_insert(&avl_test_tree,NULL,(void *)-1,&balance);
+    avl_tree_insert(&avl_test_tree,NULL,(void *)-3,&balance);
+    avl_tree_insert(&avl_test_tree,NULL,(void *)15,&balance);
+    avl_tree_insert(&avl_test_tree,NULL,(void *)13,&balance);
+    avl_tree_insert(&avl_test_tree,NULL,(void *)11,&balance);
+    avl_tree_insert(&avl_test_tree,NULL,(void *)12,&balance);
+    avl_tree_insert(&avl_test_tree,NULL,(void *)14,&balance);
+    avl_tree_insert(&avl_test_tree,NULL,(void *)17,&balance);
+    avl_tree_insert(&avl_test_tree,NULL,(void *)18,&balance);
+    avl_tree_insert(&avl_test_tree,NULL,(void *)19,&balance);
+    printf("%s   %d \n",__func__,__LINE__);
+    tree_node_t *parent[2]={0};
+    parent[0] = bin_tree_root(&avl_test_tree);
+    avl_tree_layer_scan(&avl_test_tree,parent);
+   /* 
     bin_tree_destroy(&test_tree);
     bin_tree_destroy(&simple_test_tree);
     release_global_env();
+    */
     return 0;
 }
