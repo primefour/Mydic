@@ -28,6 +28,9 @@ StardictDict::~StardictDict(){
     if(same_seqence != NULL){
         free(same_seqence);
     }
+    if(file_path != NULL){
+        free(file_path);
+    }
 
     if(dict_file != NULL){
         delete dict_file;

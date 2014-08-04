@@ -29,12 +29,16 @@ int main(){
         printf("Please input words:");
         scanf("%s",buff);
         printf("%s",buff);
+        if(strcmp(buff,"quitOK") == 0){
+            break;
+        }
         init_meta_item_head(&tmp_head);
         ret = sd->query_word(buff,&tmp_head);
         printf("ret = %d kkkkk\n",ret);
         dump_meta_head(&tmp_head);
         release_meta_head(&tmp_head);
     }
+    File::release_check_func();
     delete sd;
     release_global_env();
     return 0;

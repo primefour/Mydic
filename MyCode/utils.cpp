@@ -108,7 +108,9 @@ void head_release_func(void *data){
 
 void release_meta_head(meta_data_head *phead){
     release_list(&(phead->head),head_release_func);
-    free(phead->data);
+    if(phead->data != NULL){
+        free(phead->data);
+    }
 }
 
 

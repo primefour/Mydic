@@ -556,7 +556,7 @@ void  tools_free(void *ptr,const char *file,int line ){
     //printf("%s  tmp_mem_item->addr = %p \n",__func__,tmp_mem_item.addr); 
     mem_item_info_t *mem_item = avl_mem_find_item(&tmp_mem_item);
     if(mem_item == NULL){
-        printf("error free a false address %s  %p \n",__func__,tmp_mem_item.addr);
+        printf("error free a false address %s  %p  %s %d \n",__func__,tmp_mem_item.addr,file,line);
     }else{
         if(mem_item->ref <= 0){
             printf("error get item %s \n",__func__);
