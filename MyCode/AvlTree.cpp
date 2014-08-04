@@ -3,6 +3,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include"BinTree.h"
+#include"memory_test_tool.h"
 #define avl_weight_data(node)  ((avl_node_t*)((node)->data))
 
 static void rotate_left(tree_node_t **node){
@@ -79,6 +80,7 @@ static void rotate_right(tree_node_t **node){
 }
 
 static void destroy_right(bin_tree_t *tree,tree_node_t *node);
+
 static void destroy_left(bin_tree_t *tree,tree_node_t *node){
     tree_node_t **position;
     if(node == NULL){
@@ -135,116 +137,144 @@ void avl_tree_insert(bin_tree_t *tree,tree_node_t **node,void *data,int *balance
     int cmp_val = 0;
     int ret_val = 0;
     if(node == NULL){
-        //hendle empty tree
-        avl_data = (avl_node_t *)malloc(sizeof(avl_node_t));
-        memset(avl_data,0,sizeof(avl_node_t));
-        avl_data->weight = WEIGHT_BALANCE;
-        avl_data->data = (void *)data;
-        bin_tree_ins_left(tree,NULL,avl_data);
-    }else{
-        printf("###################%s    %d ################cmp %ld  %ld\n",__func__,__LINE__,(long)(avl_weight_data(*node)->data),(long)data);
-        cmp_val = tree->fpn_compare(avl_weight_data(*node)->data,data);
-        printf("###################%s    %d ################cmp ret = %d\n",__func__,__LINE__,cmp_val);
-        if(cmp_val > 0){
-            if((*node)->left == NULL){
-                avl_data = (avl_node_t *)malloc(sizeof(avl_node_t));
-                memset(avl_data,0,sizeof(avl_node_t));
-                avl_data->weight = WEIGHT_BALANCE;
-                avl_data->data = (void *)data;
-                bin_tree_ins_left(tree,*node,avl_data);
-                *balance = 0;
-            }else{
-                avl_tree_insert(tree,&(*node)->left,data,balance);
-            }
-            if(*balance == 0){
-                switch(avl_weight_data((*node))->weight){
-                    case WEIGHT_LEFT_HEAVY:
+        if(tree->root == NULL){
+            //hendle empty tree
+            avl_data = (avl_node_t *)malloc(sizeof(avl_node_t));
+            memset(avl_data,0,sizeof(avl_node_t));
+            avl_data->weight = WEIGHT_BALANCE;
+            avl_data->data = (void *)data;
+            printf("%ld insert to as root  \n",(long)data);
+            bin_tree_ins_left(tree,NULL,avl_data);
+            return ;
+        }else{
+            printf("####%ld  will be inserted \n",(long)data);
+            node = &(tree->root);
+        }
+    }
+
+    cmp_val = tree->fpn_compare(avl_weight_data(*node)->data,data);
+    printf("%s    %d  --> %ld  %ld\n",__func__,__LINE__,(long)(avl_weight_data(*node)->data),(long)data);
+    if(cmp_val > 0){
+        if((*node)->left == NULL){
+            avl_data = (avl_node_t *)malloc(sizeof(avl_node_t));
+            memset(avl_data,0,sizeof(avl_node_t));
+            avl_data->weight = WEIGHT_BALANCE;
+            avl_data->data = (void *)data;
+            printf("%ld insert to %ld left \n",(long)data,(long)(avl_weight_data(*node)->data));
+            bin_tree_ins_left(tree,*node,avl_data);
+            *balance = 0;
+        }else{
+            avl_tree_insert(tree,&(*node)->left,data,balance);
+        }
+        if(*balance == 0){
+            switch(avl_weight_data((*node))->weight){
+                case WEIGHT_LEFT_HEAVY:
                     rotate_left(node);
                     *balance = 1;
                     break;
-                    case WEIGHT_BALANCE:
+                case WEIGHT_BALANCE:
                     avl_weight_data((*node))->weight = WEIGHT_LEFT_HEAVY;
                     break;
-                    case WEIGHT_RIGHT_HEAVY:
+                case WEIGHT_RIGHT_HEAVY:
                     avl_weight_data((*node))->weight = WEIGHT_BALANCE;
                     *balance = 1;
                     break;
-                }
             }
-        }else if(cmp_val < 0){
-
-        printf("###################%s    %d ################\n",__func__,__LINE__);
-            if((*node)->right == NULL){
-                avl_data = (avl_node_t *)malloc(sizeof(avl_node_t));
-                memset(avl_data,0,sizeof(avl_node_t));
-                avl_data->weight = WEIGHT_BALANCE;
-                avl_data->data = (void *)data;
-                bin_tree_ins_right(tree,*node,avl_data);
-                *balance = 0;
-            }else{
-                avl_tree_insert(tree,&(*node)->left,data,balance);
-            }
-            if(*balance == 0){
-                switch(avl_weight_data((*node))->weight){
-                    case WEIGHT_LEFT_HEAVY:
+        }
+    }else if(cmp_val < 0){
+        if((*node)->right == NULL){
+            avl_data = (avl_node_t *)malloc(sizeof(avl_node_t));
+            memset(avl_data,0,sizeof(avl_node_t));
+            avl_data->weight = WEIGHT_BALANCE;
+            avl_data->data = (void *)data;
+            printf("%ld insert to %ld right \n",(long)data,(long)(avl_weight_data(*node)->data));
+            bin_tree_ins_right(tree,*node,avl_data);
+            *balance = 0;
+        }else{
+            avl_tree_insert(tree,&(*node)->right,data,balance);
+        }
+        if(*balance == 0){
+            switch(avl_weight_data((*node))->weight){
+                case WEIGHT_LEFT_HEAVY:
                     avl_weight_data((*node))->weight = WEIGHT_BALANCE;
                     *balance = 1;
                     break;
-                    case WEIGHT_BALANCE:
+                case WEIGHT_BALANCE:
                     avl_weight_data((*node))->weight = WEIGHT_RIGHT_HEAVY;
                     break;
-                    case WEIGHT_RIGHT_HEAVY:
+                case WEIGHT_RIGHT_HEAVY:
                     rotate_right(node);
                     *balance = 1;
                     break;
-                }
             }
-
-        }else{
-            if(!avl_weight_data((*node))->hide){
-                printf("############exist############\n");
-                return ;
-            }else{
-                if(tree->fpn_destory != NULL){
-                    tree->fpn_destory(avl_weight_data((*node))->data);
-                }
-                avl_weight_data((*node))->data = data;
-                avl_weight_data((*node))->hide = 0;
-            }
-            *balance =1;
         }
+
+    }else{
+        if(!avl_weight_data((*node))->hide){
+            printf("############exist############\n");
+            return ;
+        }else{
+            if(tree->fpn_destory != NULL){
+                tree->fpn_destory(avl_weight_data((*node))->data);
+            }
+            avl_weight_data((*node))->data = data;
+            avl_weight_data((*node))->hide = 0;
+        }
+        *balance =1;
     }
 }
 
 void avl_tree_remove(bin_tree_t *tree,tree_node_t *node,void *data){
     int cmp_val = 0;
     if(node == NULL){
-        printf("%s not find \n",__func__);
-        return ;
+        node = tree->root;
     }
     cmp_val = tree->fpn_compare(avl_weight_data(node)->data,data);
     if(cmp_val < 0){
-        avl_tree_remove(tree,node->right,data);
+        if(node->right != NULL){
+            avl_tree_remove(tree,node->right,data);
+        }else{
+            printf("%s can't find the item \n",__func__);
+        }
     }else if(cmp_val > 0){
-        avl_tree_remove(tree,node->left,data);
+        if(node->left != NULL){
+            avl_tree_remove(tree,node->left,data);
+        }else{
+            printf("%s can't find the item \n",__func__);
+        }
     }else{
-        avl_weight_data(node)->hide =1;
+        if(!avl_weight_data(node)->hide){
+            avl_weight_data(node)->hide =1;
+        }else{
+            printf("%s this has already been hide \n",__func__);
+        }
     }
 }
 
-void avl_tree_find(bin_tree_t *tree,tree_node_t *node,void **data){
+void avl_tree_find(bin_tree_t *tree,tree_node_t *node,void *data,void **find_item){
     int cmp_val = 0;
     if(node == NULL){
-        printf("%s not find \n",__func__);
-        return ;
+        node = tree->root;
     }
     cmp_val = tree->fpn_compare(avl_weight_data(node)->data,data);
     if(cmp_val < 0){
-        avl_tree_find(tree,node->right,data);
+        if(node->right != NULL){
+            avl_tree_find(tree,node->right,data,find_item);
+        }else{
+            printf("%s not find the item \n",__func__);
+        }
     }else if(cmp_val > 0){
-        avl_tree_find(tree,node->left,data);
+        if(node->left != NULL){
+            avl_tree_find(tree,node->left,data,find_item);
+        }else{
+            printf("%s not find the item \n",__func__);
+        }
     }else{
-        *data = avl_weight_data(node)->data;
+        if(!avl_weight_data(node)->hide){
+            *find_item = avl_weight_data(node)->data;
+        }else{
+            printf("%s this is hided item \n",__func__);
+        }
     }
 }
 
@@ -265,8 +295,10 @@ void avl_tree_layer_scan(bin_tree_t *tree,tree_node_t **node_parent){
             parent[j++] = node_parent[i]->right;
         }
         if(tree->fpn_dump_data){
-            void *data = node_parent[i]->data;
-            tree->fpn_dump_data(((avl_node_t *)data)->data);
+            avl_node_t *data = (avl_node_t *)(node_parent[i]->data);
+            if(! data->hide){
+                tree->fpn_dump_data(data->data);
+            }
         }
         i++;
     }
@@ -274,6 +306,6 @@ void avl_tree_layer_scan(bin_tree_t *tree,tree_node_t **node_parent){
         return ;
     }
     printf("\n");
-    bin_tree_layer_scan(tree,parent);
+    avl_tree_layer_scan(tree,parent);
 }
 

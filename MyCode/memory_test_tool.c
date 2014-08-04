@@ -13,7 +13,7 @@
 #define PATH_LENGTH_LIMIT (4096)
 
 
-//#define LIST_MEM_TEST
+#define LIST_MEM_TEST
 
 #ifdef LIST_MEM_TEST
 typedef struct mem_item_info {
@@ -301,7 +301,13 @@ char* tools_strdup( const char *str, const char*file_name, int line){
     }
     return cpy_str;
 }
-#else
+#endif 
+
+
+
+
+
+#ifdef SIMPLE_SEARCH_TREE_MEM_TEST
 typedef struct mem_item_info {
     void *addr;
     long ref;
@@ -485,3 +491,115 @@ void release_global_env(){
 }
 #endif
 
+
+
+
+
+#ifdef AVL_TREE_MEM_TEST
+
+bin_tree_t mem_root = {0};
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
+static mem_item_info_t* avl_mem_find_item(void *data){
+    mem_item_info_t *find_item = NULL;
+    avl_tree_find(&mem_root,NULL,(void *)data,(void **)(&find_item));
+    return find_item;
+}
+
+static void avl_mem_remove_item(void *data){
+    avl_tree_remove(&mem_root,NULL,data);
+}
+
+static void avl_mem_insert_item(void *data){
+    printf("######################%d %s ################\n",__LINE__,__func__);
+    int balance =1 ;
+    avl_tree_insert(&mem_root,NULL,data,&balance);
+}
+
+void init_global_env(){
+    avl_tree_init(&mem_root,mem_compare,mem_destroy,mem_dump_data);
+}
+
+void* tools_malloc(int size,const char *file_name,int line){
+    if(size == 0){
+        printf("xxxx get a allocation memory size is zero");
+        return NULL;
+    }
+
+    int mem_size = size + TOOLS_TEST_SPACE *2;
+
+    mem_item_info_t *mem_item_ptr = get_new_mem_item_info();
+    strncpy(mem_item_ptr->file,file_name,PATH_LENGTH_LIMIT);
+    mem_item_ptr->line = line;
+    mem_item_ptr->size = size;
+    mem_item_ptr->addr = malloc(mem_size);
+    printf("%s  mem_item_ptr->addr = %p \n",__func__,mem_item_ptr->addr); 
+    mem_item_ptr->ref ++;
+    memset(mem_item_ptr->addr,TOOLS_INIT_PATTERN,mem_size);
+
+    pthread_mutex_lock(&mutex);
+    mem_item_info_t *mem_item = avl_mem_find_item((void *)mem_item_ptr);
+    if(mem_item != NULL){
+        printf("%s finde addr = %p \n",__func__,mem_item->addr);
+        printf("error get item %s \n",__func__);
+        dump_item_error_info(mem_item,"error item");
+        avl_mem_remove_item(mem_item_ptr);
+    }
+    avl_mem_insert_item(mem_item_ptr);
+    pthread_mutex_unlock(&mutex);
+    return  (void *)((unsigned char *)(mem_item_ptr->addr) + TOOLS_TEST_SPACE);
+}
+
+void  tools_free(void *ptr,const char *file,int line ){
+    mem_item_info_t tmp_mem_item = {0};
+    tmp_mem_item.addr = ((unsigned char *)ptr - TOOLS_TEST_SPACE);
+
+    pthread_mutex_lock(&mutex);
+    printf("%s  tmp_mem_item->addr = %p \n",__func__,tmp_mem_item.addr); 
+    mem_item_info_t *mem_item = avl_mem_find_item(&tmp_mem_item);
+    if(mem_item == NULL){
+        printf("error free a false address %s  %p \n",__func__,tmp_mem_item.addr);
+    }else{
+        if(mem_item->ref <= 0){
+            printf("error get item %s \n",__func__);
+            dump_item_error_info(mem_item,"error item");
+            avl_mem_remove_item((void *)mem_item);
+        }else{
+            mem_item->ref--; 
+            if(mem_item->ref == 0){
+                if(mem_check_free_point(mem_item) < 0){
+                    dump_item_error_info(mem_item,"overwrite");
+                }
+                avl_mem_remove_item((void *)mem_item);
+            }
+        }
+    }
+    pthread_mutex_unlock(&mutex);
+
+}
+
+char* tools_strdup( const char *str, const char*file_name, int line){
+    if(str == NULL){
+        printf("tools_strdup get a null point\n");
+    }
+    int length = strlen(str);
+    if(length > 1024 *8){
+        printf("Atention get a very long string \n");
+    }
+    length += CHAR_TYPE;
+    char *cpy_str = NULL;
+    cpy_str = (char *)tools_malloc(length,file_name,line);
+    assert(cpy_str != NULL);
+    memset(cpy_str,0,length);
+    strncpy(cpy_str,str,strlen(str));
+    return cpy_str;
+}
+
+void release_global_env(){
+    avl_tree_destroy(&mem_root);
+    //avl_tree_layer_scan(tree,parent);
+    //bin_tree_midorder_scan(&mem_root,bin_tree_root(&mem_root));
+    //bin_tree_destroy(&mem_root);
+}
+
+#endif 

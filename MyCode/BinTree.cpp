@@ -3,7 +3,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<assert.h>
-//#include"memory_test_tool.h"
+#include"memory_test_tool.h"
 
 void bin_tree_init(bin_tree_t *tree,bin_compare_func compare,destroy_func destory,dump_data_func dump_data){
     if(tree == NULL){
@@ -38,7 +38,7 @@ void bin_tree_remove_left(bin_tree_t *tree,tree_node_t *node){
         if(tree->fpn_destory != NULL){
             tree->fpn_destory((*remove_item)->data);
         }
-        printf("free %s   %d \n",__func__,__LINE__);
+        //printf("free %s   %d \n",__func__,__LINE__);
         free(*remove_item);
         *remove_item = NULL;
         tree->size --;
@@ -62,7 +62,7 @@ void bin_tree_remove_right(bin_tree_t *tree,tree_node_t *node){
         if(tree->fpn_destory != NULL){
             tree->fpn_destory((*remove_item)->data);
         }
-        printf("free %s   %d \n",__func__,__LINE__);
+        //printf("free %s   %d \n",__func__,__LINE__);
         free(*remove_item);
         *remove_item = NULL;
         tree->size --;
@@ -99,7 +99,7 @@ int bin_tree_ins_left(bin_tree_t *tree,tree_node_t *node,void *data){
         insert_position = &(node->left);
     }
     if(*insert_position == NULL){
-        printf("############malloc #############\n");
+        //printf("############malloc #############\n");
         tree_node_t *new_node = (tree_node_t *)malloc(sizeof(tree_node_t));
         memset(new_node,0,sizeof(tree_node_t));
         assert(new_node != NULL);
@@ -125,7 +125,7 @@ int bin_tree_ins_right(bin_tree_t *tree,tree_node_t *node,void *data){
         insert_position = &(node->right);
     }
     if(*insert_position == NULL){
-        printf("%s   %d \n",__func__,__LINE__);
+        //printf("%s   %d \n",__func__,__LINE__);
         tree_node_t *new_node = (tree_node_t *)malloc(sizeof(tree_node_t));
         memset(new_node,0,sizeof(tree_node_t));
         assert(new_node != NULL);
@@ -152,7 +152,7 @@ void bin_tree_insert_left(bin_tree_t *tree,tree_node_t *node,void *data){
         insert_position = &(node->left);
     }
     if(*insert_position == NULL){
-        printf("%s   %d \n",__func__,__LINE__);
+        ///printf("%s   %d \n",__func__,__LINE__);
         tree_node_t *new_node = (tree_node_t *)malloc(sizeof(tree_node_t));
         memset(new_node,0,sizeof(tree_node_t));
         assert(new_node != NULL);
@@ -173,7 +173,7 @@ void bin_tree_insert_right(bin_tree_t *tree,tree_node_t *node,void *data){
         insert_position = &(node->right);
     }
     if(*insert_position == NULL){
-        printf("%s   %d \n",__func__,__LINE__);
+        //printf("%s   %d \n",__func__,__LINE__);
         tree_node_t *new_node = (tree_node_t *)malloc(sizeof(tree_node_t));
         memset(new_node,0,sizeof(tree_node_t));
         assert(new_node != NULL);
@@ -466,7 +466,7 @@ void bin_tree_simple_search_remove(bin_tree_t *tree,tree_node_t *parent_node,tre
                 tree->fpn_destory((compare_item)->data);
             }
 
-    printf("free %s   %d \n",__func__,__LINE__);
+            //printf("free %s   %d \n",__func__,__LINE__);
             free(compare_item);
             tree->size --;
             return ;

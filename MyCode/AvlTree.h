@@ -18,7 +18,7 @@ typedef struct avl_node_t {
 
 
 void avl_tree_remove(bin_tree_t *tree,tree_node_t *node,void *data);
-void avl_tree_find(bin_tree_t *tree,tree_node_t *node,void **data);
+void avl_tree_find(bin_tree_t *tree,tree_node_t *node,void *data,void **find_item);
 void avl_tree_destroy(bin_tree_t *tree);
 void avl_tree_insert(bin_tree_t *tree,tree_node_t **node,void *data,int *balance);
 void avl_tree_init(bin_tree_t *tree,bin_compare_func compare,destroy_func destroy,dump_data_func dump_data);
