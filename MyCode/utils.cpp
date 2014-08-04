@@ -65,6 +65,23 @@ char *get_path_no_suffix(const char *file_path,char *file_name,int len){
 }
 
 
+char *get_path_suffix(const char *file_path,char *suffix,int len){
+    const char *pdash = strrchr(file_path,'/');
+    if(pdash == NULL){
+        pdash = file_path;
+    }
+    const char *pdot = strchr(pdash,'.');
+    if(pdot != NULL){
+        strncpy(suffix,pdot,len);
+    }else{
+        return NULL;
+    }
+    printf("suffix = %s \n",suffix);
+    return suffix;
+
+}
+
+
 meta_data_t *get_new_meta_item(){
     meta_data_t *tmp_meta = (meta_data_t *)malloc(sizeof(meta_data_t));
     if(tmp_meta == NULL){
