@@ -23,5 +23,6 @@ void avl_tree_destroy(bin_tree_t *tree);
 void avl_tree_insert(bin_tree_t *tree,tree_node_t **node,void *data,int *balance);
 void avl_tree_init(bin_tree_t *tree,bin_compare_func compare,destroy_func destroy,dump_data_func dump_data);
 void avl_tree_layer_scan(bin_tree_t *tree,tree_node_t **node_parent);
+void avl_tree_preorder_scan(bin_tree_t *tree);
 
 #endif //__AVL_TREE_H__

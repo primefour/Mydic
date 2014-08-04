@@ -29,10 +29,10 @@ StardictIdx::~StardictIdx(){
     word_item_t *temp = array;
     while(i < word_count){
         free(temp->word_str);
-        free(temp);
         i++;
         temp = array + i;
     }
+    free(array);
 }
 
 int StardictIdx::init(){

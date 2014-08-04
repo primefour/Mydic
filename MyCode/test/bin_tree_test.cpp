@@ -188,8 +188,12 @@ int main(){
         printf("xxxxxxxxxxxcan't find the item \n");
     }
 
+    avl_tree_preorder_scan(&avl_test_tree);
+    printf("\n");
     parent[0] = bin_tree_root(&avl_test_tree);
     avl_tree_layer_scan(&avl_test_tree,parent);
+
+
     avl_tree_destroy(&avl_test_tree);
     
     

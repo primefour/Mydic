@@ -5,6 +5,7 @@
 #include"list.h"
 #include<assert.h>
 #include"BinTree.h"
+#include"AvlTree.h"
 
 /* functions of memory */
 #define TOOLS_TEST_SPACE (sizeof(unsigned int))
@@ -13,9 +14,10 @@
 #define PATH_LENGTH_LIMIT (4096)
 
 
-#define LIST_MEM_TEST
+//#define LIST_MEM_TEST
+//#define SIMPLE_SEARCH_TREE_MEM_TEST
+#define AVL_TREE_MEM_TEST
 
-#ifdef LIST_MEM_TEST
 typedef struct mem_item_info {
     list_head_t item;
     void *addr;
@@ -24,6 +26,8 @@ typedef struct mem_item_info {
     long line;
     long size;
 }mem_item_info_t;
+
+#ifdef LIST_MEM_TEST
 
 
 typedef struct mem_list{
@@ -305,20 +309,6 @@ char* tools_strdup( const char *str, const char*file_name, int line){
 
 
 
-
-
-#ifdef SIMPLE_SEARCH_TREE_MEM_TEST
-typedef struct mem_item_info {
-    void *addr;
-    long ref;
-    char file[PATH_LENGTH_LIMIT];
-    long line;
-    long size;
-}mem_item_info_t;
-
-bin_tree_t mem_root = {0};
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-
 static mem_item_info_t* get_new_mem_item_info(){
     mem_item_info_t* tmp = (mem_item_info_t*)malloc(sizeof(mem_item_info_t));
     assert(tmp != NULL);
@@ -359,25 +349,6 @@ static void mem_dump_data(void *data){
     printf("\n");
 }
 
-static mem_item_info_t* mem_find_item(void *data){
-    tree_node_t *find_item = NULL;
-    bin_tree_simple_search_fine(&mem_root,NULL,data,&find_item);
-    if(find_item == NULL){
-        return NULL;
-    }else{
-        return (mem_item_info_t*)((find_item)->data);
-    }
-}
-
-static void mem_remove_item(void *data){
-    bin_tree_simple_search_remove(&mem_root,NULL,NULL,data);
-}
-
-static void mem_insert_item(void *data){
-    printf("######################%d %s ################\n",__LINE__,__func__);
-    bin_tree_simple_search_insert(&mem_root,NULL,data);
-}
-
 static int mem_check_free_point(mem_item_info_t *mem_ptr){
     unsigned char *tmp_head = (unsigned char *)(mem_ptr->addr);
     //check head overwrite
@@ -402,6 +373,33 @@ static int mem_check_free_point(mem_item_info_t *mem_ptr){
     }
     return ret;
 }
+
+
+#ifdef SIMPLE_SEARCH_TREE_MEM_TEST
+
+bin_tree_t mem_root = {0};
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
+
+static mem_item_info_t* mem_find_item(void *data){
+    tree_node_t *find_item = NULL;
+    bin_tree_simple_search_fine(&mem_root,NULL,data,&find_item);
+    if(find_item == NULL){
+        return NULL;
+    }else{
+        return (mem_item_info_t*)((find_item)->data);
+    }
+}
+
+static void mem_remove_item(void *data){
+    bin_tree_simple_search_remove(&mem_root,NULL,NULL,data);
+}
+
+static void mem_insert_item(void *data){
+    //printf("######################%d %s ################\n",__LINE__,__func__);
+    bin_tree_simple_search_insert(&mem_root,NULL,data);
+}
+
 
 
 
@@ -511,7 +509,7 @@ static void avl_mem_remove_item(void *data){
 }
 
 static void avl_mem_insert_item(void *data){
-    printf("######################%d %s ################\n",__LINE__,__func__);
+    //printf("######################%d %s ################\n",__LINE__,__func__);
     int balance =1 ;
     avl_tree_insert(&mem_root,NULL,data,&balance);
 }
@@ -533,7 +531,7 @@ void* tools_malloc(int size,const char *file_name,int line){
     mem_item_ptr->line = line;
     mem_item_ptr->size = size;
     mem_item_ptr->addr = malloc(mem_size);
-    printf("%s  mem_item_ptr->addr = %p \n",__func__,mem_item_ptr->addr); 
+    //printf("%s  mem_item_ptr->addr = %p \n",__func__,mem_item_ptr->addr); 
     mem_item_ptr->ref ++;
     memset(mem_item_ptr->addr,TOOLS_INIT_PATTERN,mem_size);
 
@@ -555,7 +553,7 @@ void  tools_free(void *ptr,const char *file,int line ){
     tmp_mem_item.addr = ((unsigned char *)ptr - TOOLS_TEST_SPACE);
 
     pthread_mutex_lock(&mutex);
-    printf("%s  tmp_mem_item->addr = %p \n",__func__,tmp_mem_item.addr); 
+    //printf("%s  tmp_mem_item->addr = %p \n",__func__,tmp_mem_item.addr); 
     mem_item_info_t *mem_item = avl_mem_find_item(&tmp_mem_item);
     if(mem_item == NULL){
         printf("error free a false address %s  %p \n",__func__,tmp_mem_item.addr);
@@ -596,10 +594,8 @@ char* tools_strdup( const char *str, const char*file_name, int line){
 }
 
 void release_global_env(){
+    avl_tree_preorder_scan(&mem_root);
     avl_tree_destroy(&mem_root);
-    //avl_tree_layer_scan(tree,parent);
-    //bin_tree_midorder_scan(&mem_root,bin_tree_root(&mem_root));
-    //bin_tree_destroy(&mem_root);
 }
 
 #endif 

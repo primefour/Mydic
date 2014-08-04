@@ -3,7 +3,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<assert.h>
-#include"memory_test_tool.h"
+//#include"memory_test_tool.h"
 
 void bin_tree_init(bin_tree_t *tree,bin_compare_func compare,destroy_func destory,dump_data_func dump_data){
     if(tree == NULL){

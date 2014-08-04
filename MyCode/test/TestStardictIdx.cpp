@@ -19,6 +19,7 @@ int main(){
         printf("can't find the word \n");
     }
     delete sidx;
+    delete si;
     release_global_env();
     return 0;
 }
