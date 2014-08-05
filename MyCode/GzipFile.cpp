@@ -5,17 +5,20 @@
 #include<sys/types.h>
 #include<stdlib.h>
 #include"list.h"
+#include<assert.h>
 extern "C"{
 #include"zlib.h"
 }
 #include"memory_test_tool.h"
 
 void GzipFile::init_access_point_list(){
-    init_list_head(&access_point_list);
+    access_point_list = new List(access_piont_compare,NULL);
 }
 
 void GzipFile::reset_access_point_list(){
-    release_list(&access_point_list,NULL);
+    if(access_point_list != NULL){
+        delete access_point_list;
+    }
 }
 
 
@@ -300,12 +303,11 @@ int GzipFile::build_access_point(){
                     goto build_index_error;
                 }
                 memset(access_point,0,sizeof(access_point_t));
-                init_list_head(&(access_point->list));
                 //printf("original_total_out = %ld \n",original_total_out);
                 set_access_point(access_point,strm.data_type & 7,
                                     file_total_in,original_total_out,original_total_out - original_last,
                                     strm.avail_out, window);
-                insert_list_item_ahead(&access_point_list,&(access_point->list));
+                access_point_list->insert_list_tail(access_point);
                 original_last = original_total_out;
 
             }
@@ -322,8 +324,8 @@ build_index_error:
 }
 
 
-int GzipFile::access_piont_compare(list_head_t *item1,void *data){
-    access_point_t *list_item = contain_of(item1,access_point_t,list);
+int GzipFile::access_piont_compare(void *data1,void *data){
+    access_point_t *list_item = (access_point_t *)data1; 
     off_t offset = *((off_t *)data);
 
     printf("list_item->original_end = %d ,offset = %ld \n",list_item->original_end,offset);
@@ -349,15 +351,14 @@ int GzipFile::extract(off_t offset,unsigned char *buf, int len){
         return 0;
     }
     printf("offset = %ld \n",offset);
+    access_point_t *find_item =(access_point_t *)access_point_list->get_prev_item(&offset);
 
-    list_head_t *find_item = find_list_item(&access_point_list,&offset,access_piont_compare);
     if(find_item == NULL){
         printf("can't find the offset in the list,try the last one\n");
-        find_item = access_point_list.prev;
-        //return -1;
+        assert(find_item != NULL);
     }
-    find_item = find_item->prev;
-    access_point_t *first_item = contain_of(find_item,access_point_t,list);
+
+    access_point_t *first_item = find_item ;
     printf("first item in = %d ,out = %d \n",first_item->file_chunk_offset,first_item->original_end);
     /* initialize file and inflate state to start there */
     strm.zalloc = Z_NULL;

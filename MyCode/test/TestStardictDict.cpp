@@ -16,7 +16,7 @@
 int main(){
     init_global_env();
     File::add_check_func(GzipFile::check_file_type,GZIP_FILE_TYPE);
-    StardictDictionary *sd = new StardictDictionary("./langdao-ec-gb.dict.dz");
+    StardictDictionary *sd = new StardictDictionary("./langdao-ce-gb.dict.dz");
     int ret = sd->init();
     printf("main ret = %d \n",ret);
     if(ret < 0){

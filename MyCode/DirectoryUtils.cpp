@@ -3,6 +3,11 @@
 #include<stdlib.h>
 #include<dirent.h>
 #include<unistd.h>
+#include"utils.h"
+#include<errno.h>
+#include<sys/stat.h>
+#include<sys/types.h>
+#include"DirectoryUtils.h"
 /*
  *
        #include <dirent.h>
@@ -140,10 +145,57 @@ ERRORS
 
        ENOTDIR
               The path in dirp is not a directory.
+
+SYNOPSIS
+       #include <sys/types.h>
+       #include <sys/stat.h>
+       #include <unistd.h>
+
+       int stat(const char *path, struct stat *buf);
+       int fstat(int fd, struct stat *buf);
+       int lstat(const char *path, struct stat *buf);
+
+   Feature Test Macro Requirements for glibc (see feature_test_macros(7)):
+
+       lstat():
+           _BSD_SOURCE || _XOPEN_SOURCE >= 500 || _XOPEN_SOURCE && _XOPEN_SOURCE_EXTENDED
+
+DESCRIPTION
+       These  functions return information about a file.  No permissions are required on the file itself, but—in the case of stat() and lstat() — execute (search) permission is required on all of the
+       directories in path that lead to the file.
+
+       stat() stats the file pointed to by path and fills in buf.
+
+       lstat() is identical to stat(), except that if path is a symbolic link, then the link itself is stat-ed, not the file that it refers to.
+
+       fstat() is identical to stat(), except that the file to be stat-ed is specified by the file descriptor fd.
+
+       All of these system calls return a stat structure, which contains the following fields:
+
+           struct stat {
+               dev_t     st_dev;     // ID of device containing file 
+               ino_t     st_ino;     // inode number 
+               mode_t    st_mode;    // protection 
+               nlink_t   st_nlink;   // number of hard links 
+               uid_t     st_uid;     // user ID of owner 
+               gid_t     st_gid;     // group ID of owner 
+               dev_t     st_rdev;    // device ID (if special file) 
+               off_t     st_size;    // total size, in bytes 
+               blksize_t st_blksize; // blocksize for file system I/O 
+               blkcnt_t  st_blocks;  // number of 512B blocks allocated 
+               time_t    st_atime;   // time of last access 
+               time_t    st_mtime;   // time of last modification 
+               time_t    st_ctime;   // time of last status change 
+           };
  */
 
 
-static int filter_with_suffix(const struct dirent *entry,const char *suffix){
+//This code is ported from android media scanner 
+//
+int doProcessDirectoryEntry(char *path, int pathRemaining,struct dirent* entry, char* fileSpot);
+int doProcessDirectory(char *path, int pathRemaining);
+
+static int FilterBySuffix(const struct dirent *entry,const char *suffix){
     char tmp_suff[1024]={0};
     printf("%s  entry->d_name = %s \n",__func__,entry->d_name);
     char * tmp = get_path_suffix(entry->d_name,tmp_suff,sizeof(tmp_suff));
@@ -159,14 +211,14 @@ static int filter_with_suffix(const struct dirent *entry,const char *suffix){
 }
 
 
-MediaScanResult MediaScanner::processDirectory(const char *path){ 
+int  processDirectory(const char *path){ 
     int pathLength = strlen(path);
     if (pathLength >= PATH_MAX) {
-        return MEDIA_SCAN_RESULT_SKIPPED;
+        return 0;
     }
     char* pathBuffer = (char *)malloc(PATH_MAX + 1);
     if (!pathBuffer) {
-        return MEDIA_SCAN_RESULT_ERROR;
+        return -1;
     }
 
     int pathRemaining = PATH_MAX - pathLength;
@@ -177,24 +229,23 @@ MediaScanResult MediaScanner::processDirectory(const char *path){
         --pathRemaining;
     }
 
-    MediaScanResult result = doProcessDirectory(pathBuffer, pathRemaining); 
+    int result = doProcessDirectory(pathBuffer, pathRemaining); 
     free(pathBuffer);
     return result;
 }
 
-MediaScanResult MediaScanner::doProcessDirectory(char *path, int pathRemaining){ 
+int doProcessDirectory(char *path, int pathRemaining){ 
     char* fileSpot = path + strlen(path);
     struct dirent* entry;
     DIR* dir = opendir(path);
     if (!dir) {
-        ALOGW("Error opening directory '%s', skipping: %s.", path, strerror(errno));
-        return MEDIA_SCAN_RESULT_SKIPPED;
+        printf("Error opening directory '%s', skipping: %s.", path, strerror(errno));
+        return 0;
     }
-    MediaScanResult result = MEDIA_SCAN_RESULT_OK;
+    int result = 0;
     while ((entry = readdir(dir))) {
-        if (doProcessDirectoryEntry(path, pathRemaining,isScanMediaFile, noMedia, layer, entry, fileSpot) 
-            == MEDIA_SCAN_RESULT_ERROR) {
-            result = MEDIA_SCAN_RESULT_ERROR;
+        if (doProcessDirectoryEntry(path, pathRemaining, entry, fileSpot) < 0 ) {
+            result = -1 ;
             break;
         }
     }
@@ -202,16 +253,16 @@ MediaScanResult MediaScanner::doProcessDirectory(char *path, int pathRemaining){
     return result;
 }
 
-MediaScanResult MediaScanner::doProcessDirectoryEntry(char *path, int pathRemaining,struct dirent* entry, char* fileSpot) {
+int doProcessDirectoryEntry(char *path, int pathRemaining,struct dirent* entry, char* fileSpot) {
     struct stat statbuf;
     const char* name = entry->d_name;
     if (name[0] == '.' && (name[1] == 0 || (name[1] == '.' && name[2] == 0))) {
-        return MEDIA_SCAN_RESULT_SKIPPED;
+        return 0;
     }
 
     int nameLength = strlen(name);
     if (nameLength + 1 > pathRemaining) {
-        return MEDIA_SCAN_RESULT_SKIPPED;
+        return 0;
     }
 
     strcpy(fileSpot, name);
@@ -233,19 +284,16 @@ MediaScanResult MediaScanner::doProcessDirectoryEntry(char *path, int pathRemain
     }
     
     if (type == DT_DIR) {
-        bool childNoMedia = noMedia;
         // and now process its contents
         strcat(fileSpot, "/");
-        MediaScanResult result = doProcessDirectory(path, pathRemaining - nameLength - 1);
-        if (result == MEDIA_SCAN_RESULT_ERROR) {
-            return MEDIA_SCAN_RESULT_ERROR;
+        int  result = doProcessDirectory(path, pathRemaining - nameLength - 1);
+        if (result < -1) {
+            return -1;
         }
     } else if (type == DT_REG){
         stat(path, &statbuf);
-        if (status) {
-            return MEDIA_SCAN_RESULT_ERROR;
-        }
+
     }
-    return MEDIA_SCAN_RESULT_OK;
+    return 0;
 }
 

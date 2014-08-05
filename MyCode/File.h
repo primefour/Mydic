@@ -34,11 +34,10 @@ class BufferCache{
 
 typedef int (*pfn_check_file_type)(unsigned char *buff,int *len);
 
-typedef struct pfn_check_file_list{
-    list_head list;
+typedef struct pfn_check_file{
     pfn_check_file_type pfn;
     DIC_FILE_TYPE_T type;
-}pfn_check_file_list;
+}pfn_check_file;
 
 //implements general file operations
 class File{
@@ -56,10 +55,11 @@ class File{
         }
 
         static int  check_file_type(const char *path);
+        static void Init_check_list();
         static void add_check_func(pfn_check_file_type pfd,DIC_FILE_TYPE_T type);
-        static void release_check_func();
+        static void release_check_list();
         static File* MakeFileInstance(const void *data,DIC_FILE_TYPE file_type);
-        static list_head_t check_list; 
+        static List *pcheck_list; 
     protected:
         char file_path[MAX_PATH_LENGTH];
         DIC_FILE_TYPE_T file_type;

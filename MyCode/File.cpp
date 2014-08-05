@@ -14,8 +14,7 @@
 #include"list.h"
 #include"memory_test_tool.h"
 
-
-list_head_t File::check_list ={&File::check_list,&File::check_list};
+List* File::pcheck_list = NULL;
 
 BufferCache::BufferCache(unsigned int size,File *file_ops){
     cache = NULL;
@@ -78,15 +77,6 @@ File::~File(){
     }
 }
 
-int file_compare_func(list_head_t *item1,void *data){
-    pfn_check_file_list *tmp_check_item = contain_of(item1,pfn_check_file_list,list);
-    int buff_len = 1024;
-    if(tmp_check_item->pfn((unsigned char*)data,&buff_len)){
-        return 0;
-    }else{
-        return 1;
-    }
-}
 
 
 int File::readline(unsigned char *buf,int len){
@@ -186,41 +176,52 @@ int File::open(int mode){
     return 0;
 }
 
+static int file_compare_func(void *data1,void *data2){
+    pfn_check_file *tmp_check_item = (pfn_check_file *)data1;
+    int buff_len = 1024;
+    if(tmp_check_item->pfn((unsigned char*)data2,&buff_len)){
+        return 0;
+    }else{
+        return 1;
+    }
+}
+
 int File::check_file_type(const char *path){
     File tmp_file(path);
     unsigned char buff[1024]={0};
     tmp_file.open(0);
     tmp_file.read(buff,sizeof(buff));
-    list_head_t *result = find_list_item(&check_list,buff,file_compare_func);
+    pfn_check_file *result = (pfn_check_file *)pcheck_list->find_list_item(buff);
+
     if(result != NULL){
-        pfn_check_file_list *tmp_check_item = contain_of(result,pfn_check_file_list,list);
-        return tmp_check_item->type;
+        return result->type;
     }else{
-        return  ORDINARY_FILE_TYPE ;
+        return ORDINARY_FILE_TYPE ;
+    }
+}
+
+void File::Init_check_list(){
+    if(pcheck_list == NULL){
+        pcheck_list = new List(file_compare_func,NULL);
     }
 }
 
 void File::add_check_func(pfn_check_file_type pfn,DIC_FILE_TYPE_T type){
-    pfn_check_file_list *tmp = (pfn_check_file_list *)malloc(sizeof(pfn_check_file_list));
+    pfn_check_file *tmp = (pfn_check_file *)malloc(sizeof(pfn_check_file));
     if(tmp == NULL){
         printf("%s error %d \n",__func__,__LINE__);
         assert(0);
     }else{
-        memset(tmp,0,sizeof(pfn_check_file_list));
-        init_list_head(&(tmp->list));
+        memset(tmp,0,sizeof(pfn_check_file));
         tmp->pfn = pfn;
         tmp->type = type;
-        insert_list_item_behind(&check_list,&(tmp->list));
+        pcheck_list->insert_list_tail(tmp);
     }
 }
 
-void File::release_check_func(){
-    list_head_t *tmp = check_list.next;
-    while(tmp != &check_list){
-        pfn_check_file_list *tmp_item = contain_of(tmp,pfn_check_file_list,list);
-        tmp = tmp->next;
-        free(tmp_item);
-    }
+void File::release_check_list(){
+    delete pcheck_list;
+    pcheck_list = NULL;
 }
 
 File* File:: MakeFileInstance(const void *data,DIC_FILE_TYPE file_type){
