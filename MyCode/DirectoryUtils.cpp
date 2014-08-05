@@ -143,8 +143,6 @@ ERRORS
  */
 
 
-
-
 static int filter_with_suffix(const struct dirent *entry,const char *suffix){
     char tmp_suff[1024]={0};
     printf("%s  entry->d_name = %s \n",__func__,entry->d_name);
@@ -160,82 +158,8 @@ static int filter_with_suffix(const struct dirent *entry,const char *suffix){
     }
 }
 
-void scan_directory_with_suffix(const char *path,const char *suffix,char **file_list){
-    dirent read_entry ={0};
-    if(path != NULL){
 
-    }
-
-    int ret = readdir_r(DIR *dirp, struct dirent *entry, struct dirent **result);
-    while(ret != 0){
-
-
-        memset(&read_entry,0,sizeof(read_entry));
-        ret = readdir_r(DIR *dirp, struct dirent *entry, struct dirent **result);
-    }
-
-}
-
-void scan_directory_with_prefix(const char *path,const char *prefix,char **file_list){
-
-}
-
-
-
-MediaScanner::MediaScanner()
-    : mLocale(NULL), mSkipList(NULL), mSkipIndex(NULL) {
-    loadSkipList();
-}
-
-MediaScanner::~MediaScanner() {
-    setLocale(NULL);
-    free(mSkipList);
-    free(mSkipIndex);
-}
-
-void MediaScanner::setLocale(const char *locale) {
-    if (mLocale) {
-        free(mLocale);
-        mLocale = NULL;
-    }
-    if (locale) {
-        mLocale = strdup(locale);
-    }
-}
-
-const char *MediaScanner::locale() const {
-    return mLocale;
-}
-
-void MediaScanner::loadSkipList() {
-    mSkipList = (char *)malloc(PROPERTY_VALUE_MAX * sizeof(char));
-    if (mSkipList) {
-        property_get("testing.mediascanner.skiplist", mSkipList, "");
-    }
-    if (!mSkipList || (strlen(mSkipList) == 0)) {
-        free(mSkipList);
-        mSkipList = NULL;
-        return;
-    }
-    mSkipIndex = (int *)malloc(PROPERTY_VALUE_MAX * sizeof(int));
-    if (mSkipIndex) {
-        // dup it because strtok will modify the string
-        char *skipList = strdup(mSkipList);
-        if (skipList) {
-            char * path = strtok(skipList, ",");
-            int i = 0;
-            while (path) {
-                mSkipIndex[i++] = strlen(path);
-                path = strtok(NULL, ",");
-            }
-            mSkipIndex[i] = -1;
-            free(skipList);
-        }
-    }
-}
-
-MediaScanResult MediaScanner::processDirectory(
-        const char *path, MediaScannerClient &client, bool isScanMediaFile, bool isNoMedia, int layer) {
+MediaScanResult MediaScanner::processDirectory(const char *path){ 
     int pathLength = strlen(path);
     if (pathLength >= PATH_MAX) {
         return MEDIA_SCAN_RESULT_SKIPPED;
@@ -253,101 +177,23 @@ MediaScanResult MediaScanner::processDirectory(
         --pathRemaining;
     }
 
-    MediaScanResult result = doProcessDirectory(pathBuffer, pathRemaining, client, isScanMediaFile, isNoMedia, layer);
-
+    MediaScanResult result = doProcessDirectory(pathBuffer, pathRemaining); 
     free(pathBuffer);
-
     return result;
 }
 
-bool MediaScanner::shouldSkipDirectory(char *path) {
-    if (path && mSkipList && mSkipIndex) {
-        int len = strlen(path);
-        int idx = 0;
-        // track the start position of next path in the comma
-        // separated list obtained from getprop
-        int startPos = 0;
-        while (mSkipIndex[idx] != -1) {
-            // no point to match path name if strlen mismatch
-            if ((len == mSkipIndex[idx])
-                // pick out the path segment from comma separated list
-                // to compare against current path parameter
-                && (strncmp(path, &mSkipList[startPos], len) == 0)) {
-                return true;
-            }
-            startPos += mSkipIndex[idx] + 1; // extra char for the delimiter
-            idx++;
-        }
-    }
-    return false;
-}
-
-bool MediaScanner::fileMatchesExtension(const char* path, bool isScanMediaFile) {
-    char* extension = strrchr(path, '.');
-	int index;
-	bool result;
-
-    if (!extension) return (!isScanMediaFile);
-    ++extension;    // skip the dot
-    if (extension[0] == 0) return (!isScanMediaFile);
-
-	//Scan file(first time scan media file and second time scan non-media file), 2012.01.12, U17 fengjen++
-	int size = strlen(extension);
-	char buf[size];
-	
-    for (int i=0; i < size; ++i)
-    {
-        buf[i] = toupper( extension[i] );
-    }
-
-	const unsigned int pathhashcode = hashCode( buf , size);
-
-	index = m_mmExtension.indexOfKey(pathhashcode);
-	if(index < 0)
-	   result = false;
-	else 
-           result = true;
-
-	if (isScanMediaFile)
-	    return result;
-	else
-	    return !result;
-	//Scan file(first time scan media file and second time scan non-media file), 2012.01.12, U17 fengjen--
-}
-
-MediaScanResult MediaScanner::doProcessDirectory(
-        char *path, int pathRemaining, MediaScannerClient &client, bool isScanMediaFile, bool noMedia, int layer) {
-    // place to copy file or directory name
+MediaScanResult MediaScanner::doProcessDirectory(char *path, int pathRemaining){ 
     char* fileSpot = path + strlen(path);
     struct dirent* entry;
-
-    if (shouldSkipDirectory(path)) {
-        ALOGD("Skipping: %s", path);
-        return MEDIA_SCAN_RESULT_OK;
-    }
-
-    // Treat all files as non-media in directories that contain a  ".nomedia" file
-    if (pathRemaining >= 8 /* strlen(".nomedia") */ ) {
-        strcpy(fileSpot, ".nomedia");
-        if (access(path, F_OK) == 0) {
-            ALOGV("found .nomedia, setting noMedia flag");
-            noMedia = true;
-        }
-
-        // restore path
-        fileSpot[0] = 0;
-    }
-
     DIR* dir = opendir(path);
     if (!dir) {
         ALOGW("Error opening directory '%s', skipping: %s.", path, strerror(errno));
         return MEDIA_SCAN_RESULT_SKIPPED;
     }
-
     MediaScanResult result = MEDIA_SCAN_RESULT_OK;
     while ((entry = readdir(dir))) {
-        if (doProcessDirectoryEntry(path, pathRemaining, client, isScanMediaFile, noMedia, layer, entry, fileSpot)
-                == MEDIA_SCAN_RESULT_ERROR) {
+        if (doProcessDirectoryEntry(path, pathRemaining,isScanMediaFile, noMedia, layer, entry, fileSpot) 
+            == MEDIA_SCAN_RESULT_ERROR) {
             result = MEDIA_SCAN_RESULT_ERROR;
             break;
         }
@@ -356,30 +202,19 @@ MediaScanResult MediaScanner::doProcessDirectory(
     return result;
 }
 
-MediaScanResult MediaScanner::doProcessDirectoryEntry(
-        char *path, int pathRemaining, MediaScannerClient &client, bool isScanMediaFile, bool noMedia, int layer,
-        struct dirent* entry, char* fileSpot) {
+MediaScanResult MediaScanner::doProcessDirectoryEntry(char *path, int pathRemaining,struct dirent* entry, char* fileSpot) {
     struct stat statbuf;
     const char* name = entry->d_name;
-
-    // ignore "." and ".."
     if (name[0] == '.' && (name[1] == 0 || (name[1] == '.' && name[2] == 0))) {
         return MEDIA_SCAN_RESULT_SKIPPED;
     }
 
     int nameLength = strlen(name);
     if (nameLength + 1 > pathRemaining) {
-        // path too long!
         return MEDIA_SCAN_RESULT_SKIPPED;
     }
-    strcpy(fileSpot, name);
 
-    /* >> fengjen - set ignore folder list */
-    if (shouldIgnoreDirectory(path)) {
-	ALOGD("Ignore path: %s", path);
-	return MEDIA_SCAN_RESULT_OK;
-    }
-    /* << fengjen - set ignore folder list */
+    strcpy(fileSpot, name);
 
     int type = entry->d_type;
     if (type == DT_UNKNOWN) {
@@ -393,125 +228,24 @@ MediaScanResult MediaScanner::doProcessDirectoryEntry(
                 type = DT_DIR;
             }
         } else {
-            ALOGD("stat() failed for %s: %s", path, strerror(errno) );
+            printf("stat() failed for %s: %s", path, strerror(errno) );
         }
     }
     
-    if (layer > 0 || layer == -1) { // fengjen - Enhance MTP scan 1-level performance
-	if (layer > 0)
-	   layer --;
-        if (type == DT_DIR) {
-            bool childNoMedia = noMedia;
-            // set noMedia flag on directories with a name that starts with '.'
-            // for example, the Mac ".Trashes" directory
-            if (name[0] == '.')
-                childNoMedia = true;
-
-            // report the directory to the client
-            if (stat(path, &statbuf) == 0) {
-                status_t status = client.scanFile(path, statbuf.st_mtime, 0,
-                    true /*isDirectory*/, childNoMedia);
-                if (status) {
-                    return MEDIA_SCAN_RESULT_ERROR;
-                }
-            }
-
-            // and now process its contents
-            strcat(fileSpot, "/");
-            MediaScanResult result = doProcessDirectory(path, pathRemaining - nameLength - 1,
-	                client, isScanMediaFile, childNoMedia, layer);
-            if (result == MEDIA_SCAN_RESULT_ERROR) {
-                return MEDIA_SCAN_RESULT_ERROR;
-            }
-        } else if ((type == DT_REG)&&(fileMatchesExtension(path, isScanMediaFile))) {
-            stat(path, &statbuf);
-            status_t status = client.scanFile(path, statbuf.st_mtime, statbuf.st_size,
-                false /*isDirectory*/, noMedia);
-            if (status) {
-                return MEDIA_SCAN_RESULT_ERROR;
-            }
-       }
+    if (type == DT_DIR) {
+        bool childNoMedia = noMedia;
+        // and now process its contents
+        strcat(fileSpot, "/");
+        MediaScanResult result = doProcessDirectory(path, pathRemaining - nameLength - 1);
+        if (result == MEDIA_SCAN_RESULT_ERROR) {
+            return MEDIA_SCAN_RESULT_ERROR;
+        }
+    } else if (type == DT_REG){
+        stat(path, &statbuf);
+        if (status) {
+            return MEDIA_SCAN_RESULT_ERROR;
+        }
     }
     return MEDIA_SCAN_RESULT_OK;
 }
-
-//Scan file(first time scan media file and second time scan non-media file), 2012.01.12, U17 fengjen++
-unsigned int MediaScanner::hashCode( const char* extension, int length )
-{
-	if ( extension == 0 )
-	{
-		return 0;
-	}
-
-	// An algorithm produced by Professor Daniel J. Bernstein
-	// One of the most efficient hash functions ever published.
-	unsigned int nHash = 5381;
-	unsigned int n = *extension;
-	unsigned int position = 0;
-		
-	if ( n == 0 )
-	{
-	    return 0;
-	}
-
-	for ( ;
-		  ((n != 0) && (n != 44) && (position < length ));
-		  n = *(++extension), position++ )
-	{
-	    nHash = ((nHash << 5) + nHash) + n;
-	}
-
-	return (nHash & 0x7FFFFFFF);
-}
-
-void MediaScanner::hashtable(const char* extensions )
-{
-    while (extensions[0]) {
-	char* comma = strchr(extensions, ',');
-	size_t length = (comma ? comma - extensions : strlen(extensions));
-		
-	const unsigned int hash = hashCode( extensions, length );
-
-	// Add new value
-	m_mmExtension.add( hash, " " );
-
-	extensions += length;
-
-	if (extensions[0] == ',') ++extensions;
-    }
-}
-
-void MediaScanner::setMediaFileExtension(const char *extensions){
-
-    if(m_mmExtension.isEmpty())
-	hashtable( extensions);
-	
-}
-//Scan file(first time scan media file and second time scan non-media file), 2012.01.12, U17 fengjen--
-
-/* >> fengjen - set ignore folder list */
-bool MediaScanner::shouldIgnoreDirectory(char *path) {
-    int length = 0;
-    String8 tmpStr;
-    for (int i = 0; i < m_mmIgnoreList.size(); i++){
-	 tmpStr = m_mmIgnoreList.itemAt(i);
-	 length = tmpStr.length();
-	 if (!strncasecmp(path, m_mmIgnoreList.itemAt(i).string(), length))
-	     return true;
-    }
-    return false;
-}
-
-void MediaScanner::setIgnoreList(const char *sIgnoreList){
-    if(sIgnoreList == NULL)
-       return;
-
-    String8 ignorePath(sIgnoreList); 
-    m_mmIgnoreList.push(ignorePath);
-}
-
-void MediaScanner::clearIgnoreList(){
-    m_mmIgnoreList.clear();
-}
-/* << fengjen - set ignore folder list */
 

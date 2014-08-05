@@ -7,6 +7,7 @@
 #include<assert.h>
 #include<sys/types.h>
 #include<fcntl.h>
+#include"utils.h"
 #include"memory_test_tool.h"
 
 int split_path_no_suffix(const char *file_path,char *file_main_path,int path_len ,char *file_name,int len){
