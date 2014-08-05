@@ -83,60 +83,41 @@ char *get_path_suffix(const char *file_path,char *suffix,int len){
 }
 
 
-meta_data_t *get_new_meta_item(){
-    meta_data_t *tmp_meta = (meta_data_t *)malloc(sizeof(meta_data_t));
-    if(tmp_meta == NULL){
-        printf("get item failed %s \n",__func__);
-        assert(0);
-    }
-    memset(tmp_meta,0,sizeof(meta_data_t));
-    init_list_head(&(tmp_meta->list));
-    return tmp_meta ;
+
+MetaDataHeader::MetaDataHeader(off_t original_offset,int data_size){
+    memset(&meta_data_head,0,sizeof(meta_data_head_t));
+    meta_data_head.original_offset = original_offset;
+    meta_data_head.data_size =data_size;
+    meta_data_head.data = (unsigned char *)malloc(data_size);
 }
 
-void dump_meta_item(meta_data_t *meta_item){
-    if(meta_item->type != DICT_ATTACH_TYPE && meta_item->type != DICT_PIC_TYPE &&
-            meta_item->type !=  DICT_SOUND_TYPE){
-        printf("data length = %d ,data = %s type = %d \n",meta_item->data_length,meta_item->data,meta_item->type);
+
+void MetaDataHeader::update_meta_item(int type,unsigned char *data,int data_len){
+    if(type > 0 && type < DICT_MAX_TYPE){
+        meta_data_head.meta_data[type].data = data;
+        meta_data_head.meta_data[type].data_length = data_len;
     }else{
-        printf("###special type data length = %d , type = %d \n",meta_item->data_length,meta_item->type);
+        printf("get a error type \n");
     }
 }
 
-void init_meta_item_head(meta_data_head *tmp_meta_head){
-    memset(tmp_meta_head ,0,sizeof(meta_data_head));
-    init_list_head(&(tmp_meta_head->head));
-}
-
-meta_data_head *get_new_meta_head(){
-    meta_data_head *tmp_meta_head = (meta_data_head *)malloc(sizeof(meta_data_head ));
-    if(tmp_meta_head == NULL){
-        printf("get head failed %s \n",__func__);
-        assert(0);
-    }
-    memset(tmp_meta_head ,0,sizeof(meta_data_head));
-    init_list_head(&(tmp_meta_head->head));
-    return tmp_meta_head;
-}
-
-void head_release_func(void *data){
-    meta_data_t *tmp_meta = contain_of(data,meta_data_t,list);
-    free(tmp_meta);
-}
-
-void release_meta_head(meta_data_head *phead){
-    release_list(&(phead->head),head_release_func);
-    if(phead->data != NULL){
-        free(phead->data);
+void MetaDataHeader::dump_meta_item(meta_data_t *meta_item,int type){
+    if(type != DICT_ATTACH_TYPE && type != DICT_PIC_TYPE &&
+            type !=  DICT_SOUND_TYPE){
+        printf("data length = %d ,data = %s type = %d \n",meta_item->data_length,meta_item->data,type);
+    }else{
+        printf("###special type data length = %d , type = %d \n",meta_item->data_length,type);
     }
 }
 
-
-void dump_meta_head(meta_data_head *phead){
-    list_head_t *tmp_next = phead->head.next;
-    while(tmp_next != &(phead->head)){
-        meta_data_t *tmp_meta = contain_of(tmp_next,meta_data_t,list);
-        dump_meta_item(tmp_meta);
-        tmp_next = tmp_next->next;
+void MetaDataHeader::dump_meta_data_head(){
+    int i = 0;
+    while(i < DICT_MAX_TYPE){
+        dump_meta_item(&meta_data_head.meta_data[i],i);
     }
 }
+
+MetaDataHeader::~MetaDataHeader(){
+    free(meta_data_head.data);
+}
+

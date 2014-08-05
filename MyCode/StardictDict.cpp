@@ -44,7 +44,7 @@ int StardictDict::init(){
     return dict_file->open(0);
 }
 
-void StardictDict::parse_meta_data(meta_data_head_t *word_data){
+void StardictDict::parse_meta_data(MetaDataHeader *word_data){
     if(same_seqence != NULL){
         parse_meta_data_with_seq(word_data);
     }else{
@@ -52,26 +52,20 @@ void StardictDict::parse_meta_data(meta_data_head_t *word_data){
     }
 }
 
-void StardictDict::parse_meta_data_with_seq(meta_data_head_t *word_data){
+void StardictDict::parse_meta_data_with_seq(MetaDataHeader *word_data){
     char *seq = same_seqence;
-    unsigned char *pData = word_data->data;
-    unsigned char *pData_end = word_data->data + word_data->data_size;
-    init_list_head(&(word_data->head));
-    meta_data_t * tmp = get_new_meta_item();
+    unsigned char *pData = word_data->get_data_ptr();
+    unsigned char *pData_end = pData + word_data->get_data_length();
+    meta_data_t tmp ={0};
     while(*seq != '\0' && pData < pData_end ){
-        pData += parse_common_flag(tmp,*seq,pData);
-        if(tmp->data){
-            insert_list_item_ahead(&(word_data->head),&(tmp->list));
-            tmp = get_new_meta_item();
+        pData += parse_common_flag(&tmp,*seq,pData);
+        if(tmp.data){
+            word_data->update_meta_item(tmp.type,tmp.data,tmp.data_length);
+            memset(&tmp,0,sizeof(tmp));
         }
         seq ++;
     }
-
-    if(tmp->data == NULL){
-        free(tmp);
-    }
 }
-
 
 int StardictDict::parse_common_flag(meta_data_t *tmp,char flag,unsigned char *data){
     printf("%s flag = %c \n",__func__,flag);

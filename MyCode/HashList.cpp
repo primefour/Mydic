@@ -1,3 +1,7 @@
+#include<stdio.h>
+#include<assert.h>
+#include<stdlib.h>
+#include<string.h>
 #include"HashList.h"
 #include"memory_test_tool.h"
 
@@ -19,7 +23,7 @@ unsigned long default_string_hash_func(void *data){
     return val;
 }
 
-unsigned long HashList::default_hash_func(void *data){
+unsigned long HashList::default_hash(void *data){
     return (long)data;
 }
 
@@ -37,24 +41,23 @@ void HashList::default_hash_destroy(void *data){
     }
 }
 
-void list_release_func(void *data){
-    destroy_func(data);
-}
-
-int list_compare_func(void *data,void data2){
-    return destroy_func(data,data2);
-}
-
-
 HashList::HashList(){
     array_size = DEFAULT_ARRAY_LENGTH ;
-    hash_func = default_hash_func;
+    hash_func = default_hash;
     compare_func = default_hash_compare;
     destroy_func = default_hash_destroy;
-    array = (List *)malloc(array_size * sizeof(List *));
+    array = (List **)malloc(array_size * sizeof(List *));
     int i = 0;
     while(i < array_size){
-        (array + i) = new List(list_compare_func,list_release_func);
+        array[i] = new List(default_hash_compare,default_hash_destroy);
+    }
+}
+
+void HashList::set_pfn(pfn_hash func,pfn_list_compare compare,pfn_list_destroy destroy){
+    hash_func = func;
+    int i = 0;
+    while(i < array_size){
+        array[i]->set_fpn(compare,destroy);
     }
 }
 
@@ -62,7 +65,7 @@ HashList::HashList(){
 void HashList::hash_insert(void *data){
     int local = hash_func(data); 
     local %= array_size; 
-    List *list = (array + local);
+    List *list = array[local];
     if(list->find_list_item(data) == NULL){
         list->insert_list_tail(data);
     }else{
@@ -73,14 +76,14 @@ void HashList::hash_insert(void *data){
 void* HashList::hash_find(void *data){
     int local = hash_func(data); 
     local %= array_size; 
-    List *list = (array + local);
+    List *list = array[local];
     return list->find_list_item(data);
 }
 
 void HashList::hash_remove(void *data){
     int local = hash_func(data); 
     local %= array_size; 
-    List *list = (array + local);
+    List *list = array[local];
     if(list->find_list_item(data)){
         list->remove_list_item(data);
     }else{
@@ -88,15 +91,16 @@ void HashList::hash_remove(void *data){
     }
 }
 
-HashList::HashList(pfn_hash func,pfn_hash_compare compare,pfn_hash_destroy destroy,long array_length){
+
+HashList::HashList(pfn_hash func,pfn_list_compare compare,pfn_list_destroy destroy,long array_length){
     hash_func = func;
     destroy_func = destroy;
     compare_func = compare;
     array_size = array_length;
-    array = (List *)malloc(array_size * sizeof(List *));
+    array = (List **)malloc(array_size * sizeof(List *));
     int i = 0;
     while(i < array_size){
-        (array + i) = new List(list_compare_func,list_release_func);
+        array[i] = new List(compare,destroy);
     }
 }
 
@@ -104,7 +108,7 @@ HashList::HashList(pfn_hash func,pfn_hash_compare compare,pfn_hash_destroy destr
 HashList::~HashList(){
     int i = 0 ;
     while(i < array_size){
-        delete (array + i);
+        delete array[i];
     }
 
     if(array != NULL){
