@@ -16,7 +16,6 @@ typedef struct list_head{
 
 class List{
     public:
-        List();
         List(pfn_list_compare compare,pfn_list_destroy destroy);
         ~List();
         List(const List &list);
@@ -26,7 +25,6 @@ class List{
         void insert_list_head(void *data);
         void*insert_list_local(void *prev_data,void *data);
         void remove_list_item(void *data);
-        void set_fpn(pfn_list_compare compare,pfn_list_destroy destroy);
         void*get_prev_item(void *data);
         void*get_next_item(void *data);
 

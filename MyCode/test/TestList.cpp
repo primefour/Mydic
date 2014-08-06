@@ -2,9 +2,24 @@
 #include"HashList.h"
 #include<stdio.h>
 
+static unsigned long hash_function(void *key){
+    return (long)key;
+}
+
+static int hash_compare(void *key1,void *key2){
+    if(key1 == key2){
+        return 0;
+    }else{
+        return 1;
+    }
+}
+
+static void hash_destroy(void *key,void *data){
+
+}
 
 int main(){
-    List *list = new List();
+    List *list = new List(List::default_list_compare,NULL);
     list->dump_list();
     list->insert_list_tail((void *)0);
     list->insert_list_tail((void *)1);
@@ -45,32 +60,30 @@ int main(){
     printf("ret = %ld \n",(long)ret);
 
     printf("#####################%d ##################\n",__LINE__);
-    HashList *hash = new HashList();
+    HashList *hash = new HashList(hash_function,hash_compare,hash_destroy,10);
     printf("#####################%d ##################\n",__LINE__);
-    hash->hash_insert((void *) 0);
+    hash->hash_insert((void*)0,(void *) 0);
     printf("#####################%d ##################\n",__LINE__);
-    hash->hash_insert((void *) 1);
-    hash->hash_insert((void *) 4);
-    hash->hash_insert((void *) 3);
-    hash->hash_insert((void *) 2);
-    hash->hash_insert((void *) 1);
+    hash->hash_insert((void *)1,(void *) 1);
+    hash->hash_insert((void *)4,(void *) 4);
+    hash->hash_insert((void *)3,(void *) 3);
+    hash->hash_insert((void *)2,(void *) 2);
+    hash->hash_insert((void*)1,(void *) 1);
 
-    ret = hash->hash_find((void*) 1);
+    ret = hash->hash_find((void*) 1,NULL);
     printf("ret = %ld \n",(long)ret);
 
-    ret = hash->hash_find((void*) 3);
+    ret = hash->hash_find((void*) 3,NULL);
     printf("ret = %ld \n",(long)ret);
 
-    ret = hash->hash_find((void*) 4);
+    ret = hash->hash_find((void*) 4,NULL);
     printf("ret = %ld \n",(long)ret);
 
-    ret = hash->hash_find((void*) 5);
+    ret = hash->hash_find((void*) 5,NULL);
     printf("ret = %ld \n",(long)ret);
 
-    hash->hash_remove((void*) 4);
-    ret = hash->hash_find((void*) 4);
+    hash->hash_remove((void*) 4,NULL);
+    ret = hash->hash_find((void*) 4,NULL);
     printf("ret = %ld \n",(long)ret);
-
-
     return 0 ;
 }

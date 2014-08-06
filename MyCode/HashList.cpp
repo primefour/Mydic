@@ -23,78 +23,102 @@ unsigned long default_string_hash_func(void *data){
     return val;
 }
 
-unsigned long HashList::default_hash(void *data){
-    return (long)data;
-}
-
-int HashList::default_hash_compare(void *data,void *data2){
-    if((long)data == (long)data2){
-        return 0;
-    }else{
-        return 1;
-    }
-}
-
-void HashList::default_hash_destroy(void *data){
-    if(data != NULL){
-        free(data);
-    }
-}
-
-HashList::HashList(){
-    array_size = DEFAULT_ARRAY_LENGTH ;
-    hash_func = default_hash;
-    compare_func = default_hash_compare;
-    destroy_func = default_hash_destroy;
-    array = (List **)malloc(array_size * sizeof(List *));
-    item_count = 0;
-    int i = 0;
-    while(i < array_size){
-        array[i] = new List(default_hash_compare,default_hash_destroy);
-        i++;
-    }
-}
-
-void HashList::set_pfn(pfn_hash func,pfn_list_compare compare,pfn_list_destroy destroy){
+HashList::HashList(pfn_hash func,pfn_hash_compare compare,pfn_hash_destroy destroy,long array_length){
     hash_func = func;
-    compare_func = compare;
     destroy_func = destroy;
-    int i = 0;
-    while(i < array_size){
-        array[i]->set_fpn(compare,destroy);
-        i++;
+    compare_func = compare;
+    if(array_length < 0){
+        array_size  = DEFAULT_ARRAY_LENGTH;
+    }else{
+        array_size = array_length;
     }
+    head_array = (hash_head_t*)malloc(array_size * sizeof(hash_head_t)); 
+    item_count = 0;
+    memset(head_array,0,sizeof(hash_head_t) * array_size);
 }
 
 
-void HashList::hash_insert(void *data){
-    int local = hash_func(data); 
+HashList::~HashList(){
+    int i = 0 ;
+    while(i < array_size){
+        hash_item_t *tmp = head_array[i].next;
+        hash_item_t *tmp_next = NULL;
+        while(tmp != NULL){
+            destroy_func(tmp->key,tmp->data);
+            tmp_next = tmp->next;
+            free(tmp);
+            tmp = tmp_next;
+        }
+        i++;
+    }
+    free(head_array);
+}
+
+void HashList::hash_insert(void *key,void *data){
+    int local = hash_func(key); 
     local %= array_size; 
-    List *list = array[local];
-    if(list->find_list_item(data) == NULL){
+    //only insert at the head
+    if(hash_find(key,data) == NULL){
+        hash_item_t *tmp = (hash_item_t *)malloc(sizeof(hash_item_t));
+        memset(tmp,0,sizeof(hash_item_t));
+        tmp->key = key;
+        tmp->data = data;
+        tmp->next = head_array[local].next ;
+        head_array[local].next = tmp;
         item_count ++;
-        list->insert_list_tail(data);
     }else{
         printf("item has already been in the list\n");
     }
 }
 
-void* HashList::hash_find(void *data){
-    int local = hash_func(data); 
+void* HashList::hash_find(void *key,void *data){
+    int local = hash_func(key); 
     local %= array_size; 
-    List *list = array[local];
-    return list->find_list_item(data);
+    hash_item_t *tmp = head_array[local].next;
+    while(tmp != NULL){
+        if(data != NULL){
+            if(compare_func(data,tmp->data) == 0){
+                break;
+            }
+        }else{
+            if(compare_func(key,tmp->key) == 0){
+                break;
+            }
+        }
+        tmp = tmp->next;
+    }
+    return (tmp == NULL) ?NULL:tmp->data;
 }
 
-void HashList::hash_remove(void *data){
-    int local = hash_func(data); 
+void HashList::hash_remove(void *key,void *data){
+    int local = hash_func(key); 
     local %= array_size; 
-    List *list = array[local];
-    if(list->find_list_item(data)){
+    hash_item_t *tmp = head_array[local].next;
+    hash_item_t *prev = tmp;
+    while(tmp != NULL){
+        if(data != NULL){
+            if(compare_func(data,tmp->data) == 0){
+                break;
+            }
+        }else{
+            if(compare_func(key,tmp->key) == 0){
+                break;
+            }
+        }
+        prev = tmp;
+        tmp = tmp->next;
+    }
+    if(tmp != NULL ){
+        if(tmp == prev){
+            head_array[local].next = NULL;
+        }else{
+            prev->next = tmp->next;
+        }
+        destroy_func(tmp->key,tmp->data);
+        free(tmp);
         item_count --;
-        list->remove_list_item(data);
     }else{
-        printf("there is no member equals to the item\n");
+        printf("no the item \n");
     }
 }
 
@@ -103,29 +127,3 @@ int HashList::get_size(){
 }
 
 
-HashList::HashList(pfn_hash func,pfn_list_compare compare,pfn_list_destroy destroy,long array_length){
-    hash_func = func;
-    destroy_func = destroy;
-    compare_func = compare;
-    array_size = array_length;
-    array = (List **)malloc(array_size * sizeof(List *));
-    item_count = 0;
-    int i = 0;
-    while(i < array_size){
-        array[i] = new List(compare,destroy);
-        i++;
-    }
-}
-
-
-HashList::~HashList(){
-    int i = 0 ;
-    while(i < array_size){
-        delete array[i];
-        i++;
-    }
-
-    if(array != NULL){
-        free(array);
-    }
-}
