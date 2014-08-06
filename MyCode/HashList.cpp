@@ -6,22 +6,6 @@
 #include"memory_test_tool.h"
 
 
-unsigned long default_string_hash_func(void *data){
-    const char *ptr;
-    unsigned int val;
-    val = 0;
-    ptr = (char *)data;
-    while(*ptr != '\0'){
-        unsigned int tmp = 0;
-        val = (val<<4) + (*ptr);
-        if(tmp = (val&0xf0000000)){
-            val = val ^(tmp >> 24);
-            val = val ^tmp;
-        }
-        ptr ++;
-    }
-    return val;
-}
 
 HashList::HashList(pfn_hash func,pfn_hash_compare compare,pfn_hash_destroy destroy,long array_length){
     hash_func = func;

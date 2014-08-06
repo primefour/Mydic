@@ -128,6 +128,20 @@ void* List::get_prev_item(void *data){
     }
 }
 
+
+void List::begin_iterate(){
+    cursor = head.next;
+}
+void* List::iterate_item(){
+    if(cursor != &head){
+        return cursor->data;
+    }else{
+        return NULL;
+    }
+    cursor = cursor->next;
+}
+
+
 void* List::get_next_item(void *data){
     list_head_t *tmp = head.next ; 
     while(tmp != &head){

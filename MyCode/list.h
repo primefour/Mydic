@@ -27,6 +27,8 @@ class List{
         void remove_list_item(void *data);
         void*get_prev_item(void *data);
         void*get_next_item(void *data);
+        void List::begin_iterate();
+        void* List::iterate_item();
 
         static int default_list_compare(void *data1,void *data2);
         static void default_list_destroy(void *data);
@@ -40,6 +42,7 @@ class List{
         pfn_list_compare compare_func;
         pfn_list_destroy destroy_func;
         list_head_t head;
+        list_head_t* cursor;
 };
 
 #endif //__GOLDEN_DICT_LIST__

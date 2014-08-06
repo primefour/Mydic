@@ -14,9 +14,9 @@
 #define PATH_LENGTH_LIMIT (4096)
 
 
-#define LIST_MEM_TEST
+//#define LIST_MEM_TEST
 //#define SIMPLE_SEARCH_TREE_MEM_TEST
-//#define AVL_TREE_MEM_TEST
+#define AVL_TREE_MEM_TEST
 
 typedef struct mem_item_info {
     simple_list_head_t item;
