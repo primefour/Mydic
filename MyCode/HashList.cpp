@@ -47,6 +47,7 @@ HashList::HashList(){
     compare_func = default_hash_compare;
     destroy_func = default_hash_destroy;
     array = (List **)malloc(array_size * sizeof(List *));
+    item_count = 0;
     int i = 0;
     while(i < array_size){
         array[i] = new List(default_hash_compare,default_hash_destroy);
@@ -71,6 +72,7 @@ void HashList::hash_insert(void *data){
     local %= array_size; 
     List *list = array[local];
     if(list->find_list_item(data) == NULL){
+        item_count ++;
         list->insert_list_tail(data);
     }else{
         printf("item has already been in the list\n");
@@ -89,10 +91,15 @@ void HashList::hash_remove(void *data){
     local %= array_size; 
     List *list = array[local];
     if(list->find_list_item(data)){
+        item_count --;
         list->remove_list_item(data);
     }else{
         printf("there is no member equals to the item\n");
     }
+}
+
+int HashList::get_size(){
+    return item_count;
 }
 
 
@@ -102,6 +109,7 @@ HashList::HashList(pfn_hash func,pfn_list_compare compare,pfn_list_destroy destr
     compare_func = compare;
     array_size = array_length;
     array = (List **)malloc(array_size * sizeof(List *));
+    item_count = 0;
     int i = 0;
     while(i < array_size){
         array[i] = new List(compare,destroy);

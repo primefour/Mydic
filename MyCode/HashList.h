@@ -17,6 +17,7 @@ class HashList{
         void*hash_find(void *data);
         void hash_remove(void *data);
         void set_pfn(pfn_hash func,pfn_list_compare compare,pfn_list_destroy destroy);
+        int get_size();
 
         static unsigned long default_hash(void *data);
         static void default_hash_destroy(void *data);
@@ -27,6 +28,7 @@ class HashList{
         pfn_list_destroy destroy_func;
         List **array;
         long array_size; 
+        long item_count;
 };
 
 #endif 
