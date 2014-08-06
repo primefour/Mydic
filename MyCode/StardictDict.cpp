@@ -7,6 +7,7 @@
 #include<sys/types.h>
 #include<fcntl.h>
 #include"Stardict.h"
+#include"utils.h"
 
 
 StardictDict::StardictDict(const char*file_name,const char *same_type_seq){
@@ -116,37 +117,28 @@ int StardictDict::parse_common_flag(meta_data_t *tmp,char flag,unsigned char *da
     }
 }
 
-void StardictDict::parse_meta_data_no_seq(meta_data_head_t *word_data){
-    unsigned char *pData = word_data->data;
-    unsigned char *pData_end = word_data->data + word_data->data_size;
-    init_list_head(&(word_data->head));
-    meta_data_t * tmp = get_new_meta_item();
+void StardictDict::parse_meta_data_no_seq(MetaDataHeader *word_data){
+    unsigned char *pData = word_data->get_data_ptr();
+    unsigned char *pData_end = pData + word_data->get_data_length();
+    meta_data_t tmp={0};
     while(pData < pData_end){
-        pData += parse_common_flag(tmp,*pData,++pData);
-        if(tmp->data){
-            insert_list_item_ahead(&(word_data->head),&(tmp->list));
-            tmp = get_new_meta_item();
+        pData += parse_common_flag(&tmp,*pData,++pData);
+        if(tmp.data){
+            word_data->update_meta_item(tmp.type,tmp.data,tmp.data_length);
+            memset(&tmp,0,sizeof(tmp));
         }
-    }
-    if(tmp->data == NULL){
-        free(tmp);
     }
 }
 
-int StardictDict::read_word_data(meta_data_head_t *word_data){
-    dict_file->lseek(SEEK_SET,word_data->original_offset);
-    word_data->data = (unsigned char *)malloc(word_data->data_size +1);
-    memset(word_data->data,0,word_data->data_size+1);
-    if(word_data->data == NULL){
-        printf("word_data->data_size = %d  \n",word_data->data_size);
-        assert(0);
-    }
-    int ret =  dict_file->read(word_data->data,word_data->data_size);
-    if(ret != word_data->data_size){
+int StardictDict::read_word_data(MetaDataHeader *word_data){
+    dict_file->lseek(SEEK_SET,word_data->get_original_offset());
+
+    int ret =  dict_file->read(word_data->get_data_ptr(),word_data->get_data_length());
+    if(ret != word_data->get_data_length()){
         printf("%s ret = %d \n",__func__,ret); 
         assert(0);
     }else{
-        printf("###%s \n",word_data->data);
+        printf("###%s \n",word_data->get_data_ptr());
         parse_meta_data(word_data);
     }
     return ret;

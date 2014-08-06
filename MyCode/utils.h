@@ -2,6 +2,7 @@
 #define __DIRECTORY_UTILS_H__
 #include"sys/types.h"
 #include"list.h"
+#include<stdio.h>
 
 //don't change the items order
 typedef enum DICT_META_TYPE_T{
@@ -36,11 +37,21 @@ typedef struct meta_data_head{
 
 class MetaDataHeader{
     public:
+        MetaDataHeader(){
+        }
         MetaDataHeader(off_t original_offset,int data_size);
         ~MetaDataHeader();
         void init_meta_data_head(meta_data_head *phead);
         void dump_meta_data_head();
         void update_meta_item(int type,unsigned char *data,int data_len);
+        void update_meta_data_head(off_t offset,int data_len){
+            printf("%s offset = %ld  data lenght = %d \n",__func__,offset,data_len);
+            meta_data_head.original_offset = offset;
+            meta_data_head.data_size = data_len;
+        }
+        off_t get_original_offset(){
+            return meta_data_head.original_offset;
+        }
         unsigned char *get_data_ptr(){
             return meta_data_head.data;
         }

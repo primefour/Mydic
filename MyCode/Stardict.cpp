@@ -84,7 +84,7 @@ int StardictDictionary::init(){
     return 0;
 }
 
-int StardictDictionary::query_word(const char *word,meta_data_head *word_meta){
+int StardictDictionary::query_word(const char *word,MetaDataHeader *word_meta){
     word_item_t *tmp = NULL;
     printf("word = %s \n",word);
     if(sidx != NULL){
@@ -94,9 +94,8 @@ int StardictDictionary::query_word(const char *word,meta_data_head *word_meta){
         printf("%s get word return NULL \n",__func__);
     }
     if(tmp && sd != NULL){
-        word_meta->original_offset = tmp->word_data_offset.bit32;
-        word_meta->data_size = tmp->word_data_size;
-        printf("word_meta->original_offset = %ld word_meta->data_size = %d \n",word_meta->original_offset,word_meta->data_size);
+        word_meta->update_meta_data_head(tmp->word_data_offset.bit32,tmp->word_data_size);
+        printf("word_meta->original_offset = %ld word_meta->data_size = %d \n",word_meta->get_original_offset(),word_meta->get_data_length());
         sd->read_word_data(word_meta);
         return 0;
     }else{

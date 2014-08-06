@@ -10,11 +10,12 @@ class StardictDict{
         StardictDict(const char*file_name,const char *same_type_seq);
         ~StardictDict();
         int init(); 
-        int  read_word_data(meta_data_head_t *word_data);
+        int read_word_data(MetaDataHeader *word_data);
     private:
-        void parse_meta_data(meta_data_head_t *word_data);
-        void parse_meta_data_no_seq(meta_data_head_t *word_data);
-        void parse_meta_data_with_seq(meta_data_head_t *word_data);
+        void parse_meta_data(MetaDataHeader *word_data);
+        void parse_meta_data_no_seq(MetaDataHeader *word_data);
+        void parse_meta_data_with_seq(MetaDataHeader *word_data);
+
         int parse_common_flag(meta_data_t *tmp,char flag,unsigned char *data);
         //word's pure text meaing
         //utf-8 string terminate with '\0'

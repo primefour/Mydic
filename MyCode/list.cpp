@@ -18,8 +18,16 @@ List::List(){
 }
 
 List::List(pfn_list_compare compare,pfn_list_destroy destroy){
-    compare_func = compare;
-    destroy_func = destroy;
+    if(compare != NULL){
+        compare_func = compare;
+    }else{
+        compare_func = default_list_compare;
+    }
+    if(destroy != NULL){
+        destroy_func = destroy;
+    }else{
+        destroy_func = default_list_destroy;
+    }
     init_list_head();
 }
 
@@ -130,7 +138,7 @@ void* List::get_prev_item(void *data){
         tmp  = tmp->next;
     }
     if(&head != head.prev){
-        return head.prev;
+        return head.prev->data;
     }
 }
 
@@ -147,7 +155,7 @@ void* List::get_next_item(void *data){
         tmp  = tmp->next;
     }
     if(&head != head.next){
-        return head.next;
+        return head.next->data;
     }
 }
 
@@ -192,6 +200,6 @@ int List::default_list_compare(void *data1,void *data2){
 
 void List::default_list_destroy(void *data){
     if(data != NULL){
-        free(data);
+        //free(data);
     }
 }

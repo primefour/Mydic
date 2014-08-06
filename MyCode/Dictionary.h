@@ -7,7 +7,7 @@
 class Dictionary{
     public:
         virtual int init()=0;
-        virtual int query_word(const char *word,meta_data_head *word_meta)=0;
+        virtual int query_word(const char *word,MetaDataHeader *word_meta)=0;
         virtual char* get_dictionary_name(char *buff,int len) = 0;
         virtual char* get_dictionary_version(char *buff,int len)=0;
         virtual char* get_dictionary_author(char *buff,int len)=0;

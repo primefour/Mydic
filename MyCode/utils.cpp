@@ -88,12 +88,14 @@ MetaDataHeader::MetaDataHeader(off_t original_offset,int data_size){
     memset(&meta_data_head,0,sizeof(meta_data_head_t));
     meta_data_head.original_offset = original_offset;
     meta_data_head.data_size =data_size;
-    meta_data_head.data = (unsigned char *)malloc(data_size);
+    meta_data_head.data = (unsigned char *)malloc(data_size +1);
+    memset(meta_data_head.data,0,data_size +1);
 }
 
 
 void MetaDataHeader::update_meta_item(int type,unsigned char *data,int data_len){
-    if(type > 0 && type < DICT_MAX_TYPE){
+    printf("type = %d meta_item->data = %s \n datalen = %d ",type,data,data_len);
+    if(type >= 0 && type < DICT_MAX_TYPE){
         meta_data_head.meta_data[type].data = data;
         meta_data_head.meta_data[type].data_length = data_len;
     }else{
@@ -102,11 +104,15 @@ void MetaDataHeader::update_meta_item(int type,unsigned char *data,int data_len)
 }
 
 void MetaDataHeader::dump_meta_item(meta_data_t *meta_item,int type){
-    if(type != DICT_ATTACH_TYPE && type != DICT_PIC_TYPE &&
-            type !=  DICT_SOUND_TYPE){
-        printf("data length = %d ,data = %s type = %d \n",meta_item->data_length,meta_item->data,type);
-    }else{
-        printf("###special type data length = %d , type = %d \n",meta_item->data_length,type);
+        printf("##################%s #####################3\n",__func__);
+    if(meta_item->data != NULL){
+        printf("##################%s #####################4\n",__func__);
+        if(type != DICT_ATTACH_TYPE && type != DICT_PIC_TYPE &&
+                type !=  DICT_SOUND_TYPE){
+            printf("data length = %d ,data = %s type = %d \n",meta_item->data_length,meta_item->data,type);
+        }else{
+            printf("###special type data length = %d , type = %d \n",meta_item->data_length,type);
+        }
     }
 }
 
@@ -114,6 +120,7 @@ void MetaDataHeader::dump_meta_data_head(){
     int i = 0;
     while(i < DICT_MAX_TYPE){
         dump_meta_item(&meta_data_head.meta_data[i],i);
+        i++;
     }
 }
 

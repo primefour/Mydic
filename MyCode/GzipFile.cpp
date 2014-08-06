@@ -359,7 +359,6 @@ int GzipFile::extract(off_t offset,unsigned char *buf, int len){
     }
 
     access_point_t *first_item = find_item ;
-    printf("first item in = %d ,out = %d \n",first_item->file_chunk_offset,first_item->original_end);
     /* initialize file and inflate state to start there */
     strm.zalloc = Z_NULL;
     strm.zfree = Z_NULL;
@@ -371,6 +370,7 @@ int GzipFile::extract(off_t offset,unsigned char *buf, int len){
         return ret;
     }
     ret = File::lseek(SEEK_SET,first_item->file_chunk_offset - (first_item->bits ? 1 : 0));
+    printf("###################%s %d \n",__func__,__LINE__);
     if (ret == -1){
         goto extract_ret;
     }
