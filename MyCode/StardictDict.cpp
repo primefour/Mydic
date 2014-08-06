@@ -131,8 +131,8 @@ void StardictDict::parse_meta_data_no_seq(MetaDataHeader *word_data){
 }
 
 int StardictDict::read_word_data(MetaDataHeader *word_data){
+    printf("%s original offset = %ld data length = %d ",__func__,word_data->get_original_offset(),word_data->get_data_length());
     dict_file->lseek(SEEK_SET,word_data->get_original_offset());
-
     int ret =  dict_file->read(word_data->get_data_ptr(),word_data->get_data_length());
     if(ret != word_data->get_data_length()){
         printf("%s ret = %d \n",__func__,ret); 

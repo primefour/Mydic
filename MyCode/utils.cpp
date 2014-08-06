@@ -82,6 +82,32 @@ char *get_path_suffix(const char *file_path,char *suffix,int len){
 
 }
 
+MetaDataHeader::MetaDataHeader(){
+    memset(&meta_data_head,0,sizeof(meta_data_head_t));
+}
+
+void MetaDataHeader::update_meta_data_head(off_t offset,int data_len){
+    printf("%s offset = %ld  data lenght = %d \n",__func__,offset,data_len);
+    if(meta_data_head.data != NULL){
+        free(meta_data_head.data);
+        meta_data_head.data = NULL;
+        memset(&meta_data_head,0,sizeof(meta_data_head_t));
+    }
+    meta_data_head.original_offset = offset;
+    meta_data_head.data_size = data_len;
+    meta_data_head.data = (unsigned char *)malloc(data_len +1);
+    memset(meta_data_head.data,0,data_len+1);
+}
+off_t MetaDataHeader::get_original_offset(){
+    return meta_data_head.original_offset;
+}
+
+unsigned char *MetaDataHeader::get_data_ptr(){
+    return meta_data_head.data;
+}
+int MetaDataHeader::get_data_length(){
+    return meta_data_head.data_size;
+}
 
 
 MetaDataHeader::MetaDataHeader(off_t original_offset,int data_size){
@@ -125,6 +151,8 @@ void MetaDataHeader::dump_meta_data_head(){
 }
 
 MetaDataHeader::~MetaDataHeader(){
-    free(meta_data_head.data);
+    if(meta_data_head.data != NULL){
+        free(meta_data_head.data);
+    }
 }
 

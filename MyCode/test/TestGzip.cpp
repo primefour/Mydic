@@ -40,6 +40,11 @@ int main(int argc,char **argv){
     printf("ret = %d \n",ret);
     printf("%s\n",buff);
 
+    memset(buff,0,sizeof(buff));
+    inst->lseek(SEEK_SET,14116935);
+    inst->read(buff,sizeof(buff));
+    printf("%s \n",buff);
+
     
     delete inst;
     File::release_check_list();

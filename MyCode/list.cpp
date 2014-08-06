@@ -200,6 +200,6 @@ int List::default_list_compare(void *data1,void *data2){
 
 void List::default_list_destroy(void *data){
     if(data != NULL){
-        //free(data);
+        free(data);
     }
 }

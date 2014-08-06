@@ -24,8 +24,8 @@ int main(){
         return -1 ;
     }
     char buff[1024]={0};
+    MetaDataHeader *tmp_head = new MetaDataHeader();
     while(1){
-        MetaDataHeader *tmp_head = new MetaDataHeader();
         memset(buff,0,sizeof(buff));
         printf("Please input words:");
         scanf("%s",buff);
@@ -35,10 +35,10 @@ int main(){
         }
         ret = sd->query_word(buff,tmp_head);
         printf("ret = %d kkkkk\n",ret);
-        //tmp_head->dump_meta_data_head();
-        //delete tmp_head;
+        tmp_head->dump_meta_data_head();
         printf("#####################ret = %d kkkkk\n",ret);
     }
+    delete tmp_head;
     File::release_check_list();
     delete sd;
     release_global_env();
