@@ -50,14 +50,18 @@ HashList::HashList(){
     int i = 0;
     while(i < array_size){
         array[i] = new List(default_hash_compare,default_hash_destroy);
+        i++;
     }
 }
 
 void HashList::set_pfn(pfn_hash func,pfn_list_compare compare,pfn_list_destroy destroy){
     hash_func = func;
+    compare_func = compare;
+    destroy_func = destroy;
     int i = 0;
     while(i < array_size){
         array[i]->set_fpn(compare,destroy);
+        i++;
     }
 }
 
@@ -101,6 +105,7 @@ HashList::HashList(pfn_hash func,pfn_list_compare compare,pfn_list_destroy destr
     int i = 0;
     while(i < array_size){
         array[i] = new List(compare,destroy);
+        i++;
     }
 }
 
@@ -109,6 +114,7 @@ HashList::~HashList(){
     int i = 0 ;
     while(i < array_size){
         delete array[i];
+        i++;
     }
 
     if(array != NULL){

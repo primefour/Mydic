@@ -130,9 +130,7 @@ void MetaDataHeader::update_meta_item(int type,unsigned char *data,int data_len)
 }
 
 void MetaDataHeader::dump_meta_item(meta_data_t *meta_item,int type){
-        printf("##################%s #####################3\n",__func__);
     if(meta_item->data != NULL){
-        printf("##################%s #####################4\n",__func__);
         if(type != DICT_ATTACH_TYPE && type != DICT_PIC_TYPE &&
                 type !=  DICT_SOUND_TYPE){
             printf("data length = %d ,data = %s type = %d \n",meta_item->data_length,meta_item->data,type);
