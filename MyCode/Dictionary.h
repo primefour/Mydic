@@ -2,7 +2,7 @@
 #define __DIRECTORY_H__
 #include"sys/types.h"
 #include"list.h"
-#include"utils.h"
+#include"MetaDataHead.h"
 
 class Dictionary{
     public:

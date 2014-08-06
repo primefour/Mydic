@@ -1,5 +1,5 @@
-#ifndef __DIRECTORY_UTILS_H__
-#define __DIRECTORY_UTILS_H__
+#ifndef __META_DATA_HEAD_H__
+#define __META_DATA_HEAD_H__ 
 #include"sys/types.h"
 #include"list.h"
 #include<stdio.h>
@@ -50,12 +50,5 @@ class MetaDataHeader{
         void dump_meta_item(meta_data_t *meta_item,int i);
         meta_data_head_t meta_data_head;
 };
-
-
-
-
-int split_path_no_suffix(const char *file_path,char *file_main_path,int path_len ,char *file_name,int len);
-char *get_path_no_suffix(const char *file_path,char *file_name,int len);
-char *get_path_suffix(const char *file_path,char *suffix,int len);
 
 #endif

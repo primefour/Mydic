@@ -3,7 +3,7 @@
 #include"list.h"
 #include"File.h"
 #include"sys/types.h"
-#include"utils.h"
+#include"MetaDataHead.h"
 
 class StardictDict{
     public:

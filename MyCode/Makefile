@@ -13,7 +13,7 @@ TestStardictInfo:*.cpp $(TEST_PATH)/TestStardictInfo.cpp *.h
 	$(GCC) $(CFLAGS) $(LDFLAGS) *.cpp $(TEST_PATH)/TestStardictInfo.cpp $(MEM_TEST) -o $(TEST_PATH)/TestStardictInfo -lz
 TestStardictIdx:*.cpp $(TEST_PATH)/TestStardictIdx.cpp *.h 
 	$(GCC) $(CFLAGS) $(LDFLAGS) *.cpp $(TEST_PATH)/TestStardictIdx.cpp $(MEM_TEST)-o $(TEST_PATH)/TestStardictIdx -lz
-TestStardictDict:*.cpp $(TEST_PATH)/TestStardictDict.cpp *.h 
+TestStardictDict:*.cpp $(TEST_PATH)/TestStardictDict.cpp  *.h 
 	$(GCC) $(CFLAGS) $(LDFLAGS) *.cpp $(TEST_PATH)/TestStardictDict.cpp $(MEM_TEST)-o $(TEST_PATH)/TestStardictDict -lz
 mem_test:*.cpp $(TEST_PATH)/mem_test.c  memory_test_tool.c memory_test_tool.h
 	$(GCC) $(CFLAGS) $(LDFLAGS) *.cpp $(MEM_TEST) $(TEST_PATH)/mem_test.c -o $(TEST_PATH)/mem_test -lz

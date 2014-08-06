@@ -7,7 +7,7 @@
 #include<sys/types.h>
 #include<fcntl.h>
 #include"Stardict.h"
-#include"utils.h"
+#include"MetaDataHead.h"
 
 
 StardictDict::StardictDict(const char*file_name,const char *same_type_seq){

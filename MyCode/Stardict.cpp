@@ -14,14 +14,14 @@
 #include<fcntl.h>
 #include<stdio.h>
 #include<string.h>
-#include"utils.h"
+#include"DirectoryUtils.h"
 #include"memory_test_tool.h"
 
 StardictDictionary::StardictDictionary(const char *dictionary_path){
     int len = strlen(dictionary_path) + 1;
     file_main_path = (char *)malloc(len);
     memset(file_main_path,0,len);
-    get_path_no_suffix(dictionary_path,file_main_path,len);
+    get_path_without_suffix(dictionary_path,file_main_path,len);
 }
 
 StardictDictionary::~StardictDictionary(){
