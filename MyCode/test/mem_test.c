@@ -12,7 +12,7 @@ int main(){
     free(tmp);
     const char *hello_world = "hello world";
     tmp = strdup(hello_world);
-    free(tmp);
+    //free(tmp);
     release_global_env();
     return 0;
 }

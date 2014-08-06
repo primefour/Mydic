@@ -2,7 +2,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<pthread.h>
-#include"list.h"
+#include"simple_list.h"
 #include<assert.h>
 #include"BinTree.h"
 #include"AvlTree.h"
@@ -14,12 +14,12 @@
 #define PATH_LENGTH_LIMIT (4096)
 
 
-//#define LIST_MEM_TEST
+#define LIST_MEM_TEST
 //#define SIMPLE_SEARCH_TREE_MEM_TEST
-#define AVL_TREE_MEM_TEST
+//#define AVL_TREE_MEM_TEST
 
 typedef struct mem_item_info {
-    list_head_t item;
+    simple_list_head_t item;
     void *addr;
     long ref;
     char file[PATH_LENGTH_LIMIT];
@@ -32,16 +32,16 @@ typedef struct mem_item_info {
 
 typedef struct mem_list{
     pthread_mutex_t mutex;
-    list_head_t mem_head;
+    simple_list_head_t mem_head;
     int item_count;
 }mem_list_t;
 
 void tools_dump_item_error_info(mem_item_info_t *ptr,const char *str);
 void init_global_env();
 void release_global_env();
-int mem_item_compare_func(list_head_t *list_item,void *find_item);
-list_head_t *find_mem_list_item(mem_list_t *mem_list_head_ptr,list_head_t *item);
-void insert_mem_list_item(mem_list_t *mem_list_head_ptr,list_head_t *insert_item);
+int mem_item_compare_func(simple_list_head_t *list_item,void *find_item);
+simple_list_head_t *find_mem_list_item(mem_list_t *mem_simple_list_head_ptr,simple_list_head_t *item);
+void insert_mem_list_item(mem_list_t *mem_simple_list_head_ptr,simple_list_head_t *insert_item);
 mem_item_info_t *get_mem_list_item();
 void *tools_malloc(int size,const char *file_name,int line);
 int tools_check_free_point(mem_item_info_t *mem_ptr);
@@ -53,21 +53,21 @@ void tools_get_leak_mem();
 char* tools_strdup( const char *str, const char*file_name, int line);
 //////////////////////////////////////////////////////////////////////////////////////////////
 //global list
-mem_list_t  mem_list_head;
+mem_list_t  mem_simple_list_head;
 
 void init_global_env(){
-    mem_list_t* mem_head_ptr = &mem_list_head;
+    mem_list_t* mem_head_ptr = &mem_simple_list_head;
     memset(mem_head_ptr,0,sizeof(mem_list_t));
     pthread_mutex_init(&mem_head_ptr->mutex,NULL);
-    init_list_head(&(mem_head_ptr->mem_head));
+    init_simple_list_head(&(mem_head_ptr->mem_head));
 }
 
 void release_global_env(){
-    list_head_t *tmp_head = &(mem_list_head.mem_head);
-    list_head_t *tmp_item = tmp_head->next;
+    simple_list_head_t *tmp_head = &(mem_simple_list_head.mem_head);
+    simple_list_head_t *tmp_item = tmp_head->next;
 
     mem_item_info_t *tmp_mem_info_item= NULL;
-    printf("item count = %d  \n",mem_list_head.item_count);
+    printf("item count = %d  \n",mem_simple_list_head.item_count);
     while(tmp_item != tmp_head){
         mem_item_info_t *tmp_mem_info_item = contain_of(tmp_item,mem_item_info_t,item);
         if(tmp_mem_info_item->ref > 0){
@@ -87,7 +87,7 @@ void release_global_env(){
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
-int mem_item_compare_func(list_head_t *list_item,void *find_item){
+int mem_item_compare_func(simple_list_head_t *list_item,void *find_item){
     mem_item_info_t *mem_list_item = contain_of(list_item,mem_item_info_t,item);
     mem_item_info_t *mem_find_item = (mem_item_info_t*) find_item;
     if(mem_list_item->addr == mem_find_item->addr){
@@ -97,16 +97,16 @@ int mem_item_compare_func(list_head_t *list_item,void *find_item){
     }
 }
 
-list_head_t *find_mem_list_item(mem_list_t *mem_list_head_ptr,list_head_t *item){
-    list_head_t *result = NULL;
-    result = find_list_item(&(mem_list_head_ptr->mem_head),item,mem_item_compare_func);
+simple_list_head_t *find_mem_list_item(mem_list_t *mem_simple_list_head_ptr,simple_list_head_t *item){
+    simple_list_head_t *result = NULL;
+    result = find_list_item(&(mem_simple_list_head_ptr->mem_head),item,mem_item_compare_func);
     return result;
 }
 
 
-void insert_mem_list_item(mem_list_t *mem_list_head_ptr,list_head_t *insert_item){
-    insert_list_item_behind(&(mem_list_head_ptr->mem_head),insert_item);
-    mem_list_head_ptr->item_count ++;
+void insert_mem_list_item(mem_list_t *mem_simple_list_head_ptr,simple_list_head_t *insert_item){
+    insert_list_item_behind(&(mem_simple_list_head_ptr->mem_head),insert_item);
+    mem_simple_list_head_ptr->item_count ++;
 }
 
 
@@ -120,7 +120,7 @@ mem_item_info_t *get_mem_list_item(){
         return NULL;
     }
     memset(mem_item_ptr,0,sizeof(mem_item_info_t));
-    init_list_head(&mem_item_ptr->item);
+    init_simple_list_head(&mem_item_ptr->item);
     return mem_item_ptr;
 }
 
@@ -145,10 +145,10 @@ void *tools_malloc(int size,const char *file_name,int line){
     memset(mem_item_ptr->addr,TOOLS_INIT_PATTERN,mem_size);
 
     mem_item_info_t *result_mem_item_ptr = NULL;
-    list_head_t *result_item_ptr = NULL;
+    simple_list_head_t *result_item_ptr = NULL;
 
-    pthread_mutex_lock(&(mem_list_head.mutex));
-    result_item_ptr = find_mem_list_item(&mem_list_head,&(mem_item_ptr->item));
+    pthread_mutex_lock(&(mem_simple_list_head.mutex));
+    result_item_ptr = find_mem_list_item(&mem_simple_list_head,&(mem_item_ptr->item));
     if(result_item_ptr != NULL){
         result_mem_item_ptr = contain_of(result_item_ptr,mem_item_info_t,item);
         if(result_mem_item_ptr->ref == 0){
@@ -162,11 +162,11 @@ void *tools_malloc(int size,const char *file_name,int line){
         //remove the item
         remove_list_item(&(result_mem_item_ptr->item));
         free(result_mem_item_ptr);
-        mem_list_head.item_count --;
+        mem_simple_list_head.item_count --;
     }
     //insert to queue
-    insert_mem_list_item(&mem_list_head,&(mem_item_ptr->item));
-    pthread_mutex_unlock(&(mem_list_head.mutex));
+    insert_mem_list_item(&mem_simple_list_head,&(mem_item_ptr->item));
+    pthread_mutex_unlock(&(mem_simple_list_head.mutex));
     return  (void *)((unsigned char *)(mem_item_ptr->addr) + TOOLS_TEST_SPACE);
 }
 
@@ -198,11 +198,11 @@ int tools_check_free_point(mem_item_info_t *mem_ptr){
 
 
 void tools_dump_item_info(){
-    list_head_t *tmp_head = &(mem_list_head.mem_head);
-    list_head_t *tmp_item = tmp_head->next;
+    simple_list_head_t *tmp_head = &(mem_simple_list_head.mem_head);
+    simple_list_head_t *tmp_item = tmp_head->next;
 
     mem_item_info_t *tmp_mem_info_item= NULL;
-    printf("item count = %d  \n",mem_list_head.item_count);
+    printf("item count = %d  \n",mem_simple_list_head.item_count);
     while(tmp_item != tmp_head){
         mem_item_info_t *tmp_mem_info_item = contain_of(tmp_item,mem_item_info_t,item);
 
@@ -227,9 +227,9 @@ void tools_free(void *ptr,const char *file,int line ){
     tmp_mem_item.addr = ((unsigned char *)ptr - TOOLS_TEST_SPACE);
     //printf("######################################%s###################%p\n",__func__,tmp_mem_item.addr);
     mem_item_info_t *result_mem_item_ptr = NULL;
-    list_head_t *result_item_ptr = NULL;
-    pthread_mutex_lock(&(mem_list_head.mutex));
-    result_item_ptr = find_mem_list_item(&mem_list_head,&(tmp_mem_item.item));
+    simple_list_head_t *result_item_ptr = NULL;
+    pthread_mutex_lock(&(mem_simple_list_head.mutex));
+    result_item_ptr = find_mem_list_item(&mem_simple_list_head,&(tmp_mem_item.item));
     if(result_item_ptr != NULL){
         result_mem_item_ptr = contain_of(result_item_ptr,mem_item_info_t,item);
         if(result_mem_item_ptr->ref <= 0){
@@ -251,7 +251,7 @@ void tools_free(void *ptr,const char *file,int line ){
             //remove the item
             remove_list_item(&(result_mem_item_ptr->item));
             free(result_mem_item_ptr);
-            mem_list_head.item_count --;
+            mem_simple_list_head.item_count --;
         }
         */
     }else{
@@ -260,17 +260,17 @@ void tools_free(void *ptr,const char *file,int line ){
         //try to free it
         //free(ptr);
     }
-    pthread_mutex_unlock(&(mem_list_head.mutex));
+    pthread_mutex_unlock(&(mem_simple_list_head.mutex));
 }
 
 
 
 void tools_get_leak_mem(){
-    list_head_t *tmp_head = &(mem_list_head.mem_head);
-    list_head_t *tmp_item = tmp_head->next;
+    simple_list_head_t *tmp_head = &(mem_simple_list_head.mem_head);
+    simple_list_head_t *tmp_item = tmp_head->next;
 
     mem_item_info_t *tmp_mem_info_item= NULL;
-    printf("item count = %d  \n",mem_list_head.item_count);
+    printf("item count = %d  \n",mem_simple_list_head.item_count);
     while(tmp_item != tmp_head){
         mem_item_info_t *tmp_mem_info_item = contain_of(tmp_item,mem_item_info_t,item);
         if(tmp_mem_info_item->ref > 0){
