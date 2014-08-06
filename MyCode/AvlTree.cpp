@@ -338,3 +338,43 @@ void avl_tree_layer_scan(bin_tree_t *tree,tree_node_t **node_parent){
     avl_tree_layer_scan(tree,parent);
 }
 
+
+
+
+
+AVLTree::AVLTree(bin_compare_func compare,destroy_func destroy,dump_data_func dump_data){
+    avl_tree_init(&tree,compare,destroy,dump_data);
+}
+
+AVLTree::~AVLTree(){
+    avl_tree_destroy(&tree);
+}
+
+
+void AVLTree::tree_insert(void *data){
+    int balance = 1;
+    avl_tree_insert(&tree,NULL,data,&balance);
+}
+
+void AVLTree::tree_remove(void *data){
+    avl_tree_remove(&tree,NULL,data);
+}
+
+
+void* AVLTree::tree_find(void *data){
+    void *tmp_item = NULL;
+    avl_tree_find(&tree,NULL,data,(void **)(&tmp_item));
+    return tmp_item;
+}
+
+void AVLTree::tree_layer_scan(){
+    tree_node_t *parent[2]={0};
+    parent[0] = bin_tree_root(&tree);
+    avl_tree_layer_scan(&tree,parent);
+}
+
+
+void AVLTree::tree_preorder_scan(){
+    avl_tree_preorder_scan(&tree);
+}
+

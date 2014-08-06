@@ -194,12 +194,23 @@ int main(){
     avl_tree_layer_scan(&avl_test_tree,parent);
 
 
+    printf("test AVLTree class ################################33\n");
+    AVLTree *at = new AVLTree(compare_test,NULL,dump_test_data);
+    at->tree_remove((void *)12);
+    at->tree_insert((void *)12);
+    void * tmp_ret = at->tree_find((void *)12);
+    if(tmp_ret != NULL){
+        printf("###%ld \n",(long)tmp_ret);
+    }
+    at->tree_remove((void *)12);
+    tmp_ret = at->tree_find((void *)12);
+    if(tmp_ret != NULL){
+        printf("###%ld \n",(long)tmp_ret);
+    }
+
     avl_tree_destroy(&avl_test_tree);
-    
-    
     bin_tree_destroy(&test_tree);
     bin_tree_destroy(&simple_test_tree);
-   
     release_global_env();
     return 0;
 }

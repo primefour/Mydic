@@ -25,4 +25,18 @@ void avl_tree_init(bin_tree_t *tree,bin_compare_func compare,destroy_func destro
 void avl_tree_layer_scan(bin_tree_t *tree,tree_node_t **node_parent);
 void avl_tree_preorder_scan(bin_tree_t *tree);
 
+
+class AVLTree{
+    public:
+        AVLTree(bin_compare_func compare,destroy_func destroy,dump_data_func dump_data);
+        ~AVLTree();
+        void tree_remove(void *data);
+        void tree_insert(void *data);
+        void*tree_find(void *data);
+        void tree_layer_scan();
+        void tree_preorder_scan();
+    private:
+        bin_tree_t tree;
+};
+
 #endif //__AVL_TREE_H__
