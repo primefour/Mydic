@@ -15,6 +15,7 @@ List::List(const List &list){
 List::List(pfn_list_compare compare,pfn_list_destroy destroy){
     compare_func = compare;
     destroy_func = destroy;
+    cursor = NULL;
     init_list_head();
 }
 
@@ -56,7 +57,7 @@ void List::release_list(){
 void List::dump_list(){
     list_head_t *tmp_head = head.next; 
     while(tmp_head != &head){ 
-        printf("%ld  ",(long)(tmp_head->data));
+        printf("%s  ",(char *)(tmp_head->data));
         tmp_head = tmp_head->next;
     } 
 }
@@ -133,12 +134,13 @@ void List::begin_iterate(){
     cursor = head.next;
 }
 void* List::iterate_item(){
+    void *data = NULL;
+    assert(cursor != NULL);
     if(cursor != &head){
-        return cursor->data;
-    }else{
-        return NULL;
+        data = cursor->data;
     }
     cursor = cursor->next;
+    return data;
 }
 
 

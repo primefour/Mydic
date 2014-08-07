@@ -1,31 +1,36 @@
-init ret = 24 :str = StarDict's dict ifo file 
-init ret = 13 :str = version=2.4.2 
-this is an empty tree 
-37266576 insert to as root  
-init ret = 16 :str = wordcount=435468 
-init ret = 20 :str = idxfilesize=10651674 
-init ret = 30 :str = bookname=朗道英汉字典5.0 
-init ret = 49 :str = author=上海朗道电脑科技发展有限公司 
-init ret = 69 :str = description=罗小辉破解文件格式，胡正制作转换程序。 
-init ret = 15 :str = date=2003.08.26 
-init ret = 18 :str = sametypesequence=m 
-init ret = 0 :str =  
-version = 2.4.2 
-book_name = 朗道英汉字典5.0 
-author = 上海朗道电脑科技发展有限公司 
-description = 罗小辉破解文件格式，胡正制作转换程序。 
-date = 2003.08.26 
-word_count = 435468 syn_word_count = 0 idx_file_size = 10651674 offset bits = 0 ,sts = m 
-i = 0 word = a offset 0 ,length 132  
-i = 1 word = A and B agglutinogens offset 132 ,length 24  
-i = 2 word = A AND NOT B gate offset 156 ,length 19  
-i = 3 word = A as well as B offset 175 ,length 28  
-i = 4 word = A B. S. pill offset 203 ,length 45  
-i = 5 word = a back number offset 248 ,length 29  
-i = 6 word = a bad actor offset 277 ,length 20  
-i = 7 word = a bad egg offset 297 ,length 6  
-i = 8 word = a bad hat offset 303 ,length 6  
-i = 9 word = a bad job offset 309 ,length 15  
-file offset = 10651674 
-##########################ret = 8    
-word = hello offset 5938164 ,length 28  
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/TestStardictInfo.cpp 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/TestFile.cpp 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/DirTest 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/langdao-ec-gb.ifo 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/TestGzip 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/langdao-ec-gb.idx 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/TestStardictDict.cpp 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/raw.data 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/langdao-ce-gb.dict.dz 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/TestFile 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/TestStardictInfo 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/mem_test.c 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/bin_tree_test 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/TestStardictIdx.cpp 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/hello 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/langdao-ec-gb.dict.dz 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/a.out 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/TestList.cpp 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/hash_test.cpp 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/.swo 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/TestStardictDict 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/DirTest.cpp 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/langdao-ce-gb.ifo 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/ReadMe 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/TestGzip.cpp 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/DirectoryTest.cpp 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/mem_test 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/TestList 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/list_test.c 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/hello.cpp 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/list_test 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/langdao-ce-gb.idx 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/TestStardictIdx 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/bin_tree_test.cpp 
+insert_file ########/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/kkkk 
+/home/crazyhorse/test/golden_dic/MyDict/MyCode/test/TestStardictInfo.cpp  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/TestFile.cpp  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/DirTest  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/langdao-ec-gb.ifo  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/TestGzip  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/langdao-ec-gb.idx  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/TestStardictDict.cpp  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/raw.data  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/langdao-ce-gb.dict.dz  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/TestFile  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/TestStardictInfo  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/mem_test.c  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/bin_tree_test  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/TestStardictIdx.cpp  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/hello  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/langdao-ec-gb.dict.dz  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/a.out  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/TestList.cpp  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/hash_test.cpp  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/.swo  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/TestStardictDict  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/DirTest.cpp  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/langdao-ce-gb.ifo  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/ReadMe  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/TestGzip.cpp  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/DirectoryTest.cpp  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/mem_test  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/TestList  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/list_test.c  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/hello.cpp  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/list_test  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/langdao-ce-gb.idx  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/TestStardictIdx  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/bin_tree_test.cpp  /home/crazyhorse/test/golden_dic/MyDict/MyCode/test/kkkk  

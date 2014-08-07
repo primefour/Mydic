@@ -11,9 +11,6 @@
 #include<assert.h>
 
 //This code is ported from android media scanner 
-//
-int doProcessDirectoryEntry(char *path, int pathRemaining,struct dirent* entry, char* fileSpot);
-int doProcessDirectory(char *path, int pathRemaining);
 
 char *get_path_suffix(const char *file_path,char *suffix,int len){
     const char *pdash = strrchr(file_path,'/');
@@ -105,7 +102,7 @@ char *get_path_without_suffix(const char *file_path,char *file_name,int len){
 
 
 
-int  processDirectory(const char *path){ 
+int  DirectoryScanner::processDirectory(const char *path){ 
     int pathLength = strlen(path);
     if (pathLength >= PATH_MAX) {
         return 0;
@@ -128,7 +125,7 @@ int  processDirectory(const char *path){
     return result;
 }
 
-int doProcessDirectory(char *path, int pathRemaining){ 
+int DirectoryScanner::doProcessDirectory(char *path, int pathRemaining){ 
     char* fileSpot = path + strlen(path);
     struct dirent* entry;
     DIR* dir = opendir(path);
@@ -147,13 +144,13 @@ int doProcessDirectory(char *path, int pathRemaining){
     return result;
 }
 
-int doProcessDirectoryEntry(char *path, int pathRemaining,struct dirent* entry, char* fileSpot) {
+int DirectoryScanner::doProcessDirectoryEntry(char *path, int pathRemaining,struct dirent* entry, char* fileSpot) {
     struct stat statbuf;
     const char* name = entry->d_name;
     if (name[0] == '.' && (name[1] == 0 || (name[1] == '.' && name[2] == 0))) {
         return 0;
     }
-
+    const char *suffix = strchr(name,'.');
     int nameLength = strlen(name);
     if (nameLength + 1 > pathRemaining) {
         return 0;
@@ -186,27 +183,44 @@ int doProcessDirectoryEntry(char *path, int pathRemaining,struct dirent* entry, 
         }
     } else if (type == DT_REG){
         stat(path, &statbuf);
+        if(ext_hash->get_size() == 0){
+            insert_file(path);
+        }else{
+            void *ret = ext_hash->hash_find(suffix);
+            if(ret != NULL){
+                printf("######ret = %s \n",(char *)ret);
+            }
+            if(suffix != NULL && ret != NULL){
+                insert_file(path);
+            }
+        }
     }
     return 0;
 }
 
 
-class DirectoryScanner{
-    public:
-        DirectoryScanner();
-        ~DirectoryScanner();
-        int processDirectory(const char *path);
-        void add_suffix(const char *str);
-        void remove_suffix(const char *str);
-    private:
-        void insert_file(const char *str);
-        int doProcessDirectoryEntry(char *path, int pathRemaining,struct dirent* entry, char* fileSpot);
-        int doProcessDirectory(char *path, int pathRemaining);
-        HashList *ext_hash;
-        List *file_list;
-};
+void DirectoryScanner::add_suffix(const char *str){
+    int len = strlen(str);
+    char *suffix = (char *)malloc(len + 1);
+    memset(suffix,0,len + 1);
+    strcpy(suffix,str);
+    ext_hash->hash_insert(suffix);
+}
 
-static unsigned long default_string_hash_func(void *data){
+void DirectoryScanner::remove_suffix(char *str){
+    ext_hash->hash_remove(str);
+}
+
+void DirectoryScanner::insert_file(const char *str){
+    int len = strlen(str);
+    char *path = (char *)malloc(len + 1);
+    printf("%s ########%s \n",__func__,str);
+    memset(path,0,len + 1);
+    strcpy(path,str);
+    file_list->insert_list_tail(path);
+}
+
+static unsigned long directory_hash_func(const void *data){
     const char *ptr;
     unsigned int val;
     val = 0;
@@ -223,21 +237,50 @@ static unsigned long default_string_hash_func(void *data){
     return val;
 }
 
-static int hash_compare(void *key1,void *key2){
-    char *path1  
-    if(key1 == key2){
-        return 0;
-    }else{
-        return 1;
+static int directory_hash_compare(const void *key1,const void *key2){
+    const char *str1 = (const char *)key1; 
+    const char *str2 = (const char *)key2;
+    //note NULL pointer
+    return strcmp(str1,str2);
+}
+
+static void directory_hash_destroy(void *data){
+    if(data != NULL){
+        free(data);
     }
 }
 
-static void hash_destroy(void *key,void *data){
+static int directory_list_compare(void *key1,void *key2){
+    char *str1 = (char *)key1; 
+    char *str2 = (char *)key2;
+    //note NULL pointer
+    return strcmp(str1,str2);
+}
 
+static void directory_list_destroy(void *data){
+    if(data != NULL){
+        free(data);
+    }
+}
+void DirectoryScanner::DumpFileList(){
+    file_list->begin_iterate();
+    char *tmp = (char *)file_list->iterate_item();
+    while(tmp != NULL){
+        printf("####%s \n",tmp);
+        tmp = (char *)file_list->iterate_item();
+    }
 }
 
 DirectoryScanner::DirectoryScanner(){
+    ext_hash = new HashList(directory_hash_func,directory_hash_compare,directory_hash_destroy,10);
+    assert(ext_hash != NULL);
+    file_list = new List(directory_list_compare,directory_list_destroy);
+    assert(file_list != NULL);
+}
 
+DirectoryScanner::~DirectoryScanner(){
+    delete ext_hash;
+    delete file_list;
 }
 
 

@@ -5,6 +5,7 @@
 #include<sys/stat.h>
 #include<sys/stat.h>
 #include<sys/types.h>
+#include"list.h"
 
 int  split_path(const char *file_path,char *file_main_path,int path_len ,char *file_name,int len);
 char *get_path_without_suffix(const char *file_path,char *file_name,int len);
@@ -17,7 +18,8 @@ class DirectoryScanner{
         ~DirectoryScanner();
         int processDirectory(const char *path);
         void add_suffix(const char *str);
-        void remove_suffix(const char *str);
+        void remove_suffix(char *str);
+        void DumpFileList();
     private:
         void insert_file(const char *str);
         int doProcessDirectoryEntry(char *path, int pathRemaining,struct dirent* entry, char* fileSpot);

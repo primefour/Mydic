@@ -28,7 +28,7 @@ HashList::~HashList(){
         hash_item_t *tmp = head_array[i].next;
         hash_item_t *tmp_next = NULL;
         while(tmp != NULL){
-            destroy_func(tmp->key,tmp->data);
+            destroy_func(tmp->data);
             tmp_next = tmp->next;
             free(tmp);
             tmp = tmp_next;
@@ -38,14 +38,13 @@ HashList::~HashList(){
     free(head_array);
 }
 
-void HashList::hash_insert(void *key,void *data){
-    int local = hash_func(key); 
+void HashList::hash_insert(void *data){
+    int local = hash_func(data); 
     local %= array_size; 
     //only insert at the head
-    if(hash_find(key,data) == NULL){
+    if(hash_find(data) == NULL){
         hash_item_t *tmp = (hash_item_t *)malloc(sizeof(hash_item_t));
         memset(tmp,0,sizeof(hash_item_t));
-        tmp->key = key;
         tmp->data = data;
         tmp->next = head_array[local].next ;
         head_array[local].next = tmp;
@@ -55,50 +54,50 @@ void HashList::hash_insert(void *key,void *data){
     }
 }
 
-void* HashList::hash_find(void *key,void *data){
-    int local = hash_func(key); 
+void* HashList::hash_find(const void *data){
+    int local = hash_func(data); 
     local %= array_size; 
     hash_item_t *tmp = head_array[local].next;
     while(tmp != NULL){
-        if(data != NULL){
+        if(compare_func != NULL){
             if(compare_func(data,tmp->data) == 0){
                 break;
             }
         }else{
-            if(compare_func(key,tmp->key) == 0){
-                break;
-            }
+            printf("no compare function error \n");
+            tmp = NULL;
+            break;
         }
         tmp = tmp->next;
     }
     return (tmp == NULL) ?NULL:tmp->data;
 }
 
-void HashList::hash_remove(void *key,void *data){
-    int local = hash_func(key); 
+void HashList::hash_remove(const void *data){
+    int local = hash_func(data); 
     local %= array_size; 
     hash_item_t *tmp = head_array[local].next;
     hash_item_t *prev = tmp;
     while(tmp != NULL){
-        if(data != NULL){
+        if(compare_func != NULL){
             if(compare_func(data,tmp->data) == 0){
                 break;
             }
         }else{
-            if(compare_func(key,tmp->key) == 0){
-                break;
-            }
+            printf("no compare function error\n");
+            tmp = NULL;
+            break;
         }
         prev = tmp;
         tmp = tmp->next;
     }
-    if(tmp != NULL ){
+    if(tmp != NULL){
         if(tmp == prev){
             head_array[local].next = NULL;
         }else{
             prev->next = tmp->next;
         }
-        destroy_func(tmp->key,tmp->data);
+        destroy_func(tmp->data);
         free(tmp);
         item_count --;
     }else{

@@ -2,13 +2,12 @@
 #define __HASH_LIST__
 #include"list.h" 
 
-typedef unsigned long (*pfn_hash)(void *key) ;
-typedef int  (*pfn_hash_compare)(void *data,void *data2);
-typedef void (*pfn_hash_destroy)(void *key,void *data);
+typedef unsigned long (*pfn_hash)(const void *data) ;
+typedef int  (*pfn_hash_compare)(const void *data,const void *data2);
+typedef void (*pfn_hash_destroy)(void *data);
 #define DEFAULT_ARRAY_LENGTH (1024*1024)
 
 typedef struct hash_item_t {
-    void *key;
     void *data;
     struct hash_item_t *next;
 }hash_item_t;
@@ -23,9 +22,9 @@ class HashList{
     public:
         HashList(pfn_hash func,pfn_hash_compare compare,pfn_hash_destroy destroy,long array_length);
         ~HashList();
-        void hash_insert(void *key,void *data);
-        void*hash_find(void *key,void *data);
-        void hash_remove(void *key,void *data);
+        void hash_insert(void *data);
+        void*hash_find(const void *data);
+        void hash_remove(const void *data);
         int get_size();
     private:
         pfn_hash hash_func;
