@@ -186,12 +186,14 @@ int DirectoryScanner::doProcessDirectoryEntry(char *path, int pathRemaining,stru
         if(ext_hash->get_size() == 0){
             insert_file(path);
         }else{
-            void *ret = ext_hash->hash_find(suffix);
-            if(ret != NULL){
-                printf("######ret = %s \n",(char *)ret);
-            }
-            if(suffix != NULL && ret != NULL){
-                insert_file(path);
+            if(suffix != NULL){
+                void *ret = ext_hash->hash_find(suffix);
+                if(ret != NULL){
+                    printf("######ret = %s \n",(char *)ret);
+                }
+                if(suffix != NULL && ret != NULL){
+                    insert_file(path);
+                }
             }
         }
     }
