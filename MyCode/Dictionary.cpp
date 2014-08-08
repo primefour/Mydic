@@ -94,7 +94,6 @@ int DictionarySet::scan_dir(const char *path){
         path = tmp_path;
     }
     ds->processDirectory(path);
-
     ds->DumpFileList();
 }
 
