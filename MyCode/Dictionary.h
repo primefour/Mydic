@@ -31,11 +31,11 @@ class DictionarySet{
     public:
         DictionarySet();
         ~DictionarySet();
-        Dictionary *get_dict(const char *name);
         int  scan_dir(const char *path);
         void remove_dict(char *name);
         int add_dict(const char *name,Dictionary *dict);
         void get_dicts_name(const char **dict_array,int strlen);
+        Dictionary* get_dict(const char *dict_name);
     private:
         HashList *dict_set;
         const char *dict_name_list[MAX_DICT_SUPPORT];

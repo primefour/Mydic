@@ -30,9 +30,9 @@ int main(){
         }
         i++;
     }
-/*
     char buff[1024]={0};
     MetaDataHeader *tmp_head = new MetaDataHeader();
+    Dictionary *sd = NULL;
     while(1){
         memset(buff,0,sizeof(buff));
         printf("Please input words:");
@@ -41,14 +41,22 @@ int main(){
         if(strcmp(buff,"quitOK") == 0){
             break;
         }
-        ret = sd->query_word(buff,tmp_head);
-        printf("ret = %d kkkkk\n",ret);
-        tmp_head->dump_meta_data_head();
-        printf("#####################ret = %d kkkkk\n",ret);
+        i = 0;
+        while(dicts_name[i] != NULL){
+            printf("dicts_name[i] = %s  $$$$$$$$$$$$$$$\n",dicts_name[i]);
+            sd = (Dictionary*)ds->get_dict(dicts_name[i]);
+            i++;
+            if(sd == NULL){
+                printf("return a null for the dictionary \n");
+                continue;
+            }
+            int ret = sd->query_word(buff,tmp_head);
+            printf("ret = %d kkkkk\n",ret);
+            tmp_head->dump_meta_data_head();
+            printf("#####################ret = %d kkkkk\n",ret);
+        }
     }
     delete tmp_head;
-
-    */
     File::release_check_list();
     delete ds;
     release_global_env();

@@ -67,15 +67,20 @@ int StardictDictionary::init(){
     }
     si = new StardictInfo(info_file_name);
     ret = si->init();
+    printf("##########################%s %d###########################\n",__func__,__LINE__);
     if(ret < 0){
         return ret;
     }
     si->dump();
     sidx = new StardictIdx(idx_file_name,si->get_word_count(),si->get_idx_file_size());
     ret = sidx->init();
+    printf("##########################%s %d###########################\n",__func__,__LINE__);
+
     if(ret < 0){
         return ret;
     }
+
+
     sd = new StardictDict(dict_file_name,si->get_same_types_sequence());
     ret = sd->init();
     if(ret < 0){

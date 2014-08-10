@@ -9,6 +9,7 @@
 #include"MetaDataHead.h"
 #include"DirectoryUtils.h"
 #include<assert.h>
+#include"memory_test_tool.h"
 
 //This code is ported from android media scanner 
 

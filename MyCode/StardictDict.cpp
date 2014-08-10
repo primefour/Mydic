@@ -8,6 +8,7 @@
 #include<fcntl.h>
 #include"Stardict.h"
 #include"MetaDataHead.h"
+#include"memory_test_tool.h"
 
 
 StardictDict::StardictDict(const char*file_name,const char *same_type_seq){

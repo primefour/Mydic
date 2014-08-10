@@ -505,16 +505,17 @@ static mem_item_info_t* avl_mem_find_item(void *data){
 }
 
 static void avl_mem_remove_item(void *data){
+    //printf("######################%d %s ################\n",__LINE__,__func__);
     avl_tree_remove(&mem_root,NULL,data);
 }
 
 static void avl_mem_insert_item(void *data){
-    //printf("######################%d %s ################\n",__LINE__,__func__);
     int balance =1 ;
     avl_tree_insert(&mem_root,NULL,data,&balance);
 }
 
 void init_global_env(){
+    //printf("######################%d %s ################\n",__LINE__,__func__);
     avl_tree_init(&mem_root,mem_compare,mem_destroy,mem_dump_data);
 }
 
@@ -549,6 +550,7 @@ void* tools_malloc(int size,const char *file_name,int line){
 }
 
 void  tools_free(void *ptr,const char *file,int line ){
+    //printf("######################%d %s ################\n",__LINE__,__func__);
     mem_item_info_t tmp_mem_item = {0};
     tmp_mem_item.addr = ((unsigned char *)ptr - TOOLS_TEST_SPACE);
 
@@ -577,6 +579,7 @@ void  tools_free(void *ptr,const char *file,int line ){
 }
 
 char* tools_strdup( const char *str, const char*file_name, int line){
+    //printf("######################%d %s ################\n",__LINE__,__func__);
     if(str == NULL){
         printf("tools_strdup get a null point\n");
     }
@@ -594,8 +597,11 @@ char* tools_strdup( const char *str, const char*file_name, int line){
 }
 
 void release_global_env(){
+    //printf("######################%d %s ################\n",__LINE__,__func__);
     avl_tree_preorder_scan(&mem_root);
+    //printf("######################%d %s ################\n",__LINE__,__func__);
     avl_tree_destroy(&mem_root);
+    //printf("######################%d %s ################\n",__LINE__,__func__);
 }
 
 #endif 

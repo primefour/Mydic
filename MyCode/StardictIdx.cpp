@@ -21,6 +21,7 @@ StardictIdx:: StardictIdx(const char *file_path,long word_count,long file_size,i
     this->word_count = word_count;
     this->offsetbit = offsetbit;
     this->file_size = file_size;
+    printf("word_count  = %ld file_size = %ld   \n",word_count,file_size);
     array= NULL;
 }
 
@@ -75,7 +76,7 @@ int StardictIdx::init(){
             (array + i)->word_data_size = ::ntohl(*((long*)(offset_buff+4)));
         }
 
-        if(i < 10){
+        if(i % 5000 == 0){
             printf("i = %d word = %s offset %d ,length %d  \n",i,(array + i)->word_str,(array + i)->word_data_offset.bit32,(array + i)->word_data_size);
         }
         i++;

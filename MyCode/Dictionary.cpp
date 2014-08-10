@@ -7,14 +7,15 @@
 #include<sys/types.h>
 #include"DirectoryUtils.h"
 #include"Stardict.h"
+#include"memory_test_tool.h"
 
 static unsigned long dict_hash_func(const void *data){
     assert(data != NULL);
     dict_ident_t *tmp = (dict_ident_t*)data;
     const char *ptr = tmp->name;
+    printf("############%s   %s              \n",__func__,tmp->name);
     unsigned int val;
     val = 0;
-    ptr = (char *)data;
     while(*ptr != '\0'){
         unsigned int tmp = 0;
         val = (val<<4) + (*ptr);
@@ -24,6 +25,7 @@ static unsigned long dict_hash_func(const void *data){
         }
         ptr ++;
     }
+    printf("###################val = %d \n",val);
     return val;
 }
 
@@ -31,6 +33,7 @@ static int dict_hash_compare(const void *data1,const void *data2){
     assert(data1 != NULL && data2 != NULL);
     dict_ident_t *tmp1 = (dict_ident_t*)data1;
     dict_ident_t *tmp2 = (dict_ident_t*)data2;
+    printf("tmp1->name = %s ,tmp2->name = %s \n",tmp1->name,tmp2->name);
     //note NULL pointer
     return strcmp(tmp1->name,tmp2->name);
 }
@@ -127,6 +130,19 @@ void dir_scanner_callback(void *data,const char *file_full_path,const char *suff
         sd->get_dictionary_name(dict_name,sizeof(dict_name));
         printf("###dict_name = %s    %s \n",dict_name,__func__);
         pds->add_dict(dict_name,sd);
+    }
+}
+Dictionary* DictionarySet::get_dict(const char *dict_name){
+    printf("%s   %s \n",__func__,dict_name);
+    dict_ident_t tmp = {0};
+    assert(dict_name != NULL);
+    tmp.name = strdup(dict_name);
+    void *ret = dict_set->hash_find(&tmp);
+    free(tmp.name);
+    if(ret != NULL){
+        return ((dict_ident_t *)ret)->dict;
+    }else{
+        return NULL;
     }
 }
 
