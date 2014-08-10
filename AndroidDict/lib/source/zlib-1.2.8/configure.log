@@ -1,0 +1,2816 @@
+--------------------
+./configure --prefix=/home/crazyhorse/test/golden_dic/MyDict/lib/libSource/
+2014年 06月 25日 星期三 16:21:37 CST
+Checking for gcc...
+=== ztest15281.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+gcc -c ztest15281.c
+... using gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest15281.c ===
+int foo() { return 0; }
+===
+gcc -c -O3 ztest15281.c
+
+Checking for shared library support...
+=== ztest15281.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+gcc -w -c -O3 -fPIC ztest15281.c
+gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map -O3 -fPIC -o ztest15281.so ztest15281.o
+Building shared library libz.so.1.2.8 with gcc.
+
+=== ztest15281.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest15281.c
+Checking for off64_t... Yes.
+Checking for fseeko... Yes.
+
+=== ztest15281.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest15281 ztest15281.c
+Checking for strerror... Yes.
+
+=== ztest15281.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest15281.c
+Checking for unistd.h... Yes.
+
+=== ztest15281.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest15281.c
+Checking for stdarg.h... Yes.
+
+=== ztest15281.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest15281.c
+Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
+
+=== ztest15281.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return 0;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest15281 ztest15281.c
+Checking for vsnprintf() in stdio.h... Yes.
+
+=== ztest15281.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  int n;
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  n = vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return n;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest15281.c
+Checking for return value of vsnprintf()... Yes.
+
+=== ztest15281.c ===
+#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+int ZLIB_INTERNAL foo;
+int main()
+{
+  return 0;
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest15281.c
+Checking for attribute(visibility) support... Yes.
+
+ALL = static shared all64
+AR = ar
+ARFLAGS = rc
+CC = gcc
+CFLAGS = -O3 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+CPP = gcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = ranlib
+SFLAGS = -O3 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+SHAREDLIB = libz.so
+SHAREDLIBM = libz.so.1
+SHAREDLIBV = libz.so.1.2.8
+STATICLIB = libz.a
+TEST = all teststatic testshared test64
+VER = 1.2.8
+Z_U4 =
+exec_prefix = ${prefix}
+includedir = ${prefix}/include
+libdir = ${exec_prefix}/lib
+mandir = ${prefix}/share/man
+prefix = /home/crazyhorse/test/golden_dic/MyDict/lib/libSource/
+sharedlibdir = ${libdir}
+uname = Linux
+--------------------
+
+
+--------------------
+./configure --prefix=/home/crazyhorse/MyProject/GoldenDict/GitDict/lib/
+2014年 07月 02日 星期三 16:33:10 CST
+Checking for gcc...
+=== ztest25285.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+gcc -c ztest25285.c
+... using gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest25285.c ===
+int foo() { return 0; }
+===
+gcc -c -O3 ztest25285.c
+
+Checking for shared library support...
+=== ztest25285.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+gcc -w -c -O3 -fPIC ztest25285.c
+gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map -O3 -fPIC -o ztest25285.so ztest25285.o
+Building shared library libz.so.1.2.8 with gcc.
+
+=== ztest25285.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest25285.c
+Checking for off64_t... Yes.
+Checking for fseeko... Yes.
+
+=== ztest25285.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest25285 ztest25285.c
+Checking for strerror... Yes.
+
+=== ztest25285.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest25285.c
+Checking for unistd.h... Yes.
+
+=== ztest25285.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest25285.c
+Checking for stdarg.h... Yes.
+
+=== ztest25285.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest25285.c
+Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
+
+=== ztest25285.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return 0;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest25285 ztest25285.c
+Checking for vsnprintf() in stdio.h... Yes.
+
+=== ztest25285.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  int n;
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  n = vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return n;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest25285.c
+Checking for return value of vsnprintf()... Yes.
+
+=== ztest25285.c ===
+#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+int ZLIB_INTERNAL foo;
+int main()
+{
+  return 0;
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest25285.c
+Checking for attribute(visibility) support... Yes.
+
+ALL = static shared all64
+AR = ar
+ARFLAGS = rc
+CC = gcc
+CFLAGS = -O3 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+CPP = gcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = ranlib
+SFLAGS = -O3 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+SHAREDLIB = libz.so
+SHAREDLIBM = libz.so.1
+SHAREDLIBV = libz.so.1.2.8
+STATICLIB = libz.a
+TEST = all teststatic testshared test64
+VER = 1.2.8
+Z_U4 =
+exec_prefix = ${prefix}
+includedir = ${prefix}/include
+libdir = ${exec_prefix}/lib
+mandir = ${prefix}/share/man
+prefix = /home/crazyhorse/MyProject/GoldenDict/GitDict/lib/
+sharedlibdir = ${libdir}
+uname = Linux
+--------------------
+
+
+--------------------
+./configure --help
+2014年 08月 10日 星期日 17:53:34 CST
+usage:
+  configure [--const] [--zprefix] [--prefix=PREFIX]  [--eprefix=EXPREFIX]
+    [--static] [--64] [--libdir=LIBDIR] [--sharedlibdir=LIBDIR]
+    [--includedir=INCLUDEDIR] [--archs="-arch i386 -arch x86_64"]
+--------------------
+./configure CROSS_PREFIX=
+2014年 08月 10日 星期日 19:29:22 CST
+unknown option: CROSS_PREFIX=
+./configure --help for help
+** ./configure aborting.
+--------------------
+
+
+--------------------
+./configure CHOST=arm-linux-androideabi
+2014年 08月 10日 星期日 19:30:13 CST
+unknown option: CHOST=arm-linux-androideabi
+./configure --help for help
+** ./configure aborting.
+--------------------
+
+
+--------------------
+./configure --help
+2014年 08月 10日 星期日 19:30:21 CST
+usage:
+  configure [--const] [--zprefix] [--prefix=PREFIX]  [--eprefix=EXPREFIX]
+    [--static] [--64] [--libdir=LIBDIR] [--sharedlibdir=LIBDIR]
+    [--includedir=INCLUDEDIR] [--archs="-arch i386 -arch x86_64"]
+--------------------
+./configure --help
+Sun Aug 10 19:33:59 CST 2014
+usage:
+  configure [--const] [--zprefix] [--prefix=PREFIX]  [--eprefix=EXPREFIX]
+    [--static] [--64] [--libdir=LIBDIR] [--sharedlibdir=LIBDIR]
+    [--includedir=INCLUDEDIR] [--archs="-arch i386 -arch x86_64"]
+--------------------
+./configure --help
+Sun Aug 10 19:34:00 CST 2014
+usage:
+  configure [--const] [--zprefix] [--prefix=PREFIX]  [--eprefix=EXPREFIX]
+    [--static] [--64] [--libdir=LIBDIR] [--sharedlibdir=LIBDIR]
+    [--includedir=INCLUDEDIR] [--archs="-arch i386 -arch x86_64"]
+--------------------
+./configure --help
+Sun Aug 10 19:34:00 CST 2014
+usage:
+  configure [--const] [--zprefix] [--prefix=PREFIX]  [--eprefix=EXPREFIX]
+    [--static] [--64] [--libdir=LIBDIR] [--sharedlibdir=LIBDIR]
+    [--includedir=INCLUDEDIR] [--archs="-arch i386 -arch x86_64"]
+--------------------
+./configure --inculdedir=~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/ --libdir=~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/
+2014年 08月 10日 星期日 19:36:56 CST
+unknown option: --inculdedir=~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/
+./configure --help for help
+** ./configure aborting.
+--------------------
+
+
+--------------------
+./configure --inculddir=~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/ --libdir=~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/
+2014年 08月 10日 星期日 19:37:06 CST
+unknown option: --inculddir=~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/
+./configure --help for help
+** ./configure aborting.
+--------------------
+
+
+--------------------
+./configure --inculdedir=~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/ --libdir=~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/
+2014年 08月 10日 星期日 19:37:27 CST
+unknown option: --inculdedir=~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/
+./configure --help for help
+** ./configure aborting.
+--------------------
+
+
+--------------------
+./configure --includedir=~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/ --libdir=~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/
+2014年 08月 10日 星期日 19:37:45 CST
+Checking for gcc...
+=== ztest12332.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+gcc -c ztest12332.c
+... using gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest12332.c ===
+int foo() { return 0; }
+===
+gcc -c -O3 ztest12332.c
+
+Checking for shared library support...
+=== ztest12332.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+gcc -w -c -O3 -fPIC ztest12332.c
+gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map -O3 -fPIC -o ztest12332.so ztest12332.o
+Building shared library libz.so.1.2.8 with gcc.
+
+=== ztest12332.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest12332.c
+Checking for off64_t... Yes.
+Checking for fseeko... Yes.
+
+=== ztest12332.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest12332 ztest12332.c
+Checking for strerror... Yes.
+
+=== ztest12332.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest12332.c
+Checking for unistd.h... Yes.
+
+=== ztest12332.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest12332.c
+Checking for stdarg.h... Yes.
+
+=== ztest12332.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest12332.c
+Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
+
+=== ztest12332.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return 0;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest12332 ztest12332.c
+Checking for vsnprintf() in stdio.h... Yes.
+
+=== ztest12332.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  int n;
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  n = vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return n;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest12332.c
+Checking for return value of vsnprintf()... Yes.
+
+=== ztest12332.c ===
+#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+int ZLIB_INTERNAL foo;
+int main()
+{
+  return 0;
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest12332.c
+Checking for attribute(visibility) support... Yes.
+
+ALL = static shared all64
+AR = ar
+ARFLAGS = rc
+CC = gcc
+CFLAGS = -O3 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+CPP = gcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = ranlib
+SFLAGS = -O3 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+SHAREDLIB = libz.so
+SHAREDLIBM = libz.so.1
+SHAREDLIBV = libz.so.1.2.8
+STATICLIB = libz.a
+TEST = all teststatic testshared test64
+VER = 1.2.8
+Z_U4 =
+exec_prefix = ${prefix}
+includedir = ~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/
+libdir = ~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/
+mandir = ${prefix}/share/man
+prefix = /usr/local
+sharedlibdir = ${libdir}
+uname = Linux
+--------------------
+
+
+--------------------
+./configure --includedir=~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/ --libdir=~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/
+2014年 08月 10日 星期日 19:39:55 CST
+Using arm-linux-androideabi-ar
+Using arm-linux-androideabi-ranlib
+Using arm-linux-androideabi-nm
+Checking for arm-linux-androideabi-gcc...
+=== ztest12526.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+arm-linux-androideabi-gcc -c ztest12526.c
+... using gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest12526.c ===
+int foo() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 ztest12526.c
+
+Checking for shared library support...
+=== ztest12526.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+arm-linux-androideabi-gcc -w -c -O3 -fPIC ztest12526.c
+arm-linux-androideabi-gcc -shared -O3 -fPIC -o ztest12526.so ztest12526.o
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot open crtbegin_so.o: No such file or directory
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot open crtend_so.o: No such file or directory
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot find -lc
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot find -ldl
+collect2: error: ld returned 1 exit status
+(exit code 1)
+No shared library support.
+Building static library libz.a version 1.2.8 with arm-linux-androideabi-gcc.
+
+=== ztest12526.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+arm-linux-androideabi-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest12526.c
+ztest12526.c:1:23: fatal error: sys/types.h: No such file or directory
+ #include <sys/types.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for off64_t... No.
+
+=== ztest12526.c ===
+#include <stdio.h>
+int main(void) {
+  fseeko(NULL, 0, 0);
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -O3 -o ztest12526 ztest12526.c
+In file included from ztest12526.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for fseeko... No.
+
+=== ztest12526.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+arm-linux-androideabi-gcc -O3 -DNO_FSEEKO -o ztest12526 ztest12526.c
+ztest12526.c:1:20: fatal error: string.h: No such file or directory
+ #include <string.h>
+                    ^
+compilation terminated.
+(exit code 1)
+Checking for strerror... No.
+
+=== ztest12526.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest12526.c
+ztest12526.c:1:20: fatal error: unistd.h: No such file or directory
+ #include <unistd.h>
+                    ^
+compilation terminated.
+(exit code 1)
+Checking for unistd.h... No.
+
+=== ztest12526.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest12526.c
+Checking for stdarg.h... Yes.
+
+=== ztest12526.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest12526.c
+In file included from ztest12526.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking whether to use vs[n]printf() or s[n]printf()... using s[n]printf().
+
+=== ztest12526.c ===
+#include <stdio.h>
+int mytest()
+{
+  char buf[20];
+  snprintf(buf, sizeof(buf), "%s", "foo");
+  return 0;
+}
+int main()
+{
+  return (mytest());
+}
+===
+arm-linux-androideabi-gcc -O3 -DNO_FSEEKO -DNO_STRERROR -o ztest12526 ztest12526.c
+In file included from ztest12526.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for snprintf() in stdio.h... No.
+  WARNING: snprintf() not found, falling back to sprintf(). zlib
+  can build but will be open to possible buffer-overflow security
+  vulnerabilities.
+
+=== ztest12526.c ===
+#include <stdio.h>
+int mytest()
+{
+  char buf[20];
+  return sprintf(buf, "%s", "foo");
+}
+int main()
+{
+  return (mytest());
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf ztest12526.c
+In file included from ztest12526.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for return value of sprintf()... No.
+  WARNING: apparently sprintf() does not return a value. zlib
+  can build but will be open to possible string-format security
+  vulnerabilities.
+
+=== ztest12526.c ===
+#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+int ZLIB_INTERNAL foo;
+int main()
+{
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void ztest12526.c
+Checking for attribute(visibility) support... Yes.
+
+ALL = static
+AR = arm-linux-androideabi-ar
+ARFLAGS = rc
+CC = arm-linux-androideabi-gcc
+CFLAGS = -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void -DHAVE_HIDDEN
+CPP = arm-linux-androideabi-gcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = arm-linux-androideabi-gcc
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = arm-linux-androideabi-ranlib
+SFLAGS = -O3 -fPIC -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void -DHAVE_HIDDEN
+SHAREDLIB =
+SHAREDLIBM =
+SHAREDLIBV =
+STATICLIB = libz.a
+TEST = all teststatic
+VER = 1.2.8
+Z_U4 =
+exec_prefix = ${prefix}
+includedir = ~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/
+libdir = ~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/
+mandir = ${prefix}/share/man
+prefix = /usr/local
+sharedlibdir = ${libdir}
+uname = androideabi
+--------------------
+
+
+--------------------
+./configure --includedir=~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/include --libdir=~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/lib
+2014年 08月 10日 星期日 19:41:41 CST
+Using arm-linux-androideabi-ar
+Using arm-linux-androideabi-ranlib
+Using arm-linux-androideabi-nm
+Checking for arm-linux-androideabi-gcc...
+=== ztest12659.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+arm-linux-androideabi-gcc -c ztest12659.c
+... using gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest12659.c ===
+int foo() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 ztest12659.c
+
+Checking for shared library support...
+=== ztest12659.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+arm-linux-androideabi-gcc -w -c -O3 -fPIC ztest12659.c
+arm-linux-androideabi-gcc -shared -O3 -fPIC -o ztest12659.so ztest12659.o
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot open crtbegin_so.o: No such file or directory
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot open crtend_so.o: No such file or directory
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot find -lc
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot find -ldl
+collect2: error: ld returned 1 exit status
+(exit code 1)
+No shared library support.
+Building static library libz.a version 1.2.8 with arm-linux-androideabi-gcc.
+
+=== ztest12659.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+arm-linux-androideabi-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest12659.c
+ztest12659.c:1:23: fatal error: sys/types.h: No such file or directory
+ #include <sys/types.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for off64_t... No.
+
+=== ztest12659.c ===
+#include <stdio.h>
+int main(void) {
+  fseeko(NULL, 0, 0);
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -O3 -o ztest12659 ztest12659.c
+In file included from ztest12659.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for fseeko... No.
+
+=== ztest12659.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+arm-linux-androideabi-gcc -O3 -DNO_FSEEKO -o ztest12659 ztest12659.c
+ztest12659.c:1:20: fatal error: string.h: No such file or directory
+ #include <string.h>
+                    ^
+compilation terminated.
+(exit code 1)
+Checking for strerror... No.
+
+=== ztest12659.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest12659.c
+ztest12659.c:1:20: fatal error: unistd.h: No such file or directory
+ #include <unistd.h>
+                    ^
+compilation terminated.
+(exit code 1)
+Checking for unistd.h... No.
+
+=== ztest12659.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest12659.c
+Checking for stdarg.h... Yes.
+
+=== ztest12659.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest12659.c
+In file included from ztest12659.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking whether to use vs[n]printf() or s[n]printf()... using s[n]printf().
+
+=== ztest12659.c ===
+#include <stdio.h>
+int mytest()
+{
+  char buf[20];
+  snprintf(buf, sizeof(buf), "%s", "foo");
+  return 0;
+}
+int main()
+{
+  return (mytest());
+}
+===
+arm-linux-androideabi-gcc -O3 -DNO_FSEEKO -DNO_STRERROR -o ztest12659 ztest12659.c
+In file included from ztest12659.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for snprintf() in stdio.h... No.
+  WARNING: snprintf() not found, falling back to sprintf(). zlib
+  can build but will be open to possible buffer-overflow security
+  vulnerabilities.
+
+=== ztest12659.c ===
+#include <stdio.h>
+int mytest()
+{
+  char buf[20];
+  return sprintf(buf, "%s", "foo");
+}
+int main()
+{
+  return (mytest());
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf ztest12659.c
+In file included from ztest12659.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for return value of sprintf()... No.
+  WARNING: apparently sprintf() does not return a value. zlib
+  can build but will be open to possible string-format security
+  vulnerabilities.
+
+=== ztest12659.c ===
+#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+int ZLIB_INTERNAL foo;
+int main()
+{
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void ztest12659.c
+Checking for attribute(visibility) support... Yes.
+
+ALL = static
+AR = arm-linux-androideabi-ar
+ARFLAGS = rc
+CC = arm-linux-androideabi-gcc
+CFLAGS = -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void -DHAVE_HIDDEN
+CPP = arm-linux-androideabi-gcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = arm-linux-androideabi-gcc
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = arm-linux-androideabi-ranlib
+SFLAGS = -O3 -fPIC -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void -DHAVE_HIDDEN
+SHAREDLIB =
+SHAREDLIBM =
+SHAREDLIBV =
+STATICLIB = libz.a
+TEST = all teststatic
+VER = 1.2.8
+Z_U4 =
+exec_prefix = ${prefix}
+includedir = ~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/include
+libdir = ~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/lib
+mandir = ${prefix}/share/man
+prefix = /usr/local
+sharedlibdir = ${libdir}
+uname = androideabi
+--------------------
+
+
+--------------------
+./configure --includedir=~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/include --libdir=~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/lib
+2014年 08月 10日 星期日 19:47:10 CST
+Using arm-linux-androideabi-ar
+Using arm-linux-androideabi-ranlib
+Using arm-linux-androideabi-nm
+Checking for arm-linux-androideabi-gcc...
+=== ztest12907.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+arm-linux-androideabi-gcc -c ztest12907.c
+... using gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest12907.c ===
+int foo() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 ztest12907.c
+
+Checking for shared library support...
+=== ztest12907.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+arm-linux-androideabi-gcc -w -c -O3 -fPIC ztest12907.c
+arm-linux-androideabi-gcc -shared -O3 -fPIC -o ztest12907.so ztest12907.o
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot open crtbegin_so.o: No such file or directory
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot open crtend_so.o: No such file or directory
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot find -lc
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot find -ldl
+collect2: error: ld returned 1 exit status
+(exit code 1)
+No shared library support.
+Building static library libz.a version 1.2.8 with arm-linux-androideabi-gcc.
+
+=== ztest12907.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+arm-linux-androideabi-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest12907.c
+ztest12907.c:1:23: fatal error: sys/types.h: No such file or directory
+ #include <sys/types.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for off64_t... No.
+
+=== ztest12907.c ===
+#include <stdio.h>
+int main(void) {
+  fseeko(NULL, 0, 0);
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -O3 -o ztest12907 ztest12907.c
+In file included from ztest12907.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for fseeko... No.
+
+=== ztest12907.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+arm-linux-androideabi-gcc -O3 -DNO_FSEEKO -o ztest12907 ztest12907.c
+ztest12907.c:1:20: fatal error: string.h: No such file or directory
+ #include <string.h>
+                    ^
+compilation terminated.
+(exit code 1)
+Checking for strerror... No.
+
+=== ztest12907.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest12907.c
+ztest12907.c:1:20: fatal error: unistd.h: No such file or directory
+ #include <unistd.h>
+                    ^
+compilation terminated.
+(exit code 1)
+Checking for unistd.h... No.
+
+=== ztest12907.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest12907.c
+Checking for stdarg.h... Yes.
+
+=== ztest12907.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest12907.c
+In file included from ztest12907.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking whether to use vs[n]printf() or s[n]printf()... using s[n]printf().
+
+=== ztest12907.c ===
+#include <stdio.h>
+int mytest()
+{
+  char buf[20];
+  snprintf(buf, sizeof(buf), "%s", "foo");
+  return 0;
+}
+int main()
+{
+  return (mytest());
+}
+===
+arm-linux-androideabi-gcc -O3 -DNO_FSEEKO -DNO_STRERROR -o ztest12907 ztest12907.c
+In file included from ztest12907.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for snprintf() in stdio.h... No.
+  WARNING: snprintf() not found, falling back to sprintf(). zlib
+  can build but will be open to possible buffer-overflow security
+  vulnerabilities.
+
+=== ztest12907.c ===
+#include <stdio.h>
+int mytest()
+{
+  char buf[20];
+  return sprintf(buf, "%s", "foo");
+}
+int main()
+{
+  return (mytest());
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf ztest12907.c
+In file included from ztest12907.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for return value of sprintf()... No.
+  WARNING: apparently sprintf() does not return a value. zlib
+  can build but will be open to possible string-format security
+  vulnerabilities.
+
+=== ztest12907.c ===
+#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+int ZLIB_INTERNAL foo;
+int main()
+{
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void ztest12907.c
+Checking for attribute(visibility) support... Yes.
+
+ALL = static
+AR = arm-linux-androideabi-ar
+ARFLAGS = rc
+CC = arm-linux-androideabi-gcc
+CFLAGS = -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void -DHAVE_HIDDEN
+CPP = arm-linux-androideabi-gcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = arm-linux-androideabi-gcc
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = arm-linux-androideabi-ranlib
+SFLAGS = -O3 -fPIC -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void -DHAVE_HIDDEN
+SHAREDLIB =
+SHAREDLIBM =
+SHAREDLIBV =
+STATICLIB = libz.a
+TEST = all teststatic
+VER = 1.2.8
+Z_U4 =
+exec_prefix = ${prefix}
+includedir = ~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/include
+libdir = ~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/lib
+mandir = ${prefix}/share/man
+prefix = /usr/local
+sharedlibdir = ${libdir}
+uname = androideabi
+--------------------
+
+
+--------------------
+./configure
+2014年 08月 10日 星期日 19:48:00 CST
+Using arm-linux-androideabi-ar
+Using arm-linux-androideabi-ranlib
+Using arm-linux-androideabi-nm
+Checking for arm-linux-androideabi-gcc...
+=== ztest13050.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+arm-linux-androideabi-gcc -c ztest13050.c
+... using gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest13050.c ===
+int foo() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 ztest13050.c
+
+Checking for shared library support...
+=== ztest13050.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+arm-linux-androideabi-gcc -w -c -O3 -fPIC ztest13050.c
+arm-linux-androideabi-gcc -shared -O3 -fPIC -o ztest13050.so ztest13050.o
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot open crtbegin_so.o: No such file or directory
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot open crtend_so.o: No such file or directory
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot find -lc
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot find -ldl
+collect2: error: ld returned 1 exit status
+(exit code 1)
+No shared library support.
+Building static library libz.a version 1.2.8 with arm-linux-androideabi-gcc.
+
+=== ztest13050.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+arm-linux-androideabi-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest13050.c
+ztest13050.c:1:23: fatal error: sys/types.h: No such file or directory
+ #include <sys/types.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for off64_t... No.
+
+=== ztest13050.c ===
+#include <stdio.h>
+int main(void) {
+  fseeko(NULL, 0, 0);
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -O3 -o ztest13050 ztest13050.c
+In file included from ztest13050.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for fseeko... No.
+
+=== ztest13050.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+arm-linux-androideabi-gcc -O3 -DNO_FSEEKO -o ztest13050 ztest13050.c
+ztest13050.c:1:20: fatal error: string.h: No such file or directory
+ #include <string.h>
+                    ^
+compilation terminated.
+(exit code 1)
+Checking for strerror... No.
+
+=== ztest13050.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest13050.c
+ztest13050.c:1:20: fatal error: unistd.h: No such file or directory
+ #include <unistd.h>
+                    ^
+compilation terminated.
+(exit code 1)
+Checking for unistd.h... No.
+
+=== ztest13050.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest13050.c
+Checking for stdarg.h... Yes.
+
+=== ztest13050.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest13050.c
+In file included from ztest13050.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking whether to use vs[n]printf() or s[n]printf()... using s[n]printf().
+
+=== ztest13050.c ===
+#include <stdio.h>
+int mytest()
+{
+  char buf[20];
+  snprintf(buf, sizeof(buf), "%s", "foo");
+  return 0;
+}
+int main()
+{
+  return (mytest());
+}
+===
+arm-linux-androideabi-gcc -O3 -DNO_FSEEKO -DNO_STRERROR -o ztest13050 ztest13050.c
+In file included from ztest13050.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for snprintf() in stdio.h... No.
+  WARNING: snprintf() not found, falling back to sprintf(). zlib
+  can build but will be open to possible buffer-overflow security
+  vulnerabilities.
+
+=== ztest13050.c ===
+#include <stdio.h>
+int mytest()
+{
+  char buf[20];
+  return sprintf(buf, "%s", "foo");
+}
+int main()
+{
+  return (mytest());
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf ztest13050.c
+In file included from ztest13050.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for return value of sprintf()... No.
+  WARNING: apparently sprintf() does not return a value. zlib
+  can build but will be open to possible string-format security
+  vulnerabilities.
+
+=== ztest13050.c ===
+#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+int ZLIB_INTERNAL foo;
+int main()
+{
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void ztest13050.c
+Checking for attribute(visibility) support... Yes.
+
+ALL = static
+AR = arm-linux-androideabi-ar
+ARFLAGS = rc
+CC = arm-linux-androideabi-gcc
+CFLAGS = -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void -DHAVE_HIDDEN
+CPP = arm-linux-androideabi-gcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = arm-linux-androideabi-gcc
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = arm-linux-androideabi-ranlib
+SFLAGS = -O3 -fPIC -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void -DHAVE_HIDDEN
+SHAREDLIB =
+SHAREDLIBM =
+SHAREDLIBV =
+STATICLIB = libz.a
+TEST = all teststatic
+VER = 1.2.8
+Z_U4 =
+exec_prefix = ${prefix}
+includedir = ${prefix}/include
+libdir = ${exec_prefix}/lib
+mandir = ${prefix}/share/man
+prefix = /usr/local
+sharedlibdir = ${libdir}
+uname = androideabi
+--------------------
+
+
+--------------------
+./configure --includedir=~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/include --libdir=~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/lib
+2014年 08月 10日 星期日 19:48:09 CST
+Using arm-linux-androideabi-ar
+Using arm-linux-androideabi-ranlib
+Using arm-linux-androideabi-nm
+Checking for arm-linux-androideabi-gcc...
+=== ztest13176.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+arm-linux-androideabi-gcc -c ztest13176.c
+... using gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest13176.c ===
+int foo() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 ztest13176.c
+
+Checking for shared library support...
+=== ztest13176.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+arm-linux-androideabi-gcc -w -c -O3 -fPIC ztest13176.c
+arm-linux-androideabi-gcc -shared -O3 -fPIC -o ztest13176.so ztest13176.o
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot open crtbegin_so.o: No such file or directory
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot open crtend_so.o: No such file or directory
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot find -lc
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot find -ldl
+collect2: error: ld returned 1 exit status
+(exit code 1)
+No shared library support.
+Building static library libz.a version 1.2.8 with arm-linux-androideabi-gcc.
+
+=== ztest13176.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+arm-linux-androideabi-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest13176.c
+ztest13176.c:1:23: fatal error: sys/types.h: No such file or directory
+ #include <sys/types.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for off64_t... No.
+
+=== ztest13176.c ===
+#include <stdio.h>
+int main(void) {
+  fseeko(NULL, 0, 0);
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -O3 -o ztest13176 ztest13176.c
+In file included from ztest13176.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for fseeko... No.
+
+=== ztest13176.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+arm-linux-androideabi-gcc -O3 -DNO_FSEEKO -o ztest13176 ztest13176.c
+ztest13176.c:1:20: fatal error: string.h: No such file or directory
+ #include <string.h>
+                    ^
+compilation terminated.
+(exit code 1)
+Checking for strerror... No.
+
+=== ztest13176.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest13176.c
+ztest13176.c:1:20: fatal error: unistd.h: No such file or directory
+ #include <unistd.h>
+                    ^
+compilation terminated.
+(exit code 1)
+Checking for unistd.h... No.
+
+=== ztest13176.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest13176.c
+Checking for stdarg.h... Yes.
+
+=== ztest13176.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest13176.c
+In file included from ztest13176.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking whether to use vs[n]printf() or s[n]printf()... using s[n]printf().
+
+=== ztest13176.c ===
+#include <stdio.h>
+int mytest()
+{
+  char buf[20];
+  snprintf(buf, sizeof(buf), "%s", "foo");
+  return 0;
+}
+int main()
+{
+  return (mytest());
+}
+===
+arm-linux-androideabi-gcc -O3 -DNO_FSEEKO -DNO_STRERROR -o ztest13176 ztest13176.c
+In file included from ztest13176.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for snprintf() in stdio.h... No.
+  WARNING: snprintf() not found, falling back to sprintf(). zlib
+  can build but will be open to possible buffer-overflow security
+  vulnerabilities.
+
+=== ztest13176.c ===
+#include <stdio.h>
+int mytest()
+{
+  char buf[20];
+  return sprintf(buf, "%s", "foo");
+}
+int main()
+{
+  return (mytest());
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf ztest13176.c
+In file included from ztest13176.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for return value of sprintf()... No.
+  WARNING: apparently sprintf() does not return a value. zlib
+  can build but will be open to possible string-format security
+  vulnerabilities.
+
+=== ztest13176.c ===
+#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+int ZLIB_INTERNAL foo;
+int main()
+{
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void ztest13176.c
+Checking for attribute(visibility) support... Yes.
+
+ALL = static
+AR = arm-linux-androideabi-ar
+ARFLAGS = rc
+CC = arm-linux-androideabi-gcc
+CFLAGS = -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void -DHAVE_HIDDEN
+CPP = arm-linux-androideabi-gcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = arm-linux-androideabi-gcc
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = arm-linux-androideabi-ranlib
+SFLAGS = -O3 -fPIC -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void -DHAVE_HIDDEN
+SHAREDLIB =
+SHAREDLIBM =
+SHAREDLIBV =
+STATICLIB = libz.a
+TEST = all teststatic
+VER = 1.2.8
+Z_U4 =
+exec_prefix = ${prefix}
+includedir = ~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/include
+libdir = ~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/lib
+mandir = ${prefix}/share/man
+prefix = /usr/local
+sharedlibdir = ${libdir}
+uname = androideabi
+--------------------
+
+
+--------------------
+./configure --includedir=~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/include --libdir=~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/lib
+2014年 08月 10日 星期日 19:49:09 CST
+Using arm-linux-androideabi-ar
+Using arm-linux-androideabi-ranlib
+Using arm-linux-androideabi-nm
+Checking for arm-linux-androideabi-gcc...
+=== ztest13307.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+arm-linux-androideabi-gcc -c ztest13307.c
+... using gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest13307.c ===
+int foo() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 ztest13307.c
+
+Checking for shared library support...
+=== ztest13307.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+arm-linux-androideabi-gcc -w -c -O3 -fPIC ztest13307.c
+arm-linux-androideabi-gcc -shared -O3 -fPIC -o ztest13307.so ztest13307.o
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot open crtbegin_so.o: No such file or directory
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot open crtend_so.o: No such file or directory
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot find -lc
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot find -ldl
+collect2: error: ld returned 1 exit status
+(exit code 1)
+No shared library support.
+Building static library libz.a version 1.2.8 with arm-linux-androideabi-gcc.
+
+=== ztest13307.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+arm-linux-androideabi-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest13307.c
+ztest13307.c:1:23: fatal error: sys/types.h: No such file or directory
+ #include <sys/types.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for off64_t... No.
+
+=== ztest13307.c ===
+#include <stdio.h>
+int main(void) {
+  fseeko(NULL, 0, 0);
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -O3 -o ztest13307 ztest13307.c
+In file included from ztest13307.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for fseeko... No.
+
+=== ztest13307.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+arm-linux-androideabi-gcc -O3 -DNO_FSEEKO -o ztest13307 ztest13307.c
+ztest13307.c:1:20: fatal error: string.h: No such file or directory
+ #include <string.h>
+                    ^
+compilation terminated.
+(exit code 1)
+Checking for strerror... No.
+
+=== ztest13307.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest13307.c
+ztest13307.c:1:20: fatal error: unistd.h: No such file or directory
+ #include <unistd.h>
+                    ^
+compilation terminated.
+(exit code 1)
+Checking for unistd.h... No.
+
+=== ztest13307.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest13307.c
+Checking for stdarg.h... Yes.
+
+=== ztest13307.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest13307.c
+In file included from ztest13307.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking whether to use vs[n]printf() or s[n]printf()... using s[n]printf().
+
+=== ztest13307.c ===
+#include <stdio.h>
+int mytest()
+{
+  char buf[20];
+  snprintf(buf, sizeof(buf), "%s", "foo");
+  return 0;
+}
+int main()
+{
+  return (mytest());
+}
+===
+arm-linux-androideabi-gcc -O3 -DNO_FSEEKO -DNO_STRERROR -o ztest13307 ztest13307.c
+In file included from ztest13307.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for snprintf() in stdio.h... No.
+  WARNING: snprintf() not found, falling back to sprintf(). zlib
+  can build but will be open to possible buffer-overflow security
+  vulnerabilities.
+
+=== ztest13307.c ===
+#include <stdio.h>
+int mytest()
+{
+  char buf[20];
+  return sprintf(buf, "%s", "foo");
+}
+int main()
+{
+  return (mytest());
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf ztest13307.c
+In file included from ztest13307.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for return value of sprintf()... No.
+  WARNING: apparently sprintf() does not return a value. zlib
+  can build but will be open to possible string-format security
+  vulnerabilities.
+
+=== ztest13307.c ===
+#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+int ZLIB_INTERNAL foo;
+int main()
+{
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void ztest13307.c
+Checking for attribute(visibility) support... Yes.
+
+ALL = static
+AR = arm-linux-androideabi-ar
+ARFLAGS = rc
+CC = arm-linux-androideabi-gcc
+CFLAGS = -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void -DHAVE_HIDDEN
+CPP = arm-linux-androideabi-gcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = arm-linux-androideabi-gcc
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = arm-linux-androideabi-ranlib
+SFLAGS = -O3 -fPIC -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void -DHAVE_HIDDEN
+SHAREDLIB =
+SHAREDLIBM =
+SHAREDLIBV =
+STATICLIB = libz.a
+TEST = all teststatic
+VER = 1.2.8
+Z_U4 =
+exec_prefix = ${prefix}
+includedir = ~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/include
+libdir = ~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr/lib
+mandir = ${prefix}/share/man
+prefix = /usr/local
+sharedlibdir = ${libdir}
+uname = androideabi
+--------------------
+
+
+--------------------
+./configure --shared --includedir=/usr/local/include/
+2014年 08月 10日 星期日 20:10:03 CST
+Using arm-linux-androideabi-ar
+Using arm-linux-androideabi-ranlib
+Using arm-linux-androideabi-nm
+=== ztest13787.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+arm-linux-gcc -c ztest13787.c
+./configure: 165: ./configure: arm-linux-gcc: not found
+... using arm-linux-gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest13787.c ===
+int foo() { return 0; }
+===
+arm-linux-gcc -c -O ztest13787.c
+./configure: 343: ./configure: arm-linux-gcc: not found
+(exit code 127)
+Compiler error reporting is too harsh for ./configure (perhaps remove -Werror).
+** ./configure aborting.
+--------------------
+
+
+--------------------
+./configure --shared --includedir=/usr/local/include/
+2014年 08月 10日 星期日 20:10:35 CST
+Using arm-linux-androideabi-ar
+Using arm-linux-androideabi-ranlib
+Using arm-linux-androideabi-nm
+Checking for arm-linux-androideabi-gcc...
+=== ztest13822.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+arm-linux-androideabi-gcc -c ztest13822.c
+... using gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest13822.c ===
+int foo() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 ztest13822.c
+
+Checking for shared library support...
+=== ztest13822.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+arm-linux-androideabi-gcc -w -c -O3 -fPIC ztest13822.c
+arm-linux-androideabi-gcc -shared -O3 -fPIC -o ztest13822.so ztest13822.o
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot open crtbegin_so.o: No such file or directory
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot open crtend_so.o: No such file or directory
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot find -lc
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot find -ldl
+collect2: error: ld returned 1 exit status
+(exit code 1)
+No shared library support.
+Building static library libz.a version 1.2.8 with arm-linux-androideabi-gcc.
+
+=== ztest13822.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+arm-linux-androideabi-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest13822.c
+ztest13822.c:1:23: fatal error: sys/types.h: No such file or directory
+ #include <sys/types.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for off64_t... No.
+
+=== ztest13822.c ===
+#include <stdio.h>
+int main(void) {
+  fseeko(NULL, 0, 0);
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -O3 -o ztest13822 ztest13822.c
+In file included from ztest13822.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for fseeko... No.
+
+=== ztest13822.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+arm-linux-androideabi-gcc -O3 -DNO_FSEEKO -o ztest13822 ztest13822.c
+ztest13822.c:1:20: fatal error: string.h: No such file or directory
+ #include <string.h>
+                    ^
+compilation terminated.
+(exit code 1)
+Checking for strerror... No.
+
+=== ztest13822.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest13822.c
+ztest13822.c:1:20: fatal error: unistd.h: No such file or directory
+ #include <unistd.h>
+                    ^
+compilation terminated.
+(exit code 1)
+Checking for unistd.h... No.
+
+=== ztest13822.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest13822.c
+Checking for stdarg.h... Yes.
+
+=== ztest13822.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest13822.c
+In file included from ztest13822.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking whether to use vs[n]printf() or s[n]printf()... using s[n]printf().
+
+=== ztest13822.c ===
+#include <stdio.h>
+int mytest()
+{
+  char buf[20];
+  snprintf(buf, sizeof(buf), "%s", "foo");
+  return 0;
+}
+int main()
+{
+  return (mytest());
+}
+===
+arm-linux-androideabi-gcc -O3 -DNO_FSEEKO -DNO_STRERROR -o ztest13822 ztest13822.c
+In file included from ztest13822.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for snprintf() in stdio.h... No.
+  WARNING: snprintf() not found, falling back to sprintf(). zlib
+  can build but will be open to possible buffer-overflow security
+  vulnerabilities.
+
+=== ztest13822.c ===
+#include <stdio.h>
+int mytest()
+{
+  char buf[20];
+  return sprintf(buf, "%s", "foo");
+}
+int main()
+{
+  return (mytest());
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf ztest13822.c
+In file included from ztest13822.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for return value of sprintf()... No.
+  WARNING: apparently sprintf() does not return a value. zlib
+  can build but will be open to possible string-format security
+  vulnerabilities.
+
+=== ztest13822.c ===
+#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+int ZLIB_INTERNAL foo;
+int main()
+{
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void ztest13822.c
+Checking for attribute(visibility) support... Yes.
+
+ALL = static
+AR = arm-linux-androideabi-ar
+ARFLAGS = rc
+CC = arm-linux-androideabi-gcc
+CFLAGS = -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void -DHAVE_HIDDEN
+CPP = arm-linux-androideabi-gcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = arm-linux-androideabi-gcc
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = arm-linux-androideabi-ranlib
+SFLAGS = -O3 -fPIC -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void -DHAVE_HIDDEN
+SHAREDLIB =
+SHAREDLIBM =
+SHAREDLIBV =
+STATICLIB = libz.a
+TEST = all teststatic
+VER = 1.2.8
+Z_U4 =
+exec_prefix = ${prefix}
+includedir = /usr/local/include/
+libdir = ${exec_prefix}/lib
+mandir = ${prefix}/share/man
+prefix = /usr/local
+sharedlibdir = ${libdir}
+uname = androideabi
+--------------------
+
+
+--------------------
+./configure
+2014年 08月 10日 星期日 22:27:49 CST
+Using arm-linux-androideabi-ar
+Using arm-linux-androideabi-ranlib
+Using arm-linux-androideabi-nm
+Checking for arm-linux-androideabi-gcc...
+=== ztest14540.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+arm-linux-androideabi-gcc -c ztest14540.c
+... using gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest14540.c ===
+int foo() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 ztest14540.c
+
+Checking for shared library support...
+=== ztest14540.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+arm-linux-androideabi-gcc -w -c -O3 -fPIC ztest14540.c
+arm-linux-androideabi-gcc -shared -O3 -fPIC -o ztest14540.so ztest14540.o
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot open crtbegin_so.o: No such file or directory
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot open crtend_so.o: No such file or directory
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot find -lc
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot find -ldl
+collect2: error: ld returned 1 exit status
+(exit code 1)
+No shared library support.
+Building static library libz.a version 1.2.8 with arm-linux-androideabi-gcc.
+
+=== ztest14540.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+arm-linux-androideabi-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest14540.c
+ztest14540.c:1:23: fatal error: sys/types.h: No such file or directory
+ #include <sys/types.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for off64_t... No.
+
+=== ztest14540.c ===
+#include <stdio.h>
+int main(void) {
+  fseeko(NULL, 0, 0);
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -O3 -o ztest14540 ztest14540.c
+In file included from ztest14540.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for fseeko... No.
+
+=== ztest14540.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+arm-linux-androideabi-gcc -O3 -DNO_FSEEKO -o ztest14540 ztest14540.c
+ztest14540.c:1:20: fatal error: string.h: No such file or directory
+ #include <string.h>
+                    ^
+compilation terminated.
+(exit code 1)
+Checking for strerror... No.
+
+=== ztest14540.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest14540.c
+ztest14540.c:1:20: fatal error: unistd.h: No such file or directory
+ #include <unistd.h>
+                    ^
+compilation terminated.
+(exit code 1)
+Checking for unistd.h... No.
+
+=== ztest14540.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest14540.c
+Checking for stdarg.h... Yes.
+
+=== ztest14540.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest14540.c
+In file included from ztest14540.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking whether to use vs[n]printf() or s[n]printf()... using s[n]printf().
+
+=== ztest14540.c ===
+#include <stdio.h>
+int mytest()
+{
+  char buf[20];
+  snprintf(buf, sizeof(buf), "%s", "foo");
+  return 0;
+}
+int main()
+{
+  return (mytest());
+}
+===
+arm-linux-androideabi-gcc -O3 -DNO_FSEEKO -DNO_STRERROR -o ztest14540 ztest14540.c
+In file included from ztest14540.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for snprintf() in stdio.h... No.
+  WARNING: snprintf() not found, falling back to sprintf(). zlib
+  can build but will be open to possible buffer-overflow security
+  vulnerabilities.
+
+=== ztest14540.c ===
+#include <stdio.h>
+int mytest()
+{
+  char buf[20];
+  return sprintf(buf, "%s", "foo");
+}
+int main()
+{
+  return (mytest());
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf ztest14540.c
+In file included from ztest14540.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for return value of sprintf()... No.
+  WARNING: apparently sprintf() does not return a value. zlib
+  can build but will be open to possible string-format security
+  vulnerabilities.
+
+=== ztest14540.c ===
+#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+int ZLIB_INTERNAL foo;
+int main()
+{
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void ztest14540.c
+Checking for attribute(visibility) support... Yes.
+
+ALL = static
+AR = arm-linux-androideabi-ar
+ARFLAGS = rc
+CC = arm-linux-androideabi-gcc
+CFLAGS = -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void -DHAVE_HIDDEN
+CPP = arm-linux-androideabi-gcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = arm-linux-androideabi-gcc
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = arm-linux-androideabi-ranlib
+SFLAGS = -O3 -fPIC -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void -DHAVE_HIDDEN
+SHAREDLIB =
+SHAREDLIBM =
+SHAREDLIBV =
+STATICLIB = libz.a
+TEST = all teststatic
+VER = 1.2.8
+Z_U4 =
+exec_prefix = ${prefix}
+includedir = ${prefix}/include
+libdir = ${exec_prefix}/lib
+mandir = ${prefix}/share/man
+prefix = /usr/local
+sharedlibdir = ${libdir}
+uname = androideabi
+--------------------
+
+
+--------------------
+./configure
+2014年 08月 10日 星期日 22:28:23 CST
+Checking for gcc...
+=== ztest14663.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+gcc -c ztest14663.c
+... using gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest14663.c ===
+int foo() { return 0; }
+===
+gcc -c -O3 ztest14663.c
+
+Checking for shared library support...
+=== ztest14663.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+gcc -w -c -O3 -fPIC ztest14663.c
+gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map -O3 -fPIC -o ztest14663.so ztest14663.o
+Building shared library libz.so.1.2.8 with gcc.
+
+=== ztest14663.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest14663.c
+Checking for off64_t... Yes.
+Checking for fseeko... Yes.
+
+=== ztest14663.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest14663 ztest14663.c
+Checking for strerror... Yes.
+
+=== ztest14663.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest14663.c
+Checking for unistd.h... Yes.
+
+=== ztest14663.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest14663.c
+Checking for stdarg.h... Yes.
+
+=== ztest14663.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest14663.c
+Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
+
+=== ztest14663.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return 0;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest14663 ztest14663.c
+Checking for vsnprintf() in stdio.h... Yes.
+
+=== ztest14663.c ===
+#include <stdio.h>
+#include <stdarg.h>
+int mytest(const char *fmt, ...)
+{
+  int n;
+  char buf[20];
+  va_list ap;
+  va_start(ap, fmt);
+  n = vsnprintf(buf, sizeof(buf), fmt, ap);
+  va_end(ap);
+  return n;
+}
+int main()
+{
+  return (mytest("Hello%d\n", 1));
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest14663.c
+Checking for return value of vsnprintf()... Yes.
+
+=== ztest14663.c ===
+#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+int ZLIB_INTERNAL foo;
+int main()
+{
+  return 0;
+}
+===
+gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest14663.c
+Checking for attribute(visibility) support... Yes.
+
+ALL = static shared all64
+AR = ar
+ARFLAGS = rc
+CC = gcc
+CFLAGS = -O3 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+CPP = gcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = ranlib
+SFLAGS = -O3 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+SHAREDLIB = libz.so
+SHAREDLIBM = libz.so.1
+SHAREDLIBV = libz.so.1.2.8
+STATICLIB = libz.a
+TEST = all teststatic testshared test64
+VER = 1.2.8
+Z_U4 =
+exec_prefix = ${prefix}
+includedir = ${prefix}/include
+libdir = ${exec_prefix}/lib
+mandir = ${prefix}/share/man
+prefix = /usr/local
+sharedlibdir = ${libdir}
+uname = Linux
+--------------------
+
+
+--------------------
+./configure
+2014年 08月 10日 星期日 22:31:10 CST
+Using arm-linux-androideabi-ar
+Using arm-linux-androideabi-ranlib
+Using arm-linux-androideabi-nm
+Checking for arm-linux-androideabi-gcc...
+=== ztest14788.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+arm-linux-androideabi-gcc -c ztest14788.c
+... using gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest14788.c ===
+int foo() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 ztest14788.c
+
+Checking for shared library support...
+=== ztest14788.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+arm-linux-androideabi-gcc -w -c -O3 -fPIC ztest14788.c
+arm-linux-androideabi-gcc -shared -O3 -fPIC -o ztest14788.so ztest14788.o
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot open crtbegin_so.o: No such file or directory
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot open crtend_so.o: No such file or directory
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot find -lc
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot find -ldl
+collect2: error: ld returned 1 exit status
+(exit code 1)
+No shared library support.
+Building static library libz.a version 1.2.8 with arm-linux-androideabi-gcc.
+
+=== ztest14788.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+arm-linux-androideabi-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest14788.c
+ztest14788.c:1:23: fatal error: sys/types.h: No such file or directory
+ #include <sys/types.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for off64_t... No.
+
+=== ztest14788.c ===
+#include <stdio.h>
+int main(void) {
+  fseeko(NULL, 0, 0);
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -O3 -o ztest14788 ztest14788.c
+In file included from ztest14788.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for fseeko... No.
+
+=== ztest14788.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+arm-linux-androideabi-gcc -O3 -DNO_FSEEKO -o ztest14788 ztest14788.c
+ztest14788.c:1:20: fatal error: string.h: No such file or directory
+ #include <string.h>
+                    ^
+compilation terminated.
+(exit code 1)
+Checking for strerror... No.
+
+=== ztest14788.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest14788.c
+ztest14788.c:1:20: fatal error: unistd.h: No such file or directory
+ #include <unistd.h>
+                    ^
+compilation terminated.
+(exit code 1)
+Checking for unistd.h... No.
+
+=== ztest14788.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest14788.c
+Checking for stdarg.h... Yes.
+
+=== ztest14788.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest14788.c
+In file included from ztest14788.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking whether to use vs[n]printf() or s[n]printf()... using s[n]printf().
+
+=== ztest14788.c ===
+#include <stdio.h>
+int mytest()
+{
+  char buf[20];
+  snprintf(buf, sizeof(buf), "%s", "foo");
+  return 0;
+}
+int main()
+{
+  return (mytest());
+}
+===
+arm-linux-androideabi-gcc -O3 -DNO_FSEEKO -DNO_STRERROR -o ztest14788 ztest14788.c
+In file included from ztest14788.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for snprintf() in stdio.h... No.
+  WARNING: snprintf() not found, falling back to sprintf(). zlib
+  can build but will be open to possible buffer-overflow security
+  vulnerabilities.
+
+=== ztest14788.c ===
+#include <stdio.h>
+int mytest()
+{
+  char buf[20];
+  return sprintf(buf, "%s", "foo");
+}
+int main()
+{
+  return (mytest());
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf ztest14788.c
+In file included from ztest14788.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for return value of sprintf()... No.
+  WARNING: apparently sprintf() does not return a value. zlib
+  can build but will be open to possible string-format security
+  vulnerabilities.
+
+=== ztest14788.c ===
+#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+int ZLIB_INTERNAL foo;
+int main()
+{
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void ztest14788.c
+Checking for attribute(visibility) support... Yes.
+
+ALL = static
+AR = arm-linux-androideabi-ar
+ARFLAGS = rc
+CC = arm-linux-androideabi-gcc
+CFLAGS = -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void -DHAVE_HIDDEN
+CPP = arm-linux-androideabi-gcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = arm-linux-androideabi-gcc
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = arm-linux-androideabi-ranlib
+SFLAGS = -O3 -fPIC -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void -DHAVE_HIDDEN
+SHAREDLIB =
+SHAREDLIBM =
+SHAREDLIBV =
+STATICLIB = libz.a
+TEST = all teststatic
+VER = 1.2.8
+Z_U4 =
+exec_prefix = ${prefix}
+includedir = ${prefix}/include
+libdir = ${exec_prefix}/lib
+mandir = ${prefix}/share/man
+prefix = /usr/local
+sharedlibdir = ${libdir}
+uname = androideabi
+--------------------
+
+
+--------------------
+./configure --prefix=/home/crazyhorse/MyProject/GoldenDict/GitDict/AndroidDict/lib/
+2014年 08月 10日 星期日 22:32:12 CST
+Using arm-linux-androideabi-ar
+Using arm-linux-androideabi-ranlib
+Using arm-linux-androideabi-nm
+Checking for arm-linux-androideabi-gcc...
+=== ztest14939.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+arm-linux-androideabi-gcc -c ztest14939.c
+... using gcc
+
+Checking for obsessive-compulsive compiler options...
+=== ztest14939.c ===
+int foo() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 ztest14939.c
+
+Checking for shared library support...
+=== ztest14939.c ===
+extern int getchar();
+int hello() {return getchar();}
+===
+arm-linux-androideabi-gcc -w -c -O3 -fPIC ztest14939.c
+arm-linux-androideabi-gcc -shared -O3 -fPIC -o ztest14939.so ztest14939.o
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot open crtbegin_so.o: No such file or directory
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot open crtend_so.o: No such file or directory
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot find -lc
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot find -ldl
+collect2: error: ld returned 1 exit status
+(exit code 1)
+No shared library support.
+Building static library libz.a version 1.2.8 with arm-linux-androideabi-gcc.
+
+=== ztest14939.c ===
+#include <sys/types.h>
+off64_t dummy = 0;
+===
+arm-linux-androideabi-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest14939.c
+ztest14939.c:1:23: fatal error: sys/types.h: No such file or directory
+ #include <sys/types.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for off64_t... No.
+
+=== ztest14939.c ===
+#include <stdio.h>
+int main(void) {
+  fseeko(NULL, 0, 0);
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -O3 -o ztest14939 ztest14939.c
+In file included from ztest14939.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for fseeko... No.
+
+=== ztest14939.c ===
+#include <string.h>
+#include <errno.h>
+int main() { return strlen(strerror(errno)); }
+===
+arm-linux-androideabi-gcc -O3 -DNO_FSEEKO -o ztest14939 ztest14939.c
+ztest14939.c:1:20: fatal error: string.h: No such file or directory
+ #include <string.h>
+                    ^
+compilation terminated.
+(exit code 1)
+Checking for strerror... No.
+
+=== ztest14939.c ===
+#include <unistd.h>
+int main() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest14939.c
+ztest14939.c:1:20: fatal error: unistd.h: No such file or directory
+ #include <unistd.h>
+                    ^
+compilation terminated.
+(exit code 1)
+Checking for unistd.h... No.
+
+=== ztest14939.c ===
+#include <stdarg.h>
+int main() { return 0; }
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest14939.c
+Checking for stdarg.h... Yes.
+
+=== ztest14939.c ===
+#include <stdio.h>
+#include <stdarg.h>
+#include "zconf.h"
+int main()
+{
+#ifndef STDC
+  choke me
+#endif
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest14939.c
+In file included from ztest14939.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking whether to use vs[n]printf() or s[n]printf()... using s[n]printf().
+
+=== ztest14939.c ===
+#include <stdio.h>
+int mytest()
+{
+  char buf[20];
+  snprintf(buf, sizeof(buf), "%s", "foo");
+  return 0;
+}
+int main()
+{
+  return (mytest());
+}
+===
+arm-linux-androideabi-gcc -O3 -DNO_FSEEKO -DNO_STRERROR -o ztest14939 ztest14939.c
+In file included from ztest14939.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for snprintf() in stdio.h... No.
+  WARNING: snprintf() not found, falling back to sprintf(). zlib
+  can build but will be open to possible buffer-overflow security
+  vulnerabilities.
+
+=== ztest14939.c ===
+#include <stdio.h>
+int mytest()
+{
+  char buf[20];
+  return sprintf(buf, "%s", "foo");
+}
+int main()
+{
+  return (mytest());
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf ztest14939.c
+In file included from ztest14939.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for return value of sprintf()... No.
+  WARNING: apparently sprintf() does not return a value. zlib
+  can build but will be open to possible string-format security
+  vulnerabilities.
+
+=== ztest14939.c ===
+#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
+int ZLIB_INTERNAL foo;
+int main()
+{
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void ztest14939.c
+Checking for attribute(visibility) support... Yes.
+
+ALL = static
+AR = arm-linux-androideabi-ar
+ARFLAGS = rc
+CC = arm-linux-androideabi-gcc
+CFLAGS = -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void -DHAVE_HIDDEN
+CPP = arm-linux-androideabi-gcc -E
+EXE =
+LDCONFIG = ldconfig
+LDFLAGS =
+LDSHARED = arm-linux-androideabi-gcc
+LDSHAREDLIBC = -lc
+OBJC = $(OBJZ) $(OBJG)
+PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
+RANLIB = arm-linux-androideabi-ranlib
+SFLAGS = -O3 -fPIC -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void -DHAVE_HIDDEN
+SHAREDLIB =
+SHAREDLIBM =
+SHAREDLIBV =
+STATICLIB = libz.a
+TEST = all teststatic
+VER = 1.2.8
+Z_U4 =
+exec_prefix = ${prefix}
+includedir = ${prefix}/include
+libdir = ${exec_prefix}/lib
+mandir = ${prefix}/share/man
+prefix = /home/crazyhorse/MyProject/GoldenDict/GitDict/AndroidDict/lib/
+sharedlibdir = ${libdir}
+uname = androideabi
+--------------------
+
+
