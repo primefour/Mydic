@@ -100,9 +100,7 @@ char *get_path_without_suffix(const char *file_path,char *file_name,int len){
 }
 
 
-
-
-int  DirectoryScanner::processDirectory(const char *path){ 
+int  DirectoryScanner::processDirectory(const char *path,scanner_callback callback,void *data){
     int pathLength = strlen(path);
     if (pathLength >= PATH_MAX) {
         return 0;
@@ -111,6 +109,8 @@ int  DirectoryScanner::processDirectory(const char *path){
     if (!pathBuffer) {
         return -1;
     }
+    this->callback = callback;
+    this->callback_data = data;
 
     int pathRemaining = PATH_MAX - pathLength;
     strcpy(pathBuffer, path);
@@ -193,6 +193,9 @@ int DirectoryScanner::doProcessDirectoryEntry(char *path, int pathRemaining,stru
                 }
                 if(suffix != NULL && ret != NULL){
                     insert_file(path);
+                    if(callback != NULL){
+                        callback(callback_data,path,suffix);
+                    }
                 }
             }
         }
@@ -264,6 +267,7 @@ static void directory_list_destroy(void *data){
         free(data);
     }
 }
+
 void DirectoryScanner::DumpFileList(){
     file_list->begin_iterate();
     char *tmp = (char *)file_list->iterate_item();

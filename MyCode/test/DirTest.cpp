@@ -4,7 +4,7 @@
 int main(){
     DirectoryScanner *ds = new DirectoryScanner();
     ds->add_suffix(".ifo");
-    ds->processDirectory("/home/crazyhorse/test/golden_dic/MyDict/MyCode/test");
+    ds->processDirectory("/home/crazyhorse/test/golden_dic/MyDict/MyCode/test",NULL,NULL);
     ds->DumpFileList();
     return 0;
 }

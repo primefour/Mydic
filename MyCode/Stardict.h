@@ -15,7 +15,7 @@
 class StardictDictionary : public Dictionary{
     public:
         StardictDictionary(const char *dictionary_path);
-        ~StardictDictionary();
+        virtual  ~StardictDictionary();
         virtual int init();
         virtual int query_word(const char *word,MetaDataHeader *word_meta);
         virtual char* get_dictionary_name(char *buff,int len);

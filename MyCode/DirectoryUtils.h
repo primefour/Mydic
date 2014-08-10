@@ -10,13 +10,14 @@
 int  split_path(const char *file_path,char *file_main_path,int path_len ,char *file_name,int len);
 char *get_path_without_suffix(const char *file_path,char *file_name,int len);
 char *get_path_suffix(const char *file_path,char *suffix,int len);
+typedef void (*scanner_callback)(void *data,const char *file_full_path,const char *suffix);
 //This code is ported from android media scanner 
 
 class DirectoryScanner{
     public:
         DirectoryScanner();
         ~DirectoryScanner();
-        int processDirectory(const char *path);
+        int processDirectory(const char *path,scanner_callback callback,void *data);
         void add_suffix(const char *str);
         void remove_suffix(char *str);
         void DumpFileList();
@@ -26,6 +27,8 @@ class DirectoryScanner{
         int doProcessDirectory(char *path, int pathRemaining);
         HashList *ext_hash;
         List *file_list;
+        scanner_callback callback;
+        void *callback_data;
 };
 
 #endif
