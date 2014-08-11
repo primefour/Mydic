@@ -72,8 +72,8 @@ int StardictIdx::init(){
         if(offsetbit == 64){
             printf("###################64 bit wait a short while \n");
         }else{
-            (array + i)->word_data_offset.bit32 = ::ntohl(*((long*)offset_buff));
-            (array + i)->word_data_size = ::ntohl(*((long*)(offset_buff+4)));
+            (array + i)->word_data_offset.bit32 = ntohl(*((long*)offset_buff));
+            (array + i)->word_data_size = ntohl(*((long*)(offset_buff+4)));
         }
 
         if(i % 5000 == 0){

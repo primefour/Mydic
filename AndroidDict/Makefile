@@ -1,8 +1,52 @@
+LOCAL_LDLIBS=
+LOCAL_LDFLAGS=
+
+TOOLCHAIN_PREFIX=arm-linux-androideabi-
+GCC = $(TOOLCHAIN_PREFIX)gcc
+GXX = $(TOOLCHAIN_PREFIX)g++
+LD       = $(TOOLCHAIN_PREFIX)ld
+AR       = $(TOOLCHAIN_PREFIX)ar
+STRIP    = $(TOOLCHAIN_PREFIX)strip
+OBJCOPY  = $(TOOLCHAIN_PREFIX)objcopy
+CXXFLAGS = -fno-exceptions -fno-rtti -Wl,--gc-sections -Wl,-z,nocopyreloc --sysroot="/home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm"
+
+libs_in_ldflags := $(filter -l% %.so %.a,$(LOCAL_LDLIBS) $(LOCAL_LDFLAGS))
+
+# Remove the system libraries we know about from the warning, it's ok
+# (and actually expected) to link them with -l<name>.
+system_libs := \
+    android \
+    c \
+    dl \
+    jnigraphics \
+    log \
+    m \
+    m_hard \
+    stdc++ \
+    z \
+    EGL \
+    GLESv1_CM \
+    GLESv2 \
+    GLESv3 \
+    OpenSLES \
+    OpenMAXAL \
+    bcc \
+    bcinfo \
+    cutils \
+    gui \
+    RScpp \
+    RScpp_static \
+    RS \
+    ui \
+    utils
+libs_in_ldflags := $(filter-out $(addprefix -l,$(system_libs)), $(libs_in_ldflags))
 
 
-GCC=g++
-CFLAGS= -g -I ./lib/include -I ./
-LDFLAGS= -L ./lib/lib/ 
+
+
+GCC := $(GXX)
+CFLAGS := $(CXXFLAGS) -g -I ./lib/include -I ./
+LDFLAGS := $(LDFLAGS) -L ./lib/lib/ 
 TEST_PATH= ./test
 MEM_TEST= memory_test_tool.c 
 
@@ -25,6 +69,4 @@ DirTest:*.cpp $(TEST_PATH)/DirTest.cpp  memory_test_tool.c memory_test_tool.h
 	$(GCC) $(CFLAGS) $(LDFLAGS) *.cpp $(MEM_TEST) $(TEST_PATH)/DirTest.cpp -o $(TEST_PATH)/DirTest -lz
 TestDictionary:*.cpp $(TEST_PATH)/TestDictionary.cpp  memory_test_tool.c memory_test_tool.h
 	$(GCC) $(CFLAGS) $(LDFLAGS) *.cpp $(MEM_TEST) $(TEST_PATH)/TestDictionary.cpp -o $(TEST_PATH)/TestDictionary -lz
-
-
 	
