@@ -25,8 +25,9 @@ class C:public A{
 
 
 int main(){
-    class A *ptr = new A();
 
+/*
+    class A *ptr = new A();
     ptr->print();
     ptr = new B();
 
@@ -39,4 +40,6 @@ int main(){
 
     ptr->printa();
     cptr->printa();
+    */
+printf("hello world \n");
 }
