@@ -357,7 +357,62 @@ local int extract(FILE *in, struct access *index, off_t offset,
 }
 
 #ifdef Z_RANDOM_ACCESS_LIB
-int zran_get_access_
+int zran_build_access_file(const char *file_name,struct access **ppindex){
+    int len = 0;
+    FILE *in;
+    if(file_name == NULL){
+        fprintf(stderr,"file name is null %s %d ",__FILE__,__LINE__);
+        return -1;
+    }
+
+    in = fopen(file_name, "rb");
+    /* open input file */
+    if (in == NULL) {
+        fprintf(stderr, "usage: zran %s not exist\n",file_name);
+        return -1;
+    }
+    len = build_index(in, SPAN,ppindex);
+    fclose(in);
+    if (len < 0) {
+        switch (len) {
+        case Z_MEM_ERROR:
+            fprintf(stderr, "zran: out of memory\n");
+            break;
+        case Z_DATA_ERROR:
+            fprintf(stderr, "zran: compressed data error in %s\n",file_name);
+            break;
+        case Z_ERRNO:
+            fprintf(stderr, "zran: read error on %s\n",file_name);
+            break;
+        default:
+            fprintf(stderr, "zran: error %d while building index\n", len);
+        }
+        return -1;
+    }
+    fprintf(stderr, "zran: built index with %d access points\n", len);
+    return len;
+}
+
+int zran_extract_file(FILE *file,struct access *index,int offset,unsigned char *buff,int buff_size){
+    int len = 0;
+    len = extract(file, index, offset, buff,buff_size);
+    if (len < 0){
+        fprintf(stderr, "zran: extraction failed: %s error\n",
+                len == Z_MEM_ERROR ? "out of memory" : "input corrupted");
+    } else {
+        fwrite(buff, 1, len, stdout);
+        fprintf(stderr, "zran: extracted %d bytes at %llu\n", len, offset);
+    }
+    return len;
+}
+
+void zran_free_access(struct access *index){
+    if (index != NULL) {
+        free(index->list);
+        free(index);
+    }
+}
+
 #else
 /* Demonstrate the use of build_index() and extract() by processing the file
    provided on the command line, and the extracting 16K from about 2/3rds of
