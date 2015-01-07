@@ -356,6 +356,9 @@ local int extract(FILE *in, struct access *index, off_t offset,
     return ret;
 }
 
+#ifdef Z_RANDOM_ACCESS_LIB
+int zran_get_access_
+#else
 /* Demonstrate the use of build_index() and extract() by processing the file
    provided on the command line, and the extracting 16K from about 2/3rds of
    the way through the uncompressed output, and writing that to stdout. */
@@ -407,7 +410,7 @@ int main(int argc, char **argv)
         fprintf(stderr, "zran: extraction failed: %s error\n",
                 len == Z_MEM_ERROR ? "out of memory" : "input corrupted");
     else {
-        //fwrite(buf, 1, len, stdout);
+        fwrite(buf, 1, len, stdout);
         fprintf(stderr, "zran: extracted %d bytes at %llu\n", len, offset);
     }
 
@@ -416,3 +419,4 @@ int main(int argc, char **argv)
     fclose(in);
     return 0;
 }
+#endif

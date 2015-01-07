@@ -44,8 +44,7 @@ LDSHAREDLIBC=-lc
 TAR=tar
 SHELL=/bin/sh
 EXE=
-
-prefix =/home/crazyhorse/MyProject/GoldenDict/GitDict/lib/
+prefix =./../../
 exec_prefix =${prefix}
 libdir =${exec_prefix}/lib
 sharedlibdir =${libdir}
@@ -185,6 +184,7 @@ minigzip64$(EXE): minigzip64.o $(STATICLIB)
 	$(CC) $(CFLAGS) -o $@ minigzip64.o $(TEST_LDFLAGS)
 
 install-libs: $(LIBS)
+	@echo "hello world"
 	-@if [ ! -d $(DESTDIR)$(exec_prefix)  ]; then mkdir -p $(DESTDIR)$(exec_prefix); fi
 	-@if [ ! -d $(DESTDIR)$(libdir)       ]; then mkdir -p $(DESTDIR)$(libdir); fi
 	-@if [ ! -d $(DESTDIR)$(sharedlibdir) ]; then mkdir -p $(DESTDIR)$(sharedlibdir); fi
@@ -211,6 +211,7 @@ install-libs: $(LIBS)
 # ldconfig is for Linux
 
 install: install-libs
+	@echo "hello world"
 	-@if [ ! -d $(DESTDIR)$(includedir)   ]; then mkdir -p $(DESTDIR)$(includedir); fi
 	cp zlib.h zconf.h $(DESTDIR)$(includedir)
 	chmod 644 $(DESTDIR)$(includedir)/zlib.h $(DESTDIR)$(includedir)/zconf.h
