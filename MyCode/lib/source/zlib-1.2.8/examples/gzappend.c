@@ -458,7 +458,28 @@ local void gztack(char *name, int gd, z_stream *strm, int last)
     free(in);
     if (fd > 0) close(fd);
 }
+#ifdef Z_RANDOM_ACCESS_LIB
 
+int gz_append_file(char *gzfile, char *append_file,int level){
+    int gd;
+    z_stream strm;
+
+    /* set compression level */
+    level = Z_DEFAULT_COMPRESSION;
+
+    /* prepare to append to gzip file */
+    gd = gzscan(gzfile,&strm, level);
+
+    /* append files on command line, or from stdin if none */
+    if (append_file == NULL){
+        gztack(NULL, gd, &strm, 1);
+    } else{
+        gztack(append_file , gd, &strm,1);
+    }
+    return 0;
+}
+
+#else
 /* process the compression level option if present, scan the gzip file, and
    append the specified files, or append the data from stdin if no other file
    names are provided on the command line -- the gzip file must be writable
@@ -502,3 +523,4 @@ int main(int argc, char **argv)
         } while (*++argv != NULL);
     return 0;
 }
+#endif

@@ -18,7 +18,7 @@
 
 CC=gcc
 
-CFLAGS=-O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+CFLAGS=-O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -DZ_RANDOM_ACCESS_LIB
 #CFLAGS=-O -DMAX_WBITS=14 -DMAX_MEM_LEVEL=7
 #CFLAGS=-g -DDEBUG
 #CFLAGS=-O3 -Wall -Wwrite-strings -Wpointer-arith -Wconversion \
@@ -54,7 +54,7 @@ man3dir = ${mandir}/man3
 pkgconfigdir = ${libdir}/pkgconfig
 
 OBJZ = adler32.o crc32.o deflate.o infback.o inffast.o inflate.o inftrees.o trees.o zutil.o
-OBJG = compress.o uncompr.o gzclose.o gzlib.o gzread.o gzwrite.o
+OBJG = compress.o uncompr.o gzclose.o gzlib.o gzread.o gzwrite.o zran.o gzappend.o
 OBJC = $(OBJZ) $(OBJG)
 
 PIC_OBJZ = adler32.lo crc32.lo deflate.lo infback.lo inffast.lo inflate.lo inftrees.lo trees.lo zutil.lo
@@ -112,7 +112,7 @@ test64: all64
 	fi; \
 	rm -f $$TMP64
 
-infcover.o: test/infcover.c zlib.h zconf.h
+infcover.o: test/infcover.c zlib.h zconf.h zran.h gzappend.h
 	$(CC) $(CFLAGS) -I. -c -o $@ test/infcover.c
 
 infcover: infcover.o libz.a
@@ -213,11 +213,11 @@ install-libs: $(LIBS)
 install: install-libs
 	@echo "hello world"
 	-@if [ ! -d $(DESTDIR)$(includedir)   ]; then mkdir -p $(DESTDIR)$(includedir); fi
-	cp zlib.h zconf.h $(DESTDIR)$(includedir)
+	cp zlib.h zconf.h zran.h gzappend.h $(DESTDIR)$(includedir)
 	chmod 644 $(DESTDIR)$(includedir)/zlib.h $(DESTDIR)$(includedir)/zconf.h
 
 uninstall:
-	cd $(DESTDIR)$(includedir) && rm -f zlib.h zconf.h
+	cd $(DESTDIR)$(includedir) && rm -f zlib.h zconf.h zran.h gzappend.h
 	cd $(DESTDIR)$(libdir) && rm -f libz.a; \
 	if test -n "$(SHAREDLIBV)" -a -f $(SHAREDLIBV); then \
 	  rm -f $(SHAREDLIBV) $(SHAREDLIB) $(SHAREDLIBM); \
