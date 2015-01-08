@@ -50,23 +50,23 @@ class File{
         virtual int lseek(int where,int offset);
         virtual int readline(unsigned char *buf,int len);
         int read_terminating_by(unsigned char *buff,int len,unsigned char terminate);
-        int is_open(){
-            return (fd>=0) ? 1:0;
-        }
+        int is_open(){ return (fd>=0) ? 1:0; }
+        const char* get_path(){ return file_path; }
 
-        static int  check_file_type(const char *path);
+        //for file type recogition function register
+        static int  get_file_type(const char *path);
         static void Init_check_list();
         static void add_check_func(pfn_check_file_type pfd,DIC_FILE_TYPE_T type);
         static void release_check_list();
         static File* MakeFileInstance(const void *data,DIC_FILE_TYPE file_type);
-        static List *pcheck_list; 
+        static List* pcheck_list; 
     protected:
         char file_path[MAX_PATH_LENGTH];
         DIC_FILE_TYPE_T file_type;
         int  fd;
 };
 
-
+///////////////////////////////////////////////////////////////////////////////////////
 
 class dictionary{
 

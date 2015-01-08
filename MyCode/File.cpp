@@ -27,6 +27,7 @@ BufferCache::BufferCache(File *file_ops){
     cache_size = MAX_CACHE_SIZE;
     this->file_ops = file_ops;
 }
+
 BufferCache::~BufferCache(){
 
 }
@@ -186,7 +187,7 @@ static int file_compare_func(void *data1,void *data2){
     }
 }
 
-int File::check_file_type(const char *path){
+int File::get_file_type(const char *path){
     File tmp_file(path);
     unsigned char buff[1024]={0};
     tmp_file.open(0);
@@ -207,6 +208,7 @@ void File::Init_check_list(){
 }
 
 void File::add_check_func(pfn_check_file_type pfn,DIC_FILE_TYPE_T type){
+    Init_check_list();
     pfn_check_file *tmp = (pfn_check_file *)malloc(sizeof(pfn_check_file));
     if(tmp == NULL){
         printf("%s error %d \n",__func__,__LINE__);
@@ -224,8 +226,10 @@ void File::release_check_list(){
     pcheck_list = NULL;
 }
 
-File* File:: MakeFileInstance(const void *data,DIC_FILE_TYPE file_type){
+File* File:: MakeFileInstance(const void *data){
     File *tmp = NULL;
+    Init_check_list();
+    DIC_FILE_TYPE file_type = File::get_file_type(data);
     switch(file_type){
         case GZIP_FILE_TYPE:
             tmp = new GzipFile((char *)data);
