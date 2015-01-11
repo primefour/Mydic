@@ -116,6 +116,86 @@ class AVLTreeTemplate{
         
     private:
 
+        void avl_tree_insert(AVLTreeNode<T> **ppNode,T *data,int *balance){
+            AVLTreeNode<T> *insertNode = NULL;
+            int cmp_val = 0;
+            int ret_val = 0;
+            if(ppNode == NULL){
+                if(mRoot == NULL){
+                    //handle empty tree
+                    insertNode = new AVLTreeNode(data);
+                    mRoot = insertNode;
+                    mSize ++;
+                    return ;
+                }else{
+                    ppNode = &mRoot; 
+                }
+            }
+
+            if((*((*ppNode)->mData) > *data ){
+                cmp_val = 1
+            }else if((*((*ppNode)->mData) < *data)){
+                cmp_val = -1;
+            }else{
+                cmp_val = 0;
+            }
+
+            if(cmp_val > 0){
+                if((*ppNode)->left == NULL){
+                    (*ppNode)->left = new AVLTreeNode(data);
+                    *balance = 0;
+                }else{
+                    avl_tree_insert(&(*ppNode)->left,data,balance);
+                }
+                if(*balance == 0){
+                    switch((*ppNode)->weight){
+                        case WEIGHT_LEFT_HEAVY:
+                            rotate_left(ppNode);
+                            *balance = 1;
+                            break;
+                        case WEIGHT_BALANCE:
+                            (*ppNode)->weight = WEIGHT_LEFT_HEAVY;
+                            break;
+                        case WEIGHT_RIGHT_HEAVY:
+                            (*ppNode)->weight = WEIGHT_BALANCE;
+                            *balance = 1;
+                            break;
+                    }
+                }
+            }else if(cmp_val < 0){
+                if((*ppNode)->right == NULL){
+                    (*ppNode)->right = new AVLTreeNode(data);
+                    *balance = 0;
+                }else{
+                    avl_tree_insert(&(*ppNode)->right,data,balance);
+                }
+                if(*balance == 0){
+                    switch((*ppNode)->weight){
+                        case WEIGHT_LEFT_HEAVY:
+                            (*ppNode)->weight = WEIGHT_BALANCE;
+                            *balance = 1;
+                            break;
+                        case WEIGHT_BALANCE:
+                            (*ppNode)->weight = WEIGHT_RIGHT_HEAVY;
+                            break;
+                        case WEIGHT_RIGHT_HEAVY:
+                            rotate_right(ppNode);
+                            *balance = 1;
+                            break;
+                    }
+                }
+
+            }else{
+                if(!(*ppNode)->hide){
+                    printf("############exist############\n");
+                    return ;
+                }else{
+                    *ppNode = new AVLTreeNode(data);
+                }
+                *balance =1;
+            }
+        }
+
         void dump_data(T *data){
             //printf(" %d   ",*((int *)data));
         }
