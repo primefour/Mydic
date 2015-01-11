@@ -90,14 +90,39 @@ int main(){
         printf("find fail \n");
     }
 
+    tree.PreorderScan();
+
+    printf("\n");
     tree.MidorderScan();
+
+    printf("\n");
+    tree.PostorderScan();
+
+    printf("\n");
+    tree.LayerScan();
     printf("\n");
 
     tree.RemoveNode(five);
+    tree.PreorderScan();
+
+    printf("\n");
     tree.MidorderScan();
+
+    printf("\n");
+    tree.PostorderScan();
+
+    printf("\n");
+    tree.LayerScan();
+
     printf("\n");
     tree.RemoveNode(one);
+    tree.PreorderScan();
+    printf("\n");
     tree.MidorderScan();
+    printf("\n");
+    tree.PostorderScan();
+    printf("\n");
+    tree.LayerScan();
     printf("\n");
 
     return 0;

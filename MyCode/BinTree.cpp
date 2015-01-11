@@ -476,6 +476,3 @@ void bin_tree_simple_search_remove(bin_tree_t *tree,tree_node_t *parent_node,tre
 
 
 
-
-
-

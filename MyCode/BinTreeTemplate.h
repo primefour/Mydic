@@ -23,7 +23,7 @@ class TreeNode{
     }
     ~TreeNode(){
         if(mData != NULL){
-            //delete mData;
+            delete mData;
         }
     }
 
@@ -37,14 +37,21 @@ class TreeNode{
 template <class T>
 class BinTree{
     public:
-        //void PreorderScan();
+        void PreorderScan(){
+            bin_tree_preorder_scan(mRoot);
+        }
 
         void MidorderScan(){
             bin_tree_midorder_scan(mRoot);
         }
+        void PostorderScan(){
+            bin_tree_postorder_scan(mRoot);
+        }
 
-        //void PostorderScan();
-        //void LayerScan();
+        void LayerScan(){
+            TreeNode<T> *parent[2]={mRoot,NULL};
+            bin_tree_layer_scan(parent);
+        }
 
         int FindNode(T *data){
             TreeNode<T> **ppNode = &mRoot;
@@ -138,9 +145,48 @@ class BinTree{
         }
         
     private:
-        void dump_data(T *data){
-            printf(" %d   ",*((int *)data));
+
+        void bin_tree_layer_scan(TreeNode<T> **node_parent){
+            int i = 0;
+            int j = 0;
+            TreeNode<T> *parent[100]={0};
+            while(node_parent[i] != NULL){
+                if(node_parent[i]->left){
+                    parent[j++] = node_parent[i]->left;
+                }
+                if(node_parent[i]->right){
+                    parent[j++] = node_parent[i]->right;
+                }
+                dump_data(node_parent[i]->mData);
+                i++;
+            }
+            if(node_parent[0] == NULL){
+                return ;
+            }
+            printf("\n");
+            bin_tree_layer_scan(parent);
         }
+
+        void dump_data(T *data){
+            //printf(" %d   ",*((int *)data));
+        }
+
+        void bin_tree_preorder_scan(TreeNode<T> *node){
+            if(node != NULL){
+                dump_data(node->mData);
+                bin_tree_preorder_scan(node->left);
+                bin_tree_preorder_scan(node->right);
+            }
+        }
+
+        void bin_tree_postorder_scan(TreeNode<T> *node){
+            if(node != NULL){
+                bin_tree_postorder_scan(node->left);
+                bin_tree_postorder_scan(node->right);
+                dump_data(node->mData);
+            }
+        }
+
         void bin_tree_midorder_scan(TreeNode<T> *node){
             if(node != NULL){
                 bin_tree_midorder_scan(node->left);
