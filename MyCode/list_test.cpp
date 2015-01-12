@@ -5,6 +5,7 @@
 #include<assert.h>
 #include"memory_test_tool.h"
 #include"BinTreeTemplate.h"
+#include"AVLTreeTemplate.h"
 
 int main(){
     List<int> a;
@@ -124,6 +125,7 @@ int main(){
     printf("\n");
     tree.LayerScan();
     printf("\n");
+    AVLTreeTemplate<int> avltree;
 
     return 0;
 }

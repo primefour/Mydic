@@ -1,5 +1,5 @@
-#ifndef __AVL_TREE_H__
-#define __AVL_TREE_H__
+#ifndef __AVL_TREE_TEMPLATE_H__
+#define __AVL_TREE_TEMPLATE_H__
 #include"BinTreeTemplate.h"
 
 enum{
@@ -116,6 +116,80 @@ class AVLTreeTemplate{
         
     private:
 
+        static void rotate_left(AVLTreeNode<T> **node){
+            AVLTreeNode<T> *left = NULL;
+            AVLTreeNode<T> *grand_child = NULL;
+            left = (*node)->left;
+            if((*node)->weight == WEIGHT_LEFT_HEAVY){
+                (*node)->left = left->right;
+                left->right = (*node);
+                (*node)->weight = WEIGHT_BALANCE;
+                left->weight = WEIGHT_BALANCE;
+                *node = left;
+            }else{
+                grand_child = left->right;
+                left->right = grand_child->left;
+                grand_child->left = left;
+                (*node)->left = grand_child->right;
+                grand_child->right = *node;
+                switch(grand_child->weight){
+                    case WEIGHT_LEFT_HEAVY:
+                        (*node)->weight = WEIGHT_RIGHT_HEAVY;
+                        left->weight = WEIGHT_BALANCE;
+                        break;
+                    case WEIGHT_BALANCE:
+                        (*node)->weight = WEIGHT_BALANCE;
+                        left->weight = WEIGHT_BALANCE;
+                        break;
+                    case WEIGHT_RIGHT_HEAVY:
+                        (*node)->weight = WEIGHT_BALANCE;
+                        left->weight = WEIGHT_LEFT_HEAVY;
+                        break;
+                }
+                grand_child->weight = WEIGHT_BALANCE;
+                *node = grand_child;
+            }
+            return;
+        }
+
+
+        static void rotate_right(AVLTreeNode<T> **node){
+            AVLTreeNode<T> *right = NULL;
+            AVLTreeNode<T> *grand_child = NULL;
+            right = (*node)->right;
+            if(right->weight == WEIGHT_RIGHT_HEAVY){
+                (*node)->right = right->left;
+                right->left = (*node);
+                (*node)->weight = WEIGHT_BALANCE;
+                (right)->weight = WEIGHT_BALANCE;
+                *node = right;
+            }else{
+                grand_child = right->left;
+                right->left = grand_child->right;
+                grand_child->right = right;
+                (*node)->right = grand_child->left;
+                grand_child->left = *node;
+                switch((grand_child)->weight){
+                    case WEIGHT_LEFT_HEAVY:
+                        ((*node))->weight = WEIGHT_BALANCE;
+                        (right)->weight = WEIGHT_RIGHT_HEAVY;
+                        break;
+                    case WEIGHT_BALANCE:
+                        ((*node))->weight = WEIGHT_BALANCE;
+                        (right)->weight = WEIGHT_BALANCE;
+                        break;
+                    case WEIGHT_RIGHT_HEAVY:
+                        ((*node))->weight = WEIGHT_LEFT_HEAVY;
+                        (right)->weight = WEIGHT_BALANCE;
+                        break;
+                }
+                (grand_child)->weight = WEIGHT_BALANCE;
+                *node = grand_child;
+            }
+            return;
+        }
+
+
         void avl_tree_insert(AVLTreeNode<T> **ppNode,T *data,int *balance){
             AVLTreeNode<T> *insertNode = NULL;
             int cmp_val = 0;
@@ -132,7 +206,7 @@ class AVLTreeTemplate{
                 }
             }
 
-            if((*((*ppNode)->mData) > *data ){
+            if(*((*ppNode)->mData) > *data ){
                 cmp_val = 1
             }else if((*((*ppNode)->mData) < *data)){
                 cmp_val = -1;
@@ -257,5 +331,4 @@ class AVLTreeTemplate{
         AVLTreeNode *mRoot;
 };
 
-
-#endif //__AVL_TREE_H__
+#endif 
