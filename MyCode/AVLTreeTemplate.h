@@ -32,6 +32,12 @@ class AVLTreeNode{
         weight = 0;
         hide = 0;
     }
+    void operator=(const  AVLTreeNode<T> &node){
+        left = node.left;
+        right = node.right;
+        weight = node.weight;
+        hide = 0;
+    }
     ~AVLTreeNode(){
         if(mData != NULL){
             delete mData;
@@ -47,7 +53,7 @@ class AVLTreeNode{
 };
 
 
-template <type T>
+template <class T>
 class AVLTreeTemplate{
     public:
         AVLTreeTemplate(){
@@ -90,6 +96,9 @@ class AVLTreeTemplate{
         }
 
         int InsertNode(T *data){
+            int balance = 1;
+            avl_tree_insert(NULL,data,&balance);
+            return 1;
         }
 
         void RemoveNode(T *data){
@@ -197,7 +206,7 @@ class AVLTreeTemplate{
             if(ppNode == NULL){
                 if(mRoot == NULL){
                     //handle empty tree
-                    insertNode = new AVLTreeNode(data);
+                    insertNode = new AVLTreeNode<T>(data);
                     mRoot = insertNode;
                     mSize ++;
                     return ;
@@ -207,7 +216,7 @@ class AVLTreeTemplate{
             }
 
             if(*((*ppNode)->mData) > *data ){
-                cmp_val = 1
+                cmp_val = 1;
             }else if((*((*ppNode)->mData) < *data)){
                 cmp_val = -1;
             }else{
@@ -216,8 +225,9 @@ class AVLTreeTemplate{
 
             if(cmp_val > 0){
                 if((*ppNode)->left == NULL){
-                    (*ppNode)->left = new AVLTreeNode(data);
+                    (*ppNode)->left = new AVLTreeNode<T>(data);
                     *balance = 0;
+                    mSize ++;
                 }else{
                     avl_tree_insert(&(*ppNode)->left,data,balance);
                 }
@@ -238,8 +248,9 @@ class AVLTreeTemplate{
                 }
             }else if(cmp_val < 0){
                 if((*ppNode)->right == NULL){
-                    (*ppNode)->right = new AVLTreeNode(data);
+                    (*ppNode)->right = new AVLTreeNode<T>(data);
                     *balance = 0;
+                    mSize ++;
                 }else{
                     avl_tree_insert(&(*ppNode)->right,data,balance);
                 }
@@ -261,17 +272,24 @@ class AVLTreeTemplate{
 
             }else{
                 if(!(*ppNode)->hide){
-                    printf("############exist############\n");
+                    printf("############exist############ replace data item\n");
+                    AVLTreeNode<T> *tmp = new AVLTreeNode<T>(data);
+                    *tmp = **ppNode;
+                    delete *ppNode ;
+                    *ppNode = tmp;
                     return ;
                 }else{
-                    *ppNode = new AVLTreeNode(data);
+                    (*ppNode)->mData = data; 
+                    (*ppNode)->hide = 0;
+                    delete (*ppNode)->mData;
+                    return ;
                 }
                 *balance =1;
             }
         }
 
         void dump_data(T *data){
-            //printf(" %d   ",*((int *)data));
+            printf(" %d   ",*((int *)data));
         }
 
         void avl_tree_preorder_scan(AVLTreeNode<T> *node){
@@ -328,7 +346,7 @@ class AVLTreeTemplate{
         }
 
         int mSize;
-        AVLTreeNode *mRoot;
+        AVLTreeNode<T> *mRoot;
 };
 
 #endif 
