@@ -26,10 +26,10 @@ class AVLTreeNode{
         hide = 0;
     }
     AVLTreeNode(AVLTreeNode &node){
+        left = node.left;
+        right = node.right;
+        weight = node.weight;
         mData = node.mData;
-        left = NULL;
-        right = NULL;
-        weight = 0;
         hide = 0;
     }
     void operator=(const  AVLTreeNode<T> &node){
@@ -37,10 +37,11 @@ class AVLTreeNode{
         right = node.right;
         weight = node.weight;
         hide = 0;
+        mData = node.mData;
     }
     ~AVLTreeNode(){
         if(mData != NULL){
-            delete mData;
+            //delete mData;
         }
     }
 
@@ -272,16 +273,16 @@ class AVLTreeTemplate{
 
             }else{
                 if(!(*ppNode)->hide){
-                    printf("############exist############ replace data item\n");
-                    AVLTreeNode<T> *tmp = new AVLTreeNode<T>(data);
-                    *tmp = **ppNode;
-                    delete *ppNode ;
-                    *ppNode = tmp;
+                    if((*ppNode)->mData != data) {
+                        printf("replace data value \n");
+                        delete (*ppNode)->mData;
+                        (*ppNode)->mData = data;
+                    }
                     return ;
                 }else{
+                    delete (*ppNode)->mData;
                     (*ppNode)->mData = data; 
                     (*ppNode)->hide = 0;
-                    delete (*ppNode)->mData;
                     return ;
                 }
                 *balance =1;

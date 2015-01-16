@@ -23,7 +23,7 @@ class TreeNode{
     }
     ~TreeNode(){
         if(mData != NULL){
-            delete mData;
+            //delete mData;
         }
     }
 
