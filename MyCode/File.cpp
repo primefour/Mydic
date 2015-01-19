@@ -14,123 +14,32 @@
 #include"list.h"
 #include"memory_test_tool.h"
 
-List* File::pcheck_list = NULL;
+List<pfn_check_file> GCheckList;
 
-BufferCache::BufferCache(unsigned int size,File *file_ops){
-    cache = NULL;
-    cache_size = size;
-    this->file_ops = file_ops;
-}
-
-BufferCache::BufferCache(File *file_ops){
-    cache = NULL;
-    cache_size = MAX_CACHE_SIZE;
-    this->file_ops = file_ops;
-}
-
-BufferCache::~BufferCache(){
-
-}
-
-int BufferCache::init(){
-    if(cache == NULL){
-        cache = (unsigned char *)malloc(cache_size);
-        if(cache == NULL){
-            ALOGE("%s","buffer cache malloc failed");
-            return -1;
-        }
-    }
-    return 0;
-}
-
-
-int BufferCache::read(unsigned char *buf,int len){
-    return 0;
-}
-
-int BufferCache::write(const unsigned char *buf,int len){
-    return 0;
-}
-int BufferCache::lseek(int whence,int offset){
-    return 0;
-}
-
-int BufferCache::readline(unsigned char *buf,int len){
-    return 0;
-}
-
-
-
-
-File::File(const char *path){
-    fd =-1;
-    file_type = ORDINARY_FILE_TYPE;
-    memset(file_path,0,MAX_PATH_LENGTH);
+SimpleFile::SimpleFile(const char *path){
+    mfd =-1;
+    memset(mfile_path,0,MAX_PATH_LENGTH);
     if(path != NULL){
         strncpy(file_path,path,MAX_PATH_LENGTH);
     }
 }
 
-
-File::~File(){
+SimpleFile::~SimpleFile(){
     if(fd >= 0){
         close(fd);
     }
 }
 
-
-
-int File::readline(unsigned char *buf,int len){
-    int ret = -1;
-    unsigned char *ptr = buf;
-    memset(buf,0,len);
-    int i = 0;
-
-    while((ret = ::read(fd,ptr,1) > 0) && (*ptr != '\n') && ++i < len){ 
-        //printf("%c",*ptr);
-        ptr++;
-    }
-
-    if(*ptr == '\n'){
-        *ptr = '\0';
-        return i;
-    }else{
-        *(buf+len-1)= '\0';
-        return ret;
-    }
-}
-
-int File::read_terminating_by(unsigned char *buf,int len,unsigned char terminate){
-    int ret = -1;
-    unsigned char *ptr = buf;
-    memset(buf,0,len);
-    int i = 0;
-
-    while((ret = ::read(fd,ptr,1) > 0) && (*ptr != terminate ) && ++i < len){ 
-        //printf("%c",*ptr);
-        ptr++;
-    }
-
-    if(*ptr == terminate){
-        *ptr = '\0';
-        return i;
-    }else{
-        *(buf+len-1)= '\0';
-        return ret;
-    }
-}
-
-
-int File::lseek(int whence,int offset){
+int SimpleFile::Seek(int whence,int offset){
     if(fd >= 0){
         return ::lseek(fd,offset,whence);
     }else{
-        ALOGE("%s","fd is negative");
+        printf("%s\n","fd is negative");
         return -1;
     }
 }
 
-int File::write(const unsigned char *buf,int len){
+int SimpleFile::Write(const unsigned char *buf,int len){
     int ret = -1;
     const unsigned char *ptr = buf;
     //printf("buf = %s len = %d ",buf,len);
@@ -141,18 +50,18 @@ int File::write(const unsigned char *buf,int len){
                 len -= ret;
                 ptr += ret;
             }else{
-                ALOGE("%s","write failed");
+                printf("%s \n","write failed");
                 return -1;
             }
         }
     }else{
-        ALOGE("%s","fd is negative");
+        printf("%s\n","fd is negative");
     }
     return ret;
 }
 
 
-int File::read(unsigned char *buf,int len){
+int SimpleFile::Read(unsigned char *buf,int len){
     int ret = -1;
     memset(buf,0,len);
     //printf("%s \n",__func__);
@@ -238,5 +147,101 @@ File* File:: MakeFileInstance(const void *data){
             tmp = new File((char *)data);
     }
     return tmp;
+}
+
+/*
+int readline(unsigned char *buf,int len){
+    int ret = -1;
+    unsigned char *ptr = buf;
+    memset(buf,0,len);
+    int i = 0;
+
+    while((ret = ::read(fd,ptr,1) > 0) && (*ptr != '\n') && ++i < len){ 
+        //printf("%c",*ptr);
+        ptr++;
+    }
+
+    if(*ptr == '\n'){
+        *ptr = '\0';
+        return i;
+    }else{
+        *(buf+len-1)= '\0';
+        return ret;
+    }
+}
+*/
+
+/*
+int File::read_terminating_by(unsigned char *buf,int len,unsigned char terminate){
+    int ret = -1;
+    unsigned char *ptr = buf;
+    memset(buf,0,len);
+    int i = 0;
+
+    while((ret = ::read(fd,ptr,1) > 0) && (*ptr != terminate ) && ++i < len){ 
+        //printf("%c",*ptr);
+        ptr++;
+    }
+
+    if(*ptr == terminate){
+        *ptr = '\0';
+        return i;
+    }else{
+        *(buf+len-1)= '\0';
+        return ret;
+    }
+}
+*/
+
+
+
+
+
+
+
+
+
+
+BufferCache::BufferCache(unsigned int size,File *file_ops){
+    cache = NULL;
+    cache_size = size;
+    this->file_ops = file_ops;
+}
+
+BufferCache::BufferCache(File *file_ops){
+    cache = NULL;
+    cache_size = MAX_CACHE_SIZE;
+    this->file_ops = file_ops;
+}
+
+BufferCache::~BufferCache(){
+
+}
+
+int BufferCache::init(){
+    if(cache == NULL){
+        cache = (unsigned char *)malloc(cache_size);
+        if(cache == NULL){
+            ALOGE("%s","buffer cache malloc failed");
+            return -1;
+        }
+    }
+    return 0;
+}
+
+
+int BufferCache::read(unsigned char *buf,int len){
+    return 0;
+}
+
+int BufferCache::write(const unsigned char *buf,int len){
+    return 0;
+}
+int BufferCache::lseek(int whence,int offset){
+    return 0;
+}
+
+int BufferCache::readline(unsigned char *buf,int len){
+    return 0;
 }
 

@@ -39,31 +39,34 @@ typedef struct pfn_check_file{
     DIC_FILE_TYPE_T type;
 }pfn_check_file;
 
-//implements general file operations
-class File{
-    public :
-        File(const char *path);
-        virtual ~File();
-        virtual int open(int mode);
-        virtual int read(unsigned char *buf,int len);
-        virtual int write(const unsigned char *buf,int len);
-        virtual int lseek(int where,int offset);
-        virtual int readline(unsigned char *buf,int len);
-        int read_terminating_by(unsigned char *buff,int len,unsigned char terminate);
-        int is_open(){ return (fd>=0) ? 1:0; }
-        const char* get_path(){ return file_path; }
 
-        //for file type recogition function register
-        static int  get_file_type(const char *path);
-        static void Init_check_list();
-        static void add_check_func(pfn_check_file_type pfd,DIC_FILE_TYPE_T type);
-        static void release_check_list();
-        static File* MakeFileInstance(const void *data,DIC_FILE_TYPE file_type);
-        static List* pcheck_list; 
+class DicFileInterface{
+    virtual char ReadChar();
+    virtual short ReadS16();
+    virtual unsigned short ReadU16();
+    virtual int ReadI32();
+    virtual unsigned int ReadU32();
+    virtual long long ReadI64();
+    virtual unsigned long long ReadU64();
+    virtual int Read(unsigned char *buf,int len);
+    virtual int Seek(int where,int offset);
+    virtual int ReadLine(unsigned char *buf,int len);
+    virtual int Read_Terminating(unsigned char *buff,int len,unsigned char terminate);
+};
+
+
+
+//implements general file operations
+class SimpleFile{
+    public :
+        SimpleFile(const char *path);
+        ~SimpleFile();
+        int Read(unsigned char *buf,int len);
+        int Write(const unsigned char *buf,int len);
+        int Seek(int where,int offset);
     protected:
-        char file_path[MAX_PATH_LENGTH];
-        DIC_FILE_TYPE_T file_type;
-        int  fd;
+        char mfile_path[MAX_PATH_LENGTH];
+        int  mfd;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////
