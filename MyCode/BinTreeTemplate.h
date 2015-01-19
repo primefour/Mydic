@@ -168,7 +168,7 @@ class BinTree{
         }
 
         void dump_data(T *data){
-            //printf(" %d   ",*((int *)data));
+            printf(" %d   ",*((int *)data));
         }
 
         void bin_tree_preorder_scan(TreeNode<T> *node){

@@ -67,6 +67,10 @@ class AVLTreeTemplate{
             mRoot = tree.mRoot;
         }
 
+        ~AVLTreeTemplate(){
+            avl_tree_destroy();
+        }
+
         void PreorderScan(){
             avl_tree_preorder_scan(mRoot);
         }
@@ -112,9 +116,9 @@ class AVLTreeTemplate{
                     ppNode = &((*ppNode)->right);
                 }else {
                     (*ppNode)->hide = 1;
+                    return ;
                 }
             }
-            return 0;
         }
 
         int GetSize(){
@@ -343,8 +347,44 @@ class AVLTreeTemplate{
                 return ;
             }
             printf("\n");
-            bin_tree_layer_scan(parent);
+            avl_tree_layer_scan(parent);
         }
+
+        void avl_tree_destroy(){
+            if(mRoot != NULL){
+                avl_tree_remove_left(&mRoot);
+            }
+            mSize = 0;
+        }
+        void avl_tree_remove_left(AVLTreeNode<T> **ppnode){
+            if(*ppnode != NULL){
+                if((*ppnode)->left != NULL){
+                    avl_tree_remove_left(&((*ppnode)->left));
+                }
+                if((*ppnode)->right != NULL){
+                    avl_tree_remove_right(&((*ppnode)->right));
+                }
+                delete *ppnode;
+                *ppnode = NULL;
+                mSize --;
+            }
+        }
+
+        void avl_tree_remove_right(AVLTreeNode<T> **ppnode){
+            if(*ppnode != NULL){
+                if((*ppnode)->left != NULL){
+                    avl_tree_remove_left(&((*ppnode)->left));
+                }
+
+                if((*ppnode)->right != NULL){
+                    avl_tree_remove_right(&((*ppnode)->right));
+                }
+                delete *ppnode;
+                *ppnode = NULL;
+                mSize --;
+            }
+        }
+
 
         int mSize;
         AVLTreeNode<T> *mRoot;

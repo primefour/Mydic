@@ -125,7 +125,71 @@ int main(){
     printf("\n");
     tree.LayerScan();
     printf("\n");
+
     AVLTreeTemplate<int> avltree;
+
+    avltree.InsertNode(one);
+    avltree.InsertNode(two);
+    avltree.InsertNode(one);
+    printf("avltree size = %d ",avltree.GetSize());
+
+    avltree.InsertNode(five);
+    avltree.InsertNode(four);
+    avltree.InsertNode(ten);
+    avltree.InsertNode(seven);
+    avltree.InsertNode(six);
+    avltree.InsertNode(eight);
+    avltree.InsertNode(nine);
+    avltree.InsertNode(three);
+    printf("avltree size = %d ",avltree.GetSize());
+    if(avltree.FindNode(five)){
+        printf("fine OK\n");
+    }else{
+        printf("find fail \n");
+    }
+
+    if(avltree.FindNode(new int(11))){
+        printf("fine OK\n");
+    }else{
+        printf("find fail \n");
+    }
+
+    avltree.PreorderScan();
+
+    printf("\n");
+    avltree.MidorderScan();
+
+    printf("\n");
+    avltree.PostorderScan();
+
+    printf("\n");
+    avltree.LayerScan();
+    printf("\n");
+
+    printf(" avltree.RemoveNode(five); \n");
+    avltree.RemoveNode(five);
+    avltree.PreorderScan();
+
+    printf("\n");
+    avltree.MidorderScan();
+
+    printf("\n");
+    avltree.PostorderScan();
+
+    printf("\n");
+    avltree.LayerScan();
+
+    printf("\n");
+    avltree.RemoveNode(one);
+    avltree.PreorderScan();
+    printf("\n");
+    avltree.MidorderScan();
+    printf("\n");
+    avltree.PostorderScan();
+    printf("\n");
+    avltree.LayerScan();
+    printf("\n");
+
 
     return 0;
 }
