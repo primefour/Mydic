@@ -3,10 +3,9 @@
 #include<stdlib.h>
 #include<string.h>
 #include<assert.h>
-#include"memory_test_tool.h"
+//#include"memory_test_tool.h"
 #include"BinTreeTemplate.h"
 #include"AVLTreeTemplate.h"
-#include"RefBase.h" 
 
 int main(){
     List<int> a;
