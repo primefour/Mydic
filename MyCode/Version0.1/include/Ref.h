@@ -58,7 +58,7 @@ class SimpleObject{
             }
         }
 
-/*
+        /*
         SimpleObject(const T &obj){
             printf("SimpleObject(const T&obj)\n");
             m_obj = &obj;
@@ -66,7 +66,6 @@ class SimpleObject{
                 m_obj->get();
             }
         }
-        */
 
         SimpleObject(T &obj){
             printf("SimpleObject(T&obj)\n");
@@ -75,6 +74,7 @@ class SimpleObject{
                 m_obj->get();
             }
         }
+        */
 
         SimpleObject(){
             printf("SimpleObject()\n");
@@ -82,7 +82,7 @@ class SimpleObject{
         }
 
         //copy constructor
-        SimpleObject(const SimpleObject &obj){
+        SimpleObject(SimpleObject &obj){
             printf("SimpleObject(const SimpleObject &obj)\n");
             m_obj = obj.m_obj;
             if(m_obj != NULL){
@@ -96,7 +96,6 @@ class SimpleObject{
             if(m_obj && m_obj->put() <= 0){
                 delete m_obj;
             }
-            m_obj = NULL;
             if(ob.m_obj == NULL){
                 printf("m_obj  is NULL\n");
             }else{
@@ -105,8 +104,7 @@ class SimpleObject{
             }
             return *this;
         }
-
-/*
+        /*
         SimpleObject* operator=(const SimpleObject *ob){
             printf("SimpleObject& operator=(const SimpleObject *)\n");
             if(ob == NULL){
@@ -126,8 +124,8 @@ class SimpleObject{
             }
         }
         */
-
-/*
+        
+        /*
         void operator=(const T &ob){
             printf("operator=(const T &ob) \n");
             if(m_obj && m_obj->put() <= 0){
@@ -136,8 +134,7 @@ class SimpleObject{
             m_obj = &ob;
             m_obj->get();
         }
-
-*/
+        */
 
         void operator=(const T *ob){
             printf("operator=(const T *ob)\n");
@@ -153,7 +150,6 @@ class SimpleObject{
             }
         }
 
-        
         ~SimpleObject(){
             printf("~SimpleObject()\n");
             if(m_obj && m_obj->put() <= 0){

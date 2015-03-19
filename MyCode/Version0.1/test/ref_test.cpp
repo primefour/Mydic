@@ -9,9 +9,10 @@ class Object :public Ref{
 
 int main(){
     //Object *ap = new Object();
-    Object a ;
+    Object *a = new Object() ;
     SimpleObject<Object> sa ;
-    SimpleObject<Object> sb = a;
+    SimpleObject<Object> sb(a);
     SimpleObject<Object> sc = sa;
+    a->put();
     return 0;
 }
