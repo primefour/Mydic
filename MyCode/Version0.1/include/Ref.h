@@ -24,6 +24,10 @@ class Ref {
             return ref ;
         }
 
+        virtual int getDumpValue(){
+            return ref;
+        }
+
         virtual ~Ref(){
             ref --;
             if(ref > 0){

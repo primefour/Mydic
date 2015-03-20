@@ -18,20 +18,21 @@ class AVLTreeNode{
         weight = 0;
         hide = 0;
     }
-    AVLTreeNode(T *data){
+    AVLTreeNode(T data){
         mData = data;
         left = NULL;
         right = NULL;
         weight = 0;
         hide = 0;
     }
-    AVLTreeNode(AVLTreeNode &node){
+    AVLTreeNode(AVLTreeNode<T> &node){
         left = node.left;
         right = node.right;
         weight = node.weight;
         mData = node.mData;
         hide = 0;
     }
+
     void operator=(const  AVLTreeNode<T> &node){
         left = node.left;
         right = node.right;
@@ -39,10 +40,9 @@ class AVLTreeNode{
         hide = 0;
         mData = node.mData;
     }
+
     ~AVLTreeNode(){
-        if(mData != NULL){
-            //delete mData;
-        }
+
     }
 
     AVLTreeNode<T> *left;
@@ -50,7 +50,7 @@ class AVLTreeNode{
 
     short weight ;
     short hide;
-    T *mData;
+    T mData;
 };
 
 
@@ -86,12 +86,12 @@ class AVLTreeTemplate{
             avl_tree_layer_scan(parent);
         }
 
-        int FindNode(T *data){
+        int FindNode(T &data){
             AVLTreeNode<T> **ppNode = &mRoot;
             while(*ppNode != NULL){
-                if(*((*ppNode)->mData) > *data){
+                if(((*ppNode)->mData) > data){
                     ppNode = &((*ppNode)->left);
-                }else if(*((*ppNode)->mData) < *data){
+                }else if(((*ppNode)->mData) < data){
                     ppNode = &((*ppNode)->right);
                 }else {
                     return ((*ppNode)->hide)?0:1;
@@ -100,19 +100,19 @@ class AVLTreeTemplate{
             return 0;
         }
 
-        int InsertNode(T *data){
+        int InsertNode(T &data){
             int balance = 1;
             avl_tree_insert(NULL,data,&balance);
             return 1;
         }
 
-        void RemoveNode(T *data){
+        void RemoveNode(T &data){
             //simple remove
             AVLTreeNode<T> **ppNode = &mRoot;
             while(*ppNode != NULL){
-                if(*((*ppNode)->mData) > *data){
+                if(((*ppNode)->mData) > data){
                     ppNode = &((*ppNode)->left);
-                }else if(*((*ppNode)->mData) < *data){
+                }else if(((*ppNode)->mData) < data){
                     ppNode = &((*ppNode)->right);
                 }else {
                     (*ppNode)->hide = 1;
@@ -204,7 +204,7 @@ class AVLTreeTemplate{
         }
 
 
-        void avl_tree_insert(AVLTreeNode<T> **ppNode,T *data,int *balance){
+        void avl_tree_insert(AVLTreeNode<T> **ppNode,T &data,int *balance){
             AVLTreeNode<T> *insertNode = NULL;
             int cmp_val = 0;
             int ret_val = 0;
@@ -220,9 +220,9 @@ class AVLTreeTemplate{
                 }
             }
 
-            if(*((*ppNode)->mData) > *data ){
+            if(((*ppNode)->mData) > data ){
                 cmp_val = 1;
-            }else if((*((*ppNode)->mData) < *data)){
+            }else if((((*ppNode)->mData) < data)){
                 cmp_val = -1;
             }else{
                 cmp_val = 0;
@@ -276,25 +276,16 @@ class AVLTreeTemplate{
                 }
 
             }else{
-                if(!(*ppNode)->hide){
-                    if((*ppNode)->mData != data) {
-                        printf("replace data value \n");
-                        delete (*ppNode)->mData;
-                        (*ppNode)->mData = data;
-                    }
-                    return ;
-                }else{
-                    delete (*ppNode)->mData;
-                    (*ppNode)->mData = data; 
-                    (*ppNode)->hide = 0;
-                    return ;
+                (*ppNode)->mData = data; 
+                if((*ppNode)->hide){
+                    (*ppNode)->hide = 1;
                 }
                 *balance =1;
             }
         }
 
-        void dump_data(T *data){
-            printf(" %d   ",*((int *)data));
+        void dump_data(T &data){
+            printf(" %d   ",data.getDumpValue());
         }
 
         void avl_tree_preorder_scan(AVLTreeNode<T> *node){
