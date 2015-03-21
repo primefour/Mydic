@@ -9,7 +9,7 @@ class TreeNode{
         mData = NULL;
         weight = 0;
     }
-    TreeNode(T *data){
+    TreeNode(T &data){
         mData = data;
         left = NULL;
         right = NULL;
@@ -22,15 +22,12 @@ class TreeNode{
         weight = 0;
     }
     ~TreeNode(){
-        if(mData != NULL){
-            //delete mData;
-        }
     }
 
     TreeNode<T> *left;
     TreeNode<T> *right;
     int weight;
-    T *mData;
+    T mData;
 };
 
 
@@ -53,26 +50,26 @@ class BinTree{
             bin_tree_layer_scan(parent);
         }
 
-        int FindNode(T *data){
+        T* FindNode(const T &data){
             TreeNode<T> **ppNode = &mRoot;
             while(*ppNode != NULL){
-                if(*((*ppNode)->mData) > *data){
+                if(((*ppNode)->mData) > data){
                     ppNode = &((*ppNode)->left);
-                }else if(*((*ppNode)->mData) < *data){
+                }else if(((*ppNode)->mData) < data){
                     ppNode = &((*ppNode)->right);
                 }else {
-                    return 1;
+                    return &(*ppNode)->mData;
                 }
             }
-            return 0;
+            return NULL;
         }
 
-        int InsertNode(T *data){
+        int InsertNode(T data){
             TreeNode<T> **ppNode = &mRoot;
             while(*ppNode != NULL){
-                if(*((*ppNode)->mData) > *data){
+                if(((*ppNode)->mData) > data){
                     ppNode = &((*ppNode)->left);
-                }else if(*((*ppNode)->mData) < *data){
+                }else if(((*ppNode)->mData) < data){
                     ppNode = &((*ppNode)->right);
                 }else {
                     //have the same item
@@ -84,12 +81,12 @@ class BinTree{
             return 0;
         }
 
-        void RemoveNode(T *data){
+        void RemoveNode(T data){
             TreeNode<T> **ppNode = &mRoot;
             while(*ppNode != NULL){
-                if(*((*ppNode)->mData) > *data){
+                if(((*ppNode)->mData) > data){
                     ppNode = &((*ppNode)->left);
-                }else if(*((*ppNode)->mData) < *data){
+                }else if(((*ppNode)->mData) < data){
                     ppNode = &((*ppNode)->right);
                 }else {
                     //find the item;
@@ -167,8 +164,8 @@ class BinTree{
             bin_tree_layer_scan(parent);
         }
 
-        void dump_data(T *data){
-            printf(" %d   ",*((int *)data));
+        void dump_data(T&data){
+            printf(" %d   ",data);
         }
 
         void bin_tree_preorder_scan(TreeNode<T> *node){
@@ -229,7 +226,7 @@ class BinTree{
             }
         }
 
-        int bin_tree_ins_left(TreeNode<T> *node,T *data){
+        int bin_tree_ins_left(TreeNode<T> *node,T data){
             if(node != NULL){
                 if(node->left == NULL){
                     node->left = new TreeNode<T>(data);
@@ -249,7 +246,7 @@ class BinTree{
          * create a new node with the value of data and insert to the node's right 
          * if node's right is not NULL will return -1
          */
-        int bin_tree_ins_right(TreeNode<T> *node,T *data){
+        int bin_tree_ins_right(TreeNode<T> *node,T data){
             if(node != NULL){
                 if(node->right == NULL){
                     node->right = new TreeNode<T>(data);

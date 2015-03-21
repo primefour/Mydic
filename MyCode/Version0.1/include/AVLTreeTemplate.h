@@ -1,5 +1,6 @@
 #ifndef __AVL_TREE_TEMPLATE_H__
 #define __AVL_TREE_TEMPLATE_H__
+#include<stdio.h>
 #include"BinTreeTemplate.h"
 
 enum{
@@ -86,7 +87,7 @@ class AVLTreeTemplate{
             avl_tree_layer_scan(parent);
         }
 
-        int FindNode(T &data){
+        T* FindNode(const T &data){
             AVLTreeNode<T> **ppNode = &mRoot;
             while(*ppNode != NULL){
                 if(((*ppNode)->mData) > data){
@@ -94,10 +95,14 @@ class AVLTreeTemplate{
                 }else if(((*ppNode)->mData) < data){
                     ppNode = &((*ppNode)->right);
                 }else {
-                    return ((*ppNode)->hide)?0:1;
+                    if(!(*ppNode)->hide){
+                        return & (*ppNode)->mData;
+                    }else{
+                        return NULL;
+                    }
                 }
             }
-            return 0;
+            return NULL;
         }
 
         int InsertNode(T &data){
@@ -205,6 +210,7 @@ class AVLTreeTemplate{
 
 
         void avl_tree_insert(AVLTreeNode<T> **ppNode,T &data,int *balance){
+            printf("%s \n",__func__);
             AVLTreeNode<T> *insertNode = NULL;
             int cmp_val = 0;
             int ret_val = 0;
@@ -284,8 +290,9 @@ class AVLTreeTemplate{
             }
         }
 
-        void dump_data(T &data){
-            printf(" %d   ",data.getDumpValue());
+        void dump_data(const T &data){
+            //printf(" %d   ",(int)data.getDumpValue());
+            printf(" %d   ",data);
         }
 
         void avl_tree_preorder_scan(AVLTreeNode<T> *node){

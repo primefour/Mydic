@@ -10,17 +10,7 @@
 int main(){
     List<int> a;
 
-    int *ten = new int(10);
-    int *one = new int(1);
-    int *two = new int(2);
-    int *three = new int(3);
-    int *four = new int(4);
-    int *five = new int(5); 
-    int *six = new int(6);
-    int *seven = new int(7) ;
-    int *eight = new int(8);
-    int *nine = new int(9);
-
+    int one = 1,two = 2,three = 3,four=4,five=5,six=6,seven = 7,eight =8,nine = 9,ten = 10;
     a.InsertTail(ten);
     a.InsertHead(one);
     a.InsertTail(two);
@@ -32,11 +22,12 @@ int main(){
     a.DumpList();
 
     int tmp_int = 10;
-    int *tmp = a.FindItem(&tmp_int);
-    printf("tmp = %d \n",*tmp);
+    int tmp = 0;
+    int *ptmp = a.FindItem(tmp_int);
+    printf("tmp = %d \n",*ptmp);
     tmp_int = 13 ;
-    tmp = a.FindItem(&tmp_int);
-    if(tmp == NULL){
+    ptmp= a.FindItem(tmp_int);
+    if(ptmp == NULL){
         printf("find test OK\n");
     }else{
         printf("get a error for the template\n");
@@ -48,20 +39,20 @@ int main(){
     //a.RemoveItem(&tmp_int);
     a.DumpList();
 
-    int *hello = new int(30);
+    int hello = 30;
     
-    tmp = a.InsertLocal(&tmp_int,hello);
+    a.InsertLocal(tmp_int,hello);
 
     a.DumpList();
     printf("ehlll kkkkkkkkkkkkkkkkkkkk\n");
     tmp_int = 2;
-    tmp = a.InsertLocal(&tmp_int,hello);
+    a.InsertLocal(tmp_int,hello);
 
     a.DumpList();
 
-    tmp = a.GetNextItem(hello);
+    ptmp = a.GetNextItem(hello);
     printf("hello world ############\n");
-    printf("tmp = %d \n",*tmp);
+    printf("tmp = %d \n",*ptmp);
 
     BinTree<int> tree;
 
@@ -85,7 +76,7 @@ int main(){
         printf("find fail \n");
     }
 
-    if(tree.FindNode(new int(11))){
+    if(tree.FindNode(11)){
         printf("fine OK\n");
     }else{
         printf("find fail \n");
@@ -125,7 +116,7 @@ int main(){
     printf("\n");
     tree.LayerScan();
     printf("\n");
-
+/*
     AVLTreeTemplate<int> avltree;
 
     avltree.InsertNode(one);
@@ -189,6 +180,7 @@ int main(){
     printf("\n");
     avltree.LayerScan();
     printf("\n");
+    */
 
 
     return 0;

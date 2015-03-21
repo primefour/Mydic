@@ -13,14 +13,14 @@ class ListItem{
     public:
         ListItem<T> *prev;
         ListItem<T> *next;
-        T *mData;
+        T mData;
 
         ListItem(){
             prev = this;
             next = this;
-            mData = NULL;
         }
-        ListItem(T *data){
+
+        ListItem(T &data){
             mData = data;
             prev = this;
             next = this;
@@ -29,12 +29,8 @@ class ListItem{
         ListItem(const ListItem &item){
             mData = item.mData;
         }
-
         ~ListItem(){
-            if(mData != NULL){
-                delete mData;
-            }
-            mData = NULL;
+
         }
 }; 
 
@@ -46,14 +42,14 @@ class List{
         ~List();
         List(const List &list);
         void DumpList();
-        void InsertTail(T *data);
-        void InsertHead(T *data);
-        void RemoveItem(T *data);
+        void InsertTail(T &data);
+        void InsertHead(T &data);
+        void RemoveItem(T &data);
+        void InsertLocal(T &prev_data,T &data);
 
-        T* InsertLocal(T *prev_data,T *data);
-        T* FindItem(T *data);
-        T* GetPrevItem(T *data);
-        T* GetNextItem(T *data);
+        T* FindItem(const T &data);
+        T* GetPrevItem(const T &data);
+        T* GetNextItem(const T &data);
     private:
         void remove_list_item_(ListItem<T> *prev_item,ListItem<T> *next_item,ListItem<T> *remove_item);
         void add_list_item_(ListItem<T>* prev_item,ListItem<T> *next_item,ListItem<T> *insert_item);
@@ -64,7 +60,6 @@ template <class T >
 List<T>::List(){
     mHead.prev = &mHead;
     mHead.next = &mHead;
-    mHead.mData = NULL;
 }
 
 template <class T >
@@ -96,18 +91,18 @@ template <class T >
 void List<T>::DumpList(){
     ListItem<T> *tmp_head = mHead.next; 
     while(tmp_head != &mHead){ 
-        printf("dump list %d \n",*(tmp_head->mData));
+        printf("dump list %d \n",(tmp_head->mData));
         tmp_head = tmp_head->next;
     } 
 }
 
 
 template <class T >
-T* List<T>::FindItem(T *data){
+T* List<T>::FindItem(const T &data){
     ListItem<T> *TmpItem = mHead.next; 
     while(TmpItem != &mHead){ 
-        if((*data) == *(TmpItem->mData)){
-            return TmpItem->mData;
+        if((data) == (TmpItem->mData)){
+            return & TmpItem->mData;
         }
         TmpItem = TmpItem->next;
     } 
@@ -124,22 +119,22 @@ void List<T>::add_list_item_(ListItem<T>* prev_item,ListItem<T> *next_item,ListI
 }
 
 template <class T >
-void List<T>::InsertTail(T *data){
+void List<T>::InsertTail(T &data){
     ListItem<T> *newItem= new ListItem<T>(data);
     add_list_item_(mHead.prev,&mHead,newItem);
 }
 
 template <class T >
-void List<T>::InsertHead(T *data){
+void List<T>::InsertHead(T &data){
     ListItem<T> *newItem= new ListItem<T>(data);
     add_list_item_(&mHead,mHead.next,newItem);
 }
 
 template <class T >
-T* List<T>::GetPrevItem(T *data){
+T* List<T>::GetPrevItem(const T &data){
     ListItem<T> *TmpItem = mHead.next; 
     while(TmpItem != &mHead){ 
-        if(*data == *(TmpItem->mData)){
+        if(data == (TmpItem->mData)){
             break;
         }
         TmpItem = TmpItem->next;
@@ -148,14 +143,14 @@ T* List<T>::GetPrevItem(T *data){
     if(TmpItem == &mHead){
         return NULL;
     }
-    return TmpItem->prev->mData;
+    return &TmpItem->prev->mData;
 }
 
 template <class T >
-T* List<T>::GetNextItem(T *data){
+T* List<T>::GetNextItem(const T &data){
     ListItem<T> *TmpItem = mHead.next; 
     while(TmpItem != &mHead){ 
-        if(*data == *(TmpItem->mData)){
+        if(data == (TmpItem->mData)){
             break;
         }
         TmpItem = TmpItem->next;
@@ -164,15 +159,15 @@ T* List<T>::GetNextItem(T *data){
     if(TmpItem == &mHead){
         return NULL;
     }
-    return TmpItem->next->mData;
+    return &TmpItem->next->mData;
 }
 
 
 template <class T >
-T* List<T>::InsertLocal(T *prev_data,T *data){
+void List<T>::InsertLocal(T&prev_data,T &data){
     ListItem<T> *TmpItem = mHead.next; 
     while(TmpItem != &mHead){ 
-        if(*prev_data == *(TmpItem->mData)){
+        if(prev_data == (TmpItem->mData)){
             break;
         }
         TmpItem = TmpItem->next;
@@ -183,14 +178,13 @@ T* List<T>::InsertLocal(T *prev_data,T *data){
         ListItem<T> *newItem= new ListItem<T>(data);
         add_list_item_(TmpItem,TmpItem->next,newItem);
     }
-    return data;
 }
 
 template <class T >
-void List<T>::RemoveItem(T* data){
+void List<T>::RemoveItem(T& data){
     ListItem<T> *TmpItem = mHead.next; 
     while(TmpItem != &mHead){ 
-        if(*data == *(TmpItem->mData)){
+        if(data == (TmpItem->mData)){
             break;
         }
         TmpItem = TmpItem->next;
