@@ -3,6 +3,7 @@ CFLAGS= -g -I ./include/
 LDFLAGS= -L ./lib/ 
 TEST_PATH= ./test/
 BIN_PATH= ./bin/
+SRC_PATH= ./src/
 
 
 test:list_test ref_test avl_test
@@ -12,4 +13,4 @@ list_test:
 ref_test:
 	$(GCC) $(CFLAGS) $(LDFLAGS) $(TEST_PATH)/ref_test.cpp -o $(BIN_PATH)/ref_test -lz
 avl_test:
-	$(GCC) $(CFLAGS) $(LDFLAGS) $(TEST_PATH)/AVLTest.cpp -o $(BIN_PATH)/avl_test -lz
+	$(GCC) $(CFLAGS) $(LDFLAGS) $(TEST_PATH)/AVLTest.cpp $(SRC_PATH)/StandardIO.cpp -o $(BIN_PATH)/avl_test -lz
