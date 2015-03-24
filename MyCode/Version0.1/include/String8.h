@@ -17,25 +17,13 @@
 #ifndef ANDROID_STRING8_H
 #define ANDROID_STRING8_H
 
-#include <utils/Errors.h>
-#include <utils/SharedBuffer.h>
-#include <utils/Unicode.h>
-#include <utils/TypeHelpers.h>
-
+#include "Unicode.h"
 #include <string.h> // for strcmp
 #include <stdarg.h>
 
-// ---------------------------------------------------------------------------
-
-namespace android {
-
-class String16;
-class TextOutput;
-
 //! This is a string holding UTF-8 characters. Does not allow the value more
 // than 0x10FFFF, which is not valid unicode codepoint.
-class String8
-{
+class String8 {
 public:
     /* use String8(StaticLinkage) if you're statically linking against
      * libutils and declaring an empty static String8, e.g.:
@@ -45,55 +33,35 @@ public:
      */
     enum StaticLinkage { kEmptyString };
 
+    static inline const String8 empty();
+    static String8              format(const char* fmt, ...) __attribute__((format (printf, 1, 2)));
+    static String8              formatV(const char* fmt, va_list args);
+
                                 String8();
     explicit                    String8(StaticLinkage);
                                 String8(const String8& o);
     explicit                    String8(const char* o);
     explicit                    String8(const char* o, size_t numChars);
-    
-    explicit                    String8(const String16& o);
-    explicit                    String8(const char16_t* o);
-    explicit                    String8(const char16_t* o, size_t numChars);
-    explicit                    String8(const char32_t* o);
-    explicit                    String8(const char32_t* o, size_t numChars);
                                 ~String8();
-
-    static inline const String8 empty();
-
-    static String8              format(const char* fmt, ...) __attribute__((format (printf, 1, 2)));
-    static String8              formatV(const char* fmt, va_list args);
-
     inline  const char*         string() const;
     inline  size_t              size() const;
     inline  size_t              length() const;
     inline  size_t              bytes() const;
     inline  bool                isEmpty() const;
-    
-    inline  const SharedBuffer* sharedBuffer() const;
-    
-            void                clear();
 
-            void                setTo(const String8& other);
-            status_t            setTo(const char* other);
-            status_t            setTo(const char* other, size_t numChars);
-            status_t            setTo(const char16_t* other, size_t numChars);
-            status_t            setTo(const char32_t* other,
-                                      size_t length);
+            void setTo(const String8& other);
+            int  setTo(const char* other);
+            int  setTo(const char* other, size_t numChars);
 
-            status_t            append(const String8& other);
-            status_t            append(const char* other);
-            status_t            append(const char* other, size_t numChars);
+            int append(const String8& other);
+            int append(const char* other);
+            int append(const char* other, size_t numChars);
 
-            status_t            appendFormat(const char* fmt, ...)
+            int appendFormat(const char* fmt, ...)
                     __attribute__((format (printf, 2, 3)));
-            status_t            appendFormatV(const char* fmt, va_list args);
+            int appendFormatV(const char* fmt, va_list args);
 
-            // Note that this function takes O(N) time to calculate the value.
-            // No cache value is stored.
-            size_t              getUtf32Length() const;
-            int32_t             getUtf32At(size_t index,
-                                           size_t *next_index) const;
-            void                getUtf32(char32_t* dst) const;
+            bool removeAll(const char* other);
 
     inline  String8&            operator=(const String8& other);
     inline  String8&            operator=(const char* other);
@@ -122,20 +90,12 @@ public:
     
     inline                      operator const char*() const;
     
-            char*               lockBuffer(size_t size);
-            void                unlockBuffer();
-            status_t            unlockBuffer(size_t size);
-            
             // return the index of the first byte of other in this at or after
             // start, or -1 if not found
             ssize_t             find(const char* other, size_t start = 0) const;
 
             // return true if this string contains the specified substring
     inline  bool                contains(const char* other) const;
-
-            // removes all occurrence of the specified substring
-            // returns true if any were found and removed
-            bool                removeAll(const char* other);
 
             void                toLower();
             void                toLower(size_t start, size_t numChars);
@@ -231,15 +191,10 @@ public:
     String8& convertToResPath();
 
 private:
-            status_t            real_append(const char* other, size_t numChars);
+            int real_append(const char* other, size_t numChars);
             char*               find_extension(void) const;
-
             const char* mString;
 };
-
-// String8 can be trivially moved using memcpy() because moving does not
-// require any change to the underlying SharedBuffer contents or reference count.
-ANDROID_TRIVIAL_MOVE_TRAIT(String8)
 
 // ---------------------------------------------------------------------------
 // No user servicable parts below.
@@ -265,12 +220,15 @@ inline const char* String8::string() const
 
 inline size_t String8::length() const
 {
-    return SharedBuffer::sizeFromData(mString)-1;
+    return 0;
 }
 
 inline size_t String8::size() const
 {
-    return length();
+    if(mString != NULL){
+        return strlen(mString);
+    }
+    return 0;
 }
 
 inline bool String8::isEmpty() const
@@ -280,13 +238,12 @@ inline bool String8::isEmpty() const
 
 inline size_t String8::bytes() const
 {
-    return SharedBuffer::sizeFromData(mString)-1;
+    if(mString != NULL){
+        return strlen(mString);
+    }
+    return 0;
 }
 
-inline const SharedBuffer* String8::sharedBuffer() const
-{
-    return SharedBuffer::bufferFromData(mString);
-}
 
 inline bool String8::contains(const char* other) const
 {
@@ -401,7 +358,6 @@ inline String8::operator const char*() const
     return mString;
 }
 
-}  // namespace android
 
 // ---------------------------------------------------------------------------
 
