@@ -210,7 +210,6 @@ class AVLTreeTemplate{
 
 
         void avl_tree_insert(AVLTreeNode<T> **ppNode,T &data,int *balance){
-            printf("%s \n",__func__);
             AVLTreeNode<T> *insertNode = NULL;
             int cmp_val = 0;
             int ret_val = 0;

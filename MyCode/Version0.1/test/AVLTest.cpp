@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include"AVLTreeTemplate.h"
+#include"String8.h"
 
 
 
@@ -69,5 +70,12 @@ int main(){
     printf("\n");
     avltree.LayerScan();
     printf("\n");
+
+    String8 a("hello world!\n");
+    printf("a = %s ",a.string());
+    String8 b("you are right ");
+    String8 c = a + b ;
+    printf("c = %s \n",c.string());
+
     return 0;
 }
