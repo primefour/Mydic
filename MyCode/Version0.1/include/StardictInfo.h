@@ -19,66 +19,50 @@ class StardictInfo{
             same_types_sequence = NULL;
         }
         ~StardictInfo(){
-            if(version){
-                free(version);
-            }
-            if(book_name){
-                free(book_name);
-            }
-            if(author){
-                free(author);
-            }
-            if(email){
-                free(email);
-            }
-            if(website){
-                free(website);
-            }
-            if(description){
-                free(description);
-            }
-            if(date){
-                free(date);
-            }
-            if(same_types_sequence != NULL){
-                free(same_types_sequence);
-            }
         }
-        int init();
-        char *get_version(){
-            return version;
+
+        inline String8 getVersion(){
+            return version.getStringValue('=');
         }
-        char *get_book_name(){
-            return book_name;
+        inline String8 getBookName(){
+            return book_name.getStringValue('=');
         }
-        char *get_author(){
-            return author;
+        inline String8 getAuthor(){
+            return author.getStringValue('=');
         }
-        char *get_email(){
-            return email;
+        inline String8 getEmail(){
+            return email.getStringValue('=');
         }
-        char *get_website(){
-            return website;
+        inline String8 getWebsite(){
+            return website.getStringValue('=');
         }
-        char *get_description(){
-            return description;
+        inline String8 getDescription(){
+            return description.getStringValue('=');
         }
-        char *get_date(){
-            return date;
+        inline String8 getDate(){
+            return data.getStringValue('=');
         }
-        long get_word_count(){
+
+        inline long get_word_count(){
+            String8 value = word_count.getStringValue('=');
+            if(value.isEmpty()){
+            }
+    return atoi(value);
             return word_count;
         }
-        long get_syn_word_count(){
+        inline long get_syn_word_count(){
             return syn_word_count;
         }
-        long get_idx_file_size(){
+
+        inline long get_idx_file_size(){
             return idx_file_size;
         }
-        int get_offset_bits(){
+
+        inline int get_offset_bits(){
             return  (offset_is_64bit == 64)?64:32;
         }
-        char *get_same_types_sequence(){
+
+        inline char *get_same_types_sequence(){
             return same_types_sequence;
         }
         void dump();
@@ -87,18 +71,19 @@ class StardictInfo{
         int   get_integer_value(char *str_line);
         void parse_line(char *str_line);
     private:
-        char *version;
-        char *book_name;
-        char *author;
-        char *email;
-        char *website;
-        char *description;
-        char *date;
+        String8 version;
+        String8 book_name;
+        String8 author;
+        String8 email;
+        String8 website;
+        String8 description;
+        String8 date;
+        String8 file_name;
+
         long word_count;
         long syn_word_count;
         long idx_file_size;
         short offset_is_64bit;
         char *same_types_sequence; 
-        File info_file;
 };
 #endif //

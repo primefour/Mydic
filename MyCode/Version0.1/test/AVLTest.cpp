@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include"AVLTreeTemplate.h"
 #include"String8.h"
+#include<unistd.h>
 
 
 
@@ -76,6 +77,12 @@ int main(){
     String8 b("you are right ");
     String8 c = a + b ;
     printf("c = %s \n",c.string());
+    String8 d("hello = world ");
+    printf("hello = %s \n",d.getStringValue('=').string());
+    String8 value = c.getStringValue('=');
+    if(value.isEmpty()){
+        printf("value is empty \n");
+    }
 
     return 0;
 }

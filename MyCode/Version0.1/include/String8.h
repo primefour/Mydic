@@ -63,6 +63,7 @@ public:
             int appendFormatV(const char* fmt, va_list args);
 
             bool removeAll(const char* other);
+            String8 getStringValue(char delimite);
 
     inline  String8&            operator=(const String8& other);
     inline  String8&            operator=(const char* other);

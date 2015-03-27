@@ -105,11 +105,13 @@ static char* allocFromUTF32(const char32_t* in, size_t len)
 String8::String8()
     : mString(getEmptyString())
 {
+    printf("%s %d \n",__func__,__LINE__);
 }
 
 String8::String8(StaticLinkage)
     : mString(0)
 {
+    printf("%s %d \n",__func__,__LINE__);
     // this constructor is used when we can't rely on the static-initializers
     // having run. In this case we always allocate an empty string. It's less
     // efficient than using getEmptyString(), but we assume it's uncommon.
@@ -122,13 +124,15 @@ String8::String8(StaticLinkage)
 String8::String8(const String8& o)
     : mString(o.mString)
 {
-
+    printf("%s %d \n",__func__,__LINE__);
 }
 
 String8::String8(const char* o)
-    : mString(allocFromUTF8(o, strlen(o)))
 {
-    if (mString == NULL) {
+    printf("%s %d \n",__func__,__LINE__);
+    if(o != NULL){
+        mString = allocFromUTF8(o, strlen(o));
+    }else{
         mString = getEmptyString();
     }
 }
@@ -136,6 +140,8 @@ String8::String8(const char* o)
 String8::String8(const char* o, size_t len)
     : mString(allocFromUTF8(o, len))
 {
+    printf("%s %d \n",__func__,__LINE__);
+
     if (mString == NULL) {
         mString = getEmptyString();
     }
@@ -144,6 +150,7 @@ String8::String8(const char* o, size_t len)
 
 String8::~String8()
 {
+    printf("xxxxxxxxx %p \n",mString );
     if(mString != NULL){
         delete mString;
     }
@@ -580,4 +587,19 @@ String8& String8::convertToResPath()
     }
 #endif
     return *this;
+}
+
+String8 String8::getStringValue(char delimite){
+    const char* p = strchr(mString, delimite);
+    printf("%s p = %p \n",__func__,p);
+    if(p != NULL){
+        while(*p != ' ' && *p != '\0'){
+            printf("xxxxx \n");
+            p++;
+        }
+        return String8(p);
+    }else{
+        printf("construct a null object\n");
+        return String8(NULL);
+    }
 }
