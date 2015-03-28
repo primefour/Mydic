@@ -5,20 +5,15 @@
 #include<sys/types.h>
 #include<fcntl.h>
 
-SimpleFile::SimpleFile(const char *path,int mode){
+SimpleFile::SimpleFile(const char *path,int mode):file_path(path){
     file_des = 0;
-    memset(file_path,0,MAX_PATH_LENGTH);
-    if(path != NULL){
-        strncpy(file_path,path,MAX_PATH_LENGTH);
-    }
     int def_mode = O_RDWR;
     if(mode != 0){
         def_mode = mode; 
     }
-
-    file_des = ::open(file_path,def_mode);
+    file_des = ::open(path,def_mode);
     if(file_des < 0){
-        printf("open file error %s \n",file_path);
+        printf("open file error %s \n",file_path.string());
     }
 }
 
@@ -26,6 +21,7 @@ SimpleFile::SimpleFile(const char *path,int mode){
 SimpleFile::~SimpleFile(){
     if(file_des >= 0){
         close(file_des);
+        file_des = -1;
     }
 }
 
@@ -91,10 +87,10 @@ int SimpleFile::ReadTerminating(unsigned char *buf,int len,unsigned char termina
     unsigned char *ptr = buf;
     memset(buf,0,len);
     int i = 0;
-
-    while((ret = ::read(file_des,ptr,1) > 0) && (*ptr != terminate ) && ++i < len){ 
-        //printf("%c",*ptr);
+    //printf("file_des = %d len = %d \n",file_des,len);
+    while(((ret = ::read(file_des,ptr,1)) > 0) && (*ptr != terminate ) && ++i < len){ 
         ptr++;
     }
+    //printf("%s  %s",__func__,buf);
     return i;
 }

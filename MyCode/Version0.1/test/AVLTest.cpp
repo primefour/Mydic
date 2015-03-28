@@ -82,6 +82,8 @@ int main(){
     String8 value = c.getStringValue('=');
     if(value.isEmpty()){
         printf("value is empty \n");
+    }else{
+        printf("%s \n",value.string());
     }
 
     return 0;

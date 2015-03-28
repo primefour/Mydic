@@ -3,87 +3,84 @@
 #include<stdlib.h>
 #include<stdio.h>
 #include<string.h>
-#include"File.h"
-#include"memory_test_tool.h"
+#include"StandardIO.h"
+#include"String8.h"
 
-class StardictInfo{
+typedef enum{
+    INFO_VERSION,
+    INFO_BOOK_NAME,
+    INFO_WORD_COUNT,
+    INFO_SYC_WORD_COUNT,
+    INFO_IDX_FILE_SIZE,
+    INFO_IDX_OFFSET,
+    INFO_AUTHOR,
+    INFO_EMAIL,
+    INFO_WEBSITE,
+    INFO_DESCRIPTION,
+    INFO_DATE,
+    INFO_SAME_TYPE_SEQUENCE,
+    INFO_MAX,
+}STARDICT_INFO_TYPE;
+
+class StardictInfo:public Ref{
     public:
-        StardictInfo(const char *file_path):info_file(file_path){
-            version = NULL;
-            book_name = NULL;
-            author = NULL;
-            email = NULL;
-            website = NULL;
-            description = NULL;
-            date = NULL;
-            same_types_sequence = NULL;
-        }
+        StardictInfo(const char *file_path);
         ~StardictInfo(){
         }
 
-        inline String8 getVersion(){
-            return version.getStringValue('=');
+        String8 getVersion(){
+            return mInfoString[INFO_VERSION].getStringValue('=');
         }
         inline String8 getBookName(){
-            return book_name.getStringValue('=');
+            return mInfoString[INFO_BOOK_NAME].getStringValue('=');
         }
         inline String8 getAuthor(){
-            return author.getStringValue('=');
+            return mInfoString[INFO_AUTHOR].getStringValue('=');
         }
         inline String8 getEmail(){
-            return email.getStringValue('=');
+            return mInfoString[INFO_EMAIL].getStringValue('=');
         }
         inline String8 getWebsite(){
-            return website.getStringValue('=');
+            return mInfoString[INFO_WEBSITE].getStringValue('=');
         }
         inline String8 getDescription(){
-            return description.getStringValue('=');
+            return mInfoString[INFO_DESCRIPTION].getStringValue('=');
         }
         inline String8 getDate(){
-            return data.getStringValue('=');
+            return mInfoString[INFO_DATE].getStringValue('=');
         }
 
-        inline long get_word_count(){
-            String8 value = word_count.getStringValue('=');
-            if(value.isEmpty()){
+        inline String8 getSameTypeSeq(){
+            return mInfoString[INFO_SAME_TYPE_SEQUENCE].getStringValue('=');
+        }
+
+        inline int getLongValue(String8 & str){
+            String8 value = str.getStringValue('=');
+            if(!value.isEmpty()){
+                return atoi(value);
             }
-    return atoi(value);
-            return word_count;
-        }
-        inline long get_syn_word_count(){
-            return syn_word_count;
+            return 0;
         }
 
-        inline long get_idx_file_size(){
-            return idx_file_size;
+        inline int getWordCount(){
+            return getLongValue(mInfoString[INFO_WORD_COUNT]);
         }
 
-        inline int get_offset_bits(){
-            return  (offset_is_64bit == 64)?64:32;
+        inline int getSynWordCount(){
+            return getLongValue(mInfoString[INFO_SYC_WORD_COUNT]);
         }
 
-        inline char *get_same_types_sequence(){
-            return same_types_sequence;
+        inline int getIdxFileSize(){
+            return getLongValue(mInfoString[INFO_IDX_FILE_SIZE]);
         }
-        void dump();
+
+        inline int getOffsetBits(){
+            return  getLongValue(mInfoString[INFO_IDX_OFFSET]);
+        }
+        void dumpInfo();
     private:
-        char *get_string_value(char *str_line);
-        int   get_integer_value(char *str_line);
-        void parse_line(char *str_line);
-    private:
-        String8 version;
-        String8 book_name;
-        String8 author;
-        String8 email;
-        String8 website;
-        String8 description;
-        String8 date;
+        static const char* infoFileList[INFO_MAX +1];
+        String8 mInfoString[INFO_MAX +1];
         String8 file_name;
-
-        long word_count;
-        long syn_word_count;
-        long idx_file_size;
-        short offset_is_64bit;
-        char *same_types_sequence; 
 };
 #endif //

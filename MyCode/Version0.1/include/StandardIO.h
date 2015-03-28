@@ -2,6 +2,10 @@
 #define __STANDARD_IO_H__
 #include<stdio.h>
 #include"Ref.h"
+#include"String8.h"
+#include<unistd.h>
+#include<fcntl.h>
+
 #define MAX_PATH_LENGTH 1024 
 typedef enum STANDARDIO_TYPE{
     STANDARDIO_TYPE_FILE,
@@ -82,7 +86,7 @@ class IOInterface{
 
 class SimpleFile:public Ref,IOInterface{
     public :
-        SimpleFile(const char *path,int mode);
+        SimpleFile(const char *path,int mode=O_RDWR);
         ~SimpleFile();
         virtual int Read(unsigned char *buf,int len);
         virtual int Seek(int where,int offset);
@@ -90,7 +94,7 @@ class SimpleFile:public Ref,IOInterface{
         virtual int ReadTerminating(unsigned char *buff,int len,unsigned char terminate);
         virtual int Write(const unsigned char *buf,int len);
     protected:
-        char file_path[MAX_PATH_LENGTH];
+        String8 file_path;
         int file_des;
 };
 

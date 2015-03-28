@@ -1,26 +1,28 @@
 #ifndef __GOLDEN_DICT_REF__
 #define __GOLDEN_DICT_REF__
 #include<stdio.h>
+#define NO_LOG
+
 class Ref {
     public:
         Ref(){
             ref = 1;
-            printf("ref() ref = %d \n",ref);
+            //printf("ref() ref = %d \n",ref);
         }
 
         Ref(const Ref & obj){
             ref = 1;
-            printf("ref (obj) ref = %d \n",ref);
+            //printf("ref (obj) ref = %d \n",ref);
         }
 
         void get(){
             ref ++;
-            printf("get ref = %d \n",ref);
+            //printf("get ref = %d \n",ref);
         }
 
         int put(){
             ref --;
-            printf("put ref = %d \n",ref);
+            //printf("put ref = %d \n",ref);
             return ref ;
         }
 
@@ -31,9 +33,9 @@ class Ref {
         virtual ~Ref(){
             ref --;
             if(ref > 0){
-                printf("~ref leak error !\n");
+                //printf("~ref leak error !\n");
             }else{
-                printf("~ref delete object! \n");
+                //printf("~ref delete object! \n");
             }
         }
     private:

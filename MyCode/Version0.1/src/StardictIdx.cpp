@@ -6,7 +6,9 @@
 #include<assert.h>
 #include<sys/types.h>
 #include<fcntl.h>
-#include"memory_test_tool.h"
+#include"String8.h"
+#include"StandardIO.h"
+#include"AVLTreeTemplate.h"
 
 /*
 uint32_t htonl(uint32_t hostlong);
@@ -17,88 +19,56 @@ uint32_t ntohl(uint32_t netlong);
 uint16_t ntohs(uint16_t netshort);
 */
 
-StardictIdx:: StardictIdx(const char *file_path,long word_count,long file_size,int offsetbit):idx_file(file_path){
+StardictIdx:: StardictIdx(const char *file_path,int word_count,int file_size,int offsetbit):file_path(file_path){
     this->word_count = word_count;
     this->offsetbit = offsetbit;
     this->file_size = file_size;
-    printf("word_count  = %ld file_size = %ld   \n",word_count,file_size);
-    array= NULL;
+    printf("word_count  = %d file_size = %d  offsetbit=%d \n",word_count,file_size,offsetbit);
+    init();
 }
 
 StardictIdx::~StardictIdx(){
-    int i = 0 ;
-    word_item_t *temp = array;
-    while(i < word_count){
-        free(temp->word_str);
-        i++;
-        temp = array + i;
-    }
-    free(array);
 }
 
 int StardictIdx::init(){
-    int ret = 0;
-    ret = idx_file.open(0);
-    if(ret < 0){
-        printf("open file failed \n");
-        return ret;
-    }
-
-    array = (word_item_t *)malloc(word_count *sizeof(word_item_t));
-    if(array == NULL){
-        printf("%s allocate memory failed \n",__func__);
-        assert(0);
-    }
-    memset(array,0,word_count *sizeof(word_item_t));
     unsigned char word_buff[1024]={0};
+    SimpleFile file_obj(file_path,O_RDONLY);
     int offset_read_size = 8;
     if(offsetbit == 64){
         offset_read_size = 12;
     }
+
     int i = 0;
     unsigned char offset_buff[12]={0};
+    printf("HELLO %s %d \n",__func__,__LINE__);
     while(i < word_count){
         memset(word_buff,0,sizeof(word_buff));
-        ret = idx_file.read_terminating_by(word_buff,sizeof(word_buff),'\0');
+        int ret = file_obj.ReadTerminating(word_buff,sizeof(word_buff),'\0');
         if(ret <= 0){
             break;
         }
         memset(offset_buff,0,sizeof(offset_buff));
-        ret = idx_file.read(offset_buff,offset_read_size);
+        ret = file_obj.Read(offset_buff,offset_read_size);
         if(ret <= 0){
             break;
         }
-        (array + i)->word_str = strdup((char *)word_buff);
-        if(offsetbit == 64){
-            printf("###################64 bit wait a short while \n");
-        }else{
-            (array + i)->word_data_offset.bit32 = ::ntohl(*((long*)offset_buff));
-            (array + i)->word_data_size = ::ntohl(*((long*)(offset_buff+4)));
+        if(i%5000 == 0){
+            printf("word = %s %d\n",word_buff,::ntohl(*((long*)offset_buff)));
         }
-
-        if(i % 5000 == 0){
-            printf("i = %d word = %s offset %d ,length %d  \n",i,(array + i)->word_str,(array + i)->word_data_offset.bit32,(array + i)->word_data_size);
-        }
+        WordIdxItem newItem((const char *)word_buff,::ntohl(*((long*)offset_buff)),::ntohl(*((long*)(offset_buff+4)))); 
+        word_tree.InsertNode(newItem);
         i++;
     }
-    printf("file offset = %d \n",idx_file.lseek(SEEK_CUR,0));
-    return ret;
+
+    return 0;
 }
 
-word_item_t* StardictIdx::get_word(const char *str){
-    int i = 0;
-    while(i < word_count){
-        if(strcmp((array + i)->word_str,str) == 0){
-            break;
-        }
-        i++;
-    }
-    if(i == word_count){
-        return NULL;
-    }else{
-        return(array + i); 
-    }
+
+WordIdxItem StardictIdx::getIdxWord(const char *str){
+    WordIdxItem tmp(str,0,0);
+    return word_tree.FindNode(tmp);
 }
+
 
 
        

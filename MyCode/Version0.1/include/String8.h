@@ -222,6 +222,9 @@ inline const char* String8::string() const
 
 inline size_t String8::length() const
 {
+    if(mString != NULL){
+        return strlen(mString);
+    }
     return 0;
 }
 

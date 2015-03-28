@@ -19,7 +19,15 @@ class AVLTreeNode{
         weight = 0;
         hide = 0;
     }
-    AVLTreeNode(T data){
+
+    AVLTreeNode(const T &data){
+        mData = data;
+        left = NULL;
+        right = NULL;
+        weight = 0;
+        hide = 0;
+    }
+    AVLTreeNode(T &data){
         mData = data;
         left = NULL;
         right = NULL;
@@ -87,7 +95,7 @@ class AVLTreeTemplate{
             avl_tree_layer_scan(parent);
         }
 
-        T* FindNode(const T &data){
+        T FindNode(const T &data){
             AVLTreeNode<T> **ppNode = &mRoot;
             while(*ppNode != NULL){
                 if(((*ppNode)->mData) > data){
@@ -96,13 +104,13 @@ class AVLTreeTemplate{
                     ppNode = &((*ppNode)->right);
                 }else {
                     if(!(*ppNode)->hide){
-                        return & (*ppNode)->mData;
+                        return (*ppNode)->mData;
                     }else{
-                        return NULL;
+                        return T();
                     }
                 }
             }
-            return NULL;
+            return T();
         }
 
         int InsertNode(T &data){
@@ -291,7 +299,6 @@ class AVLTreeTemplate{
 
         void dump_data(const T &data){
             //printf(" %d   ",(int)data.getDumpValue());
-            printf(" %d   ",data);
         }
 
         void avl_tree_preorder_scan(AVLTreeNode<T> *node){
