@@ -39,6 +39,7 @@ int GzipDeflate::Read(unsigned char *buf,int len){
    if(end > mCheckCount -1){
        end = mCheckCount -1;
    }
+   printf("end = %d \n",end);
 
    SimpleFile file_obj(file_path.string(),O_RDONLY);
    int i = 0;
@@ -48,7 +49,10 @@ int GzipDeflate::Read(unsigned char *buf,int len){
    file_obj.Seek(SEEK_SET,mHeaderLength + mPos);
    for(i = mbegin ;i <=end ;i++){
        printf("*(mChunkArray + %d) = %d \n",i,*(mChunkArray + i));
-       file_obj.Read(inBuff,*(mChunkArray + i)); 
+       int ret = file_obj.Read(inBuff,*(mChunkArray + i)); 
+       if(ret != *(mChunkArray + i)){
+           printf("error read file failed \n");
+       }
 
        zStream.next_in   = (Bytef* )inBuff;
        zStream.avail_in  = *(mChunkArray + i);
@@ -70,8 +74,8 @@ int GzipDeflate::Read(unsigned char *buf,int len){
                printf("error mOffset > zStream.avail_out \n");
            }
            int cpylen = 0 ;
-           if(len > zStream.avail_out - mOffset){
-               cpylen = zStream.avail_out - mOffset;
+           if(len >(OUT_BUFFER_SIZE - zStream.avail_out) - mOffset){
+               cpylen = (OUT_BUFFER_SIZE - zStream.avail_out) - mOffset;
            }else{
                //one chunk is ok
                cpylen = len;
@@ -81,8 +85,8 @@ int GzipDeflate::Read(unsigned char *buf,int len){
            ptrOut += cpylen;
        }else{
            int cpylen = 0 ;
-           if(len > zStream.avail_out){
-               cpylen = zStream.avail_out;
+           if(len > (OUT_BUFFER_SIZE - zStream.avail_out)){
+               cpylen = (OUT_BUFFER_SIZE - zStream.avail_out);
            }else{
                cpylen = len;
            }

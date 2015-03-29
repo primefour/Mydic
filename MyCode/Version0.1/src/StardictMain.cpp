@@ -52,8 +52,14 @@ int main(int argc,char **argv){
 
     GzipDeflate tmpInflate(dict_path);
     tmpInflate.Seek(SEEK_SET,0);
-    unsigned char buff[10240]={0};
+    unsigned char buff[102400]={0};
     tmpInflate.Read(buff,sizeof(buff));
+    int fd = open("./tmp.file",O_CREAT|O_RDWR,0666);
+    if(fd < 0){
+        perror("hello world ");
+        printf("open failed \n");
+    }
+    write(fd,buff,sizeof(buff));
     printf("buff = %s \n",buff);
 
     return 0;
