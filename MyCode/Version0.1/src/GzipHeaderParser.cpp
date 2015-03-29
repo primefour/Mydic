@@ -8,9 +8,9 @@
 #include"AVLTreeTemplate.h"
 
 
-GZipHeader::GZipHeader(const char *gzip_path):file_path(gzip_path){
+GZipHeader::GZipHeader(const char *gzip_path){
     unsigned char word_buff[12]={0};
-    SimpleFile file_obj(file_path,O_RDONLY);
+    SimpleFile file_obj(gzip_path,O_RDONLY);
     int ret = file_obj.Read(word_buff,sizeof(word_buff));
     mExtraBuff = 0;
     int contain_length = 0;
@@ -88,5 +88,33 @@ GZipHeader::GZipHeader(const char *gzip_path):file_path(gzip_path){
     printf("mCRC32  = %u  %x \n",mCRC32,mCRC32);
     mFileSize = word_buff[7]<<24 | word_buff[6]<<16 | word_buff[5]<< 8 | word_buff[4];
     printf("mFileSize = %u \n",mFileSize);
+}
+
+void GZipHeader::getExtraInfo(int &chunk_num,int &chunk_len,int & version){
+    if(mExtraBuff != NULL){
+        unsigned char *ptr = mExtraBuff ;
+        printf("%c %c \n",*(char*)(ptr+1),*(char *)ptr);
+        ptr+=2;
+        int len = *(ptr +1)<<8 | *ptr;
+        printf("len = %d \n",len);
+        ptr += 2;
+        unsigned short ver = *(ptr+1) << 8|*ptr;
+        ptr += 2;
+        unsigned short chlen =*(ptr+1) << 8|*ptr; 
+        ptr += 2;
+        unsigned short chcnt =*(ptr+1) << 8|*ptr; 
+        ptr += 2;
+        printf("ver = %u chlen = %u chcnt = %u \n",ver,chlen,chcnt);
+        chunk_num = chcnt;
+        chunk_len = chlen;
+        version = ver;
+    }
+}
+
+unsigned int GZipHeader::getChunkCode(int index){
+    if(mExtraBuff != NULL){
+        unsigned char *ptr = mExtraBuff + (index-1)*2 + 10;
+        return *(ptr+1) << 8 |*ptr; 
+    }
 }
 

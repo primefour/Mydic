@@ -1,5 +1,5 @@
 #ifndef __GZIP_HEADER_PARSER_H__
-#define GZIP_HEADER_PARSER_H__
+#define __GZIP_HEADER_PARSER_H__
 #include<stdio.h>
 #include"String8.h"
 #define GZIP_ID1  (0x1f)
@@ -22,6 +22,23 @@ class GZipHeader:public Ref{
                 mExtraBuff = NULL;
             }
         }
+        void getExtraInfo(int &chunk_num,int &chunk_len,int & version);
+        unsigned int getChunkCode(int index);
+        bool getDeflateFlag(){
+            return mIsDeflate;
+        }
+
+        int getDataOffset(){
+            return mHeadOffset;
+        }
+
+        unsigned int getCRC32(){
+            return mCRC32;
+        }
+        unsigned int getFileSize(){
+            return mFileSize;
+        }
+
     private:
         bool mIsDeflate;
         unsigned char *mExtraBuff;
@@ -30,7 +47,6 @@ class GZipHeader:public Ref{
         int  mHeadOffset;
         unsigned int mCRC32;
         unsigned int mFileSize;;
-        String8 file_path;
 };
 
 #endif//GZIP_HEADER_PARSER_H__

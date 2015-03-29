@@ -2,6 +2,7 @@
 #include"StardictInfo.h"
 #include"StardictIdx.h"
 #include"GzipHeaderParser.h"
+#include"GzipDeflate.h"
 
 
 int dumpString(String8 a){
@@ -45,5 +46,15 @@ int main(int argc,char **argv){
     */
     GZipHeader tmpHeader(dict_path);
     GZipHeader cetmpHeader(ce_dict_path);
+    int chnum,chlen,version;
+    tmpHeader.getExtraInfo(chnum,chlen,version);
+    printf("chnum = %d chlen = %d version = %d \n",chnum,chlen,version);
+
+    GzipDeflate tmpInflate(dict_path);
+    tmpInflate.Seek(SEEK_SET,0);
+    unsigned char buff[10240]={0};
+    tmpInflate.Read(buff,sizeof(buff));
+    printf("buff = %s \n",buff);
+
     return 0;
 }
