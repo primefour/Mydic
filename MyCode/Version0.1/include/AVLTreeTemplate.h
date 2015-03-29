@@ -103,13 +103,17 @@ class AVLTreeTemplate{
                 }else if(((*ppNode)->mData) < data){
                     ppNode = &((*ppNode)->right);
                 }else {
+                    printf("%s %d \n",__func__,__LINE__);
                     if(!(*ppNode)->hide){
                         return (*ppNode)->mData;
                     }else{
+
+                    printf("%s %d \n",__func__,__LINE__);
                         return T();
                     }
                 }
             }
+            printf("%s %d \n",__func__,__LINE__);
             return T();
         }
 

@@ -53,7 +53,7 @@ int StardictIdx::init(){
             break;
         }
         if(i%5000 == 0){
-            printf("word = %s %d\n",word_buff,::ntohl(*((long*)offset_buff)));
+        //    printf("word = %s %d\n",word_buff,::ntohl(*((long*)offset_buff)));
         }
         WordIdxItem newItem((const char *)word_buff,::ntohl(*((long*)offset_buff)),::ntohl(*((long*)(offset_buff+4)))); 
         word_tree.InsertNode(newItem);
@@ -65,8 +65,12 @@ int StardictIdx::init(){
 
 
 WordIdxItem StardictIdx::getIdxWord(const char *str){
+    printf("%s %d \n",__func__,__LINE__);
     WordIdxItem tmp(str,0,0);
-    return word_tree.FindNode(tmp);
+    printf("%s %d \n",__func__,__LINE__);
+    WordIdxItem c = word_tree.FindNode(tmp);
+    printf("%s %d \n",__func__,__LINE__);
+    return c;
 }
 
 

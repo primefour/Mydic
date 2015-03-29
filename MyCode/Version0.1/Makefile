@@ -10,7 +10,8 @@ SRC_FILE_LIST:=$(SRC_PATH)/StardictInfo.cpp \
 	$(SRC_PATH)/StandardIO.cpp \
 	$(SRC_PATH)/Unicode.cpp \
 	$(SRC_PATH)/StardictMain.cpp \
-	$(SRC_PATH)/StardictIdx.cpp
+	$(SRC_PATH)/StardictIdx.cpp \
+	$(SRC_PATH)/GzipHeaderParser.cpp
 
 
 

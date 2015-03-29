@@ -186,11 +186,18 @@ int String8::setTo(const char* other)
         delete mString; 
         mString = NULL;
     }
-    const char *newString = allocFromUTF8(other, strlen(other));
-    mString = newString;
-    if (mString) return 0;
-    mString = getEmptyString();
-    return -1;
+    if(other == NULL){
+        mString = getEmptyString();
+        return 0;
+    }else{
+        const char *newString = allocFromUTF8(other, strlen(other));
+        mString = newString;
+        if (mString) {
+            return 0;
+        } else {
+            return -1;
+        }
+    }
 }
 
 int String8::setTo(const char* other, size_t len)
@@ -199,11 +206,18 @@ int String8::setTo(const char* other, size_t len)
         delete mString; 
         mString = NULL;
     }
-    const char *newString = allocFromUTF8(other, len);
-    mString = newString;
-    if (mString) return 0;
-    mString = getEmptyString();
-    return -1;
+    if(other == NULL){
+        mString = getEmptyString();
+        return 0;
+    }else{
+        const char *newString = allocFromUTF8(other, len);
+        mString = newString;
+        if (mString) {
+            return 0;
+        } else {
+            return -1;
+        }
+    }
 }
 
 int String8::append(const String8& other)
