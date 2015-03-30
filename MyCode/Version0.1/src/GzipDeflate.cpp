@@ -46,6 +46,7 @@ int GzipDeflate::Read(unsigned char *buf,int len){
    unsigned char *inBuff = new unsigned char[IN_BUFFER_SIZE];
    unsigned char *outBuff = new unsigned char[OUT_BUFFER_SIZE];
    unsigned char *ptrOut = buf;
+   printf("mHeaderLength + mPos = %d mbegin = %d end = %d \n",mHeaderLength + mPos,mbegin,end);
    file_obj.Seek(SEEK_SET,mHeaderLength + mPos);
    for(i = mbegin ;i <=end ;i++){
        printf("*(mChunkArray + %d) = %d \n",i,*(mChunkArray + i));
@@ -64,47 +65,52 @@ int GzipDeflate::Read(unsigned char *buf,int len){
            printf("inflate failed \n");
        }
        printf("zStream.avail_in = %d zStream.avail_out = %d mOffset = %d \n",zStream.avail_in,zStream.avail_out,mOffset );
-
        if(zStream.avail_in){
            printf("zstream flush mode failed \n");
        }
-
+       int avail_content = OUT_BUFFER_SIZE - zStream.avail_out ;
+        printf(" avail_content  = %d \n",avail_content); 
+       
        if(mbegin == i){
-           if(mOffset > zStream.avail_out){
-               printf("error mOffset > zStream.avail_out \n");
+           if(mOffset > avail_content ){
+               printf("error mOffset > (OUT_BUFFER_SIZE - zStream.avail_out)\n");
            }
            int cpylen = 0 ;
-           if(len >(OUT_BUFFER_SIZE - zStream.avail_out) - mOffset){
-               cpylen = (OUT_BUFFER_SIZE - zStream.avail_out) - mOffset;
+           if(len > avail_content - mOffset){
+               cpylen = avail_content - mOffset;
            }else{
                //one chunk is ok
                cpylen = len;
            }
-           memcpy(ptrOut,zStream.next_out + mOffset,cpylen);
+           memcpy(ptrOut,outBuff + mOffset,cpylen);
            len -= cpylen;
            ptrOut += cpylen;
        }else{
            int cpylen = 0 ;
-           if(len > (OUT_BUFFER_SIZE - zStream.avail_out)){
-               cpylen = (OUT_BUFFER_SIZE - zStream.avail_out);
+           if(len > avail_content){
+               cpylen = avail_content ;
            }else{
                cpylen = len;
            }
-           memcpy(ptrOut,zStream.next_out,cpylen);
+           memcpy(ptrOut,outBuff,cpylen);
            len -= cpylen;
            ptrOut += cpylen;
        }
    }
+   delete outBuff;
+   delete inBuff;
 }
 
 int GzipDeflate::Seek(int where,int offset){
     if(where != SEEK_SET){
         return -1;
     }
-    int mbegin = offset/mCheckLength;
+    printf("offset = %d mCheckLength = %d \n",offset,mCheckLength);
+    mbegin = offset/mCheckLength;
     int i = 0;
     mOffset = offset - mbegin * mCheckLength;
     mPos = 0;
+    printf("mbegin  = %d \n",mbegin); 
     while(i < mbegin){
         mPos += *(mChunkArray + i);
         i++;

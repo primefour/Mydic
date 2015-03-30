@@ -68,6 +68,7 @@ GZipHeader::GZipHeader(const char *gzip_path){
             contain_length += 2;
         }
         mHeadOffset = 10 + contain_length;
+        printf("mHeadOffset  = %d \n",mHeadOffset);
         //MTime skip
         //xfl
         mXFL = word_buff[8]; 
