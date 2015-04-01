@@ -1,4 +1,4 @@
-prefix=/home/crazyhorse/MyProject/GoldenDict/GitDict/AndroidDict/lib/
+prefix=/usr/local
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 sharedlibdir=${libdir}

@@ -95,7 +95,6 @@ local struct access *addpoint(struct access *index, int bits,
     struct point *next;
 
     /* if list is empty, create it (start with eight points) */
-    printf("in = %ld ,out = %ld left = %d \n",in,out,left);
     if (index == NULL) {
         index = malloc(sizeof(struct access));
         if (index == NULL) return NULL;
@@ -214,7 +213,6 @@ local int build_index(FILE *in, off_t span, struct access **built)
              */
             if ((strm.data_type & 128) && !(strm.data_type & 64) &&
                 (totout == 0 || totout - last > span)) {
-                printf("totin = %d , totout = %d \n",totin,totout); 
                 index = addpoint(index, strm.data_type & 7, totin,
                                  totout, strm.avail_out, window);
                 if (index == NULL) {
@@ -264,12 +262,8 @@ local int extract(FILE *in, struct access *index, off_t offset,
     /* find where in stream to start */
     here = index->list;
     ret = index->have;
-
-    printf("##out = %d \n",here[1].out);
-    while (--ret && here[1].out <= offset){
-        printf("out = %d \n",here[1].out);
+    while (--ret && here[1].out <= offset)
         here++;
-    }
 
     /* initialize file and inflate state to start there */
     strm.zalloc = Z_NULL;
@@ -280,7 +274,6 @@ local int extract(FILE *in, struct access *index, off_t offset,
     ret = inflateInit2(&strm, -15);         /* raw inflate */
     if (ret != Z_OK)
         return ret;
-    printf("here->in = %d \n",here->in);
     ret = fseeko(in, here->in - (here->bits ? 1 : 0), SEEK_SET);
     if (ret == -1)
         goto extract_ret;
@@ -295,7 +288,6 @@ local int extract(FILE *in, struct access *index, off_t offset,
     (void)inflateSetDictionary(&strm, here->window, WINSIZE);
 
     /* skip uncompressed bytes until offset reached, then satisfy request */
-    printf("here->out = %d \n",here->out);
     offset -= here->out;
     strm.avail_in = 0;
     skip = 1;                               /* while skipping to offset */
@@ -400,14 +392,13 @@ int main(int argc, char **argv)
     fprintf(stderr, "zran: built index with %d access points\n", len);
 
     /* use index by reading some bytes from an arbitrary offset */
-    offset = 0;//(index->list[index->have - 1].out << 1) / 3;
-    printf("offset = %d \n",offset);
+    offset = (index->list[index->have - 1].out << 1) / 3;
     len = extract(in, index, offset, buf, CHUNK);
     if (len < 0)
         fprintf(stderr, "zran: extraction failed: %s error\n",
                 len == Z_MEM_ERROR ? "out of memory" : "input corrupted");
     else {
-        //fwrite(buf, 1, len, stdout);
+        fwrite(buf, 1, len, stdout);
         fprintf(stderr, "zran: extracted %d bytes at %llu\n", len, offset);
     }
 

@@ -15,30 +15,25 @@
 #    make install
 # To install in $HOME instead of /usr/local, use:
 #    make install prefix=$HOME
-#
 
 CC=arm-linux-androideabi-gcc
 
-GCC_PREFIX=arm-linux-androideabi-
-GCC_ROOT=~/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86/bin/
-PLATFORM_INCLUDE_PATH=~/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/usr
-
-CFLAGS=-O3  -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void -DHAVE_HIDDEN -I $(PLATFORM_INCLUDE_PATH)/include/ ./
+CFLAGS=-O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN --sysroot=/home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/ -I horse/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/include/ 
 #CFLAGS=-O -DMAX_WBITS=14 -DMAX_MEM_LEVEL=7
 #CFLAGS=-g -DDEBUG
 #CFLAGS=-O3 -Wall -Wwrite-strings -Wpointer-arith -Wconversion \
 #           -Wstrict-prototypes -Wmissing-prototypes
 
-SFLAGS=-O3  -fPIC -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void -DHAVE_HIDDEN
-LDFLAGS= -nostdlib -L $(PLATFORM_INCLUDE_PATH)/lib 
+SFLAGS=-O3  -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+LDFLAGS= 
 TEST_LDFLAGS=-L. libz.a
-LDSHARED=arm-linux-androideabi-gcc
-CPP=arm-linux-androideabi-gcc -E
+LDSHARED=gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map
+CPP=gcc -E
 
 STATICLIB=libz.a
-SHAREDLIB=
-SHAREDLIBV=
-SHAREDLIBM=
+SHAREDLIB=libz.so
+SHAREDLIBV=libz.so.1.2.8
+SHAREDLIBM=libz.so.1
 LIBS=$(STATICLIB) $(SHAREDLIBV)
 
 AR=arm-linux-androideabi-ar
@@ -50,7 +45,7 @@ TAR=tar
 SHELL=/bin/sh
 EXE=
 
-prefix =/home/crazyhorse/MyProject/GoldenDict/GitDict/AndroidDict/lib/
+prefix =/usr/local
 exec_prefix =${prefix}
 libdir =${exec_prefix}/lib
 sharedlibdir =${libdir}
@@ -75,7 +70,7 @@ OBJS = $(OBJC) $(OBJA)
 
 PIC_OBJS = $(PIC_OBJC) $(PIC_OBJA)
 
-all: static
+all: static shared all64
 
 static: example$(EXE) minigzip$(EXE)
 
@@ -85,7 +80,7 @@ all64: example64$(EXE) minigzip64$(EXE)
 
 check: test
 
-test: all teststatic
+test: all teststatic testshared test64
 
 teststatic: static
 	@TMPST=tmpst_$$; \
