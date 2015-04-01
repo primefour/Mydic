@@ -33,15 +33,12 @@ class WordIdxItem:public Ref{
             return idx_word <= other.idx_word; 
         }
         bool operator==(const WordIdxItem & other) const{
-
             return idx_word == other.idx_word; 
         }
         bool operator!=(const WordIdxItem & other) const{
-
             return idx_word != other.idx_word; 
         }
         bool operator>=(const WordIdxItem & other) const{
-
             return idx_word >= other.idx_word; 
         }
         bool operator>(const WordIdxItem & other) const{

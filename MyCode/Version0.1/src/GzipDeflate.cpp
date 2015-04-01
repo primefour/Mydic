@@ -7,7 +7,7 @@ extern "C"{
 #define OUT_BUFFER_SIZE 0xffffL
 
 
-GzipDeflate::GzipDeflate(const char *path):file_path(path){
+GzipDeflate::GzipDeflate(const char *path,int mode):file_path(path){
     mPos = 0;
     GZipHeader header(path);
     header.getExtraInfo(mCheckCount,mCheckLength,mVersion);
@@ -35,7 +35,7 @@ int GzipDeflate::Read(unsigned char *buf,int len){
    if(inflateInit2(&zStream, -15 ) != Z_OK){
        printf("zStream init failed  \n");
    }
-   int end = (mPos + len)/mCheckLength;
+   int end = (mEnd + len)/mCheckLength;
    if(end > mCheckCount -1){
        end = mCheckCount -1;
    }
@@ -43,6 +43,7 @@ int GzipDeflate::Read(unsigned char *buf,int len){
 
    SimpleFile file_obj(file_path.string(),O_RDONLY);
    int i = 0;
+   int cpylen = 0 ;
    unsigned char *inBuff = new unsigned char[IN_BUFFER_SIZE];
    unsigned char *outBuff = new unsigned char[OUT_BUFFER_SIZE];
    unsigned char *ptrOut = buf;
@@ -69,13 +70,13 @@ int GzipDeflate::Read(unsigned char *buf,int len){
            printf("zstream flush mode failed \n");
        }
        int avail_content = OUT_BUFFER_SIZE - zStream.avail_out ;
-        printf(" avail_content  = %d \n",avail_content); 
+       printf(" avail_content  = %d \n",avail_content); 
+        //printf(" avail_content  = %s \n",outBuff ); 
        
        if(mbegin == i){
            if(mOffset > avail_content ){
                printf("error mOffset > (OUT_BUFFER_SIZE - zStream.avail_out)\n");
            }
-           int cpylen = 0 ;
            if(len > avail_content - mOffset){
                cpylen = avail_content - mOffset;
            }else{
@@ -99,6 +100,7 @@ int GzipDeflate::Read(unsigned char *buf,int len){
    }
    delete outBuff;
    delete inBuff;
+   return cpylen;
 }
 
 int GzipDeflate::Seek(int where,int offset){
@@ -110,9 +112,11 @@ int GzipDeflate::Seek(int where,int offset){
     int i = 0;
     mOffset = offset - mbegin * mCheckLength;
     mPos = 0;
+    mEnd = 0;
     printf("mbegin  = %d \n",mbegin); 
     while(i < mbegin){
         mPos += *(mChunkArray + i);
+        mEnd += mCheckLength;
         i++;
     }
     return mPos;

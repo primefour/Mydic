@@ -5,13 +5,17 @@
 #include<stdio.h>
 #include"StandardIO.h"
 #include"Ref.h"
+#include"String8.h"
+#include<unistd.h>
+#include<fcntl.h>
+
 extern "C"{
 #include"zlib.h"
 }
 
 class GzipDeflate:public IOInterface,Ref{
     public:
-        GzipDeflate(const char *file_path);
+        GzipDeflate(const char *file_path,int mode = O_RDWR);
         virtual ~GzipDeflate();
         virtual int Read(unsigned char *buf,int len);
         virtual int Seek(int where,int offset);
@@ -22,6 +26,7 @@ class GzipDeflate:public IOInterface,Ref{
         int mPos;
         int mOffset;
         int mbegin;
+        int mEnd;
         int mCheckCount;
         int mCheckLength;
         int mVersion;

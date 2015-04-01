@@ -3,6 +3,7 @@
 #include"StardictIdx.h"
 #include"GzipHeaderParser.h"
 #include"GzipDeflate.h"
+#include"StardictDict.h"
 
 
 int dumpString(String8 a){
@@ -12,6 +13,7 @@ int dumpString(String8 a){
         printf("xxxx is empty string \n");
     }
 }
+#if 0
 const char *ifo_path = "/home/crazyhorse/MyProject/GoldenDict/GitDict/MyCode/Version0.1/bin/langdao-ec-gb.ifo";
 const char *idx_path = "/home/crazyhorse/MyProject/GoldenDict/GitDict/MyCode/Version0.1/bin/langdao-ec-gb.idx";
 const char *dict_path = "/home/crazyhorse/MyProject/GoldenDict/GitDict/MyCode/Version0.1/bin/langdao-ec-gb.dict.dz";
@@ -19,21 +21,21 @@ const char *dict_path = "/home/crazyhorse/MyProject/GoldenDict/GitDict/MyCode/Ve
 const char *ce_ifo_path = "/home/crazyhorse/MyProject/GoldenDict/GitDict/MyCode/Version0.1/bin/langdao-ce-gb.ifo";
 const char *ce_idx_path = "/home/crazyhorse/MyProject/GoldenDict/GitDict/MyCode/Version0.1/bin/langdao-ce-gb.idx";
 const char *ce_dict_path = "/home/crazyhorse/MyProject/GoldenDict/GitDict/MyCode/Version0.1/bin/langdao-ce-gb.dict.dz";
+#else
+const char *ifo_path = "./bin/langdao-ec-gb.ifo";
+const char *idx_path = "./bin/langdao-ec-gb.idx";
+const char *dict_path = "./bin/langdao-ec-gb.dict.dz";
+
+const char *ce_ifo_path = "./bin/langdao-ce-gb.ifo";
+const char *ce_idx_path = "./bin/langdao-ce-gb.idx";
+const char *ce_dict_path = "./bin/langdao-ce-gb.dict.dz";
+#endif
 
 
 int main(int argc,char **argv){
-    
-    StardictInfo si(ifo_path);
-    StardictIdx sidx(idx_path,si.getWordCount(),si.getIdxFileSize(),si.getOffsetBits());
-    WordIdxItem wii = sidx.getIdxWord("hello");
-    wii.dumpInfo(); 
-
-    wii = sidx.getIdxWord("a");
-    wii.dumpInfo(); 
 /*
     wii = sidx.getIdxWord("纵隔面");
     wii.dumpInfo(); 
-
     wii = sidx.getIdxWord("HelloWorld");
     printf("%s %d \n",__func__,__LINE__);
     wii.dumpInfo(); 
@@ -45,7 +47,6 @@ int main(int argc,char **argv){
 
     ce_wii.dumpInfo(); 
     
-*/
     GZipHeader tmpHeader(dict_path);
     //GZipHeader cetmpHeader(ce_dict_path);
     int chnum,chlen,version;
@@ -65,11 +66,21 @@ int main(int argc,char **argv){
         printf("open failed \n");
     }
     write(fd,gbuff,len);
-    /*
     dictData *dd = dict_data_open(dict_path,0); 
     char *ddstr = dict_data_read_ (dd,offset,len,NULL,NULL);
     printf("ddstr = %s \n",ddstr);
-    */
+*/
+
+    StardictInfo si(ifo_path);
+    StardictIdx sidx(idx_path,si.getWordCount(),si.getIdxFileSize(),si.getOffsetBits());
+
+    WordIdxItem wii = sidx.getIdxWord("hello");
+    wii.dumpInfo(); 
+    wii = sidx.getIdxWord("xxxx");
+    wii.dumpInfo(); 
+    StardictDict dict(dict_path,si.getSameTypeSeq());
+    TextMetaData a = dict.read_word_data(wii.data_offset,wii.data_size);
+    a.dumpInfo();
 
     return 0;
 }
