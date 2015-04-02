@@ -18,7 +18,9 @@
 
 CC=arm-linux-androideabi-gcc
 
-CFLAGS=-O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN --sysroot=/home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/ -I horse/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/include/ 
+CFLAGS= -v -O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -pie -fPIE --sysroot=/home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/
+CFLAGS += -I  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/
+
 #CFLAGS=-O -DMAX_WBITS=14 -DMAX_MEM_LEVEL=7
 #CFLAGS=-g -DDEBUG
 #CFLAGS=-O3 -Wall -Wwrite-strings -Wpointer-arith -Wconversion \
@@ -70,7 +72,9 @@ OBJS = $(OBJC) $(OBJA)
 
 PIC_OBJS = $(PIC_OBJC) $(PIC_OBJA)
 
-all: static shared all64
+all: static 
+#shared
+#all64
 
 static: example$(EXE) minigzip$(EXE)
 
