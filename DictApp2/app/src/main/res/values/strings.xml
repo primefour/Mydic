@@ -3,5 +3,7 @@
 
     <string name="app_name">DictApp2</string>
     <string name="title_slot_detail">Slot1 Detail</string>
+    <string name="SearchButtonName">Search</string>
+    <string name="MeaningText">你好！</string>
 
 </resources>
