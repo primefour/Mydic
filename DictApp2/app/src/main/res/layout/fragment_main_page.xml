@@ -35,12 +35,11 @@
         android:layout_marginBottom="3dp"
         android:layout_below="@+id/linearLayout">
 
-    <TextView
+    <WebView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:gravity="fill_vertical"
-        android:text="@string/MeaningText"
-        android:id="@+id/MeaningTextView"/>
+        android:id="@+id/MeaningWebView"/>
     </ScrollView>
 
 </RelativeLayout>

@@ -1,16 +1,17 @@
 package com.Dict.DictApp2;
 
-import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.widget.Button;
 
 
 /**
  * Created by crazyhorse on 15-4-5.
  */
-public class DictMainActivity extends FragmentActivity implements SlotListFragment.Callbacks  {
+public class DictMainActivity extends FragmentActivity implements SlotListFragment.Callbacks,MainFragment.Callbacks,DictSearchEngine.Callbacks {
     MainPagerAdapter mPagerAdapter;
     ViewPager mViewPager;
 
@@ -29,6 +30,7 @@ public class DictMainActivity extends FragmentActivity implements SlotListFragme
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.setCurrentItem(MAIN_PAGE_IDX);
+
     }
 
     public void onItemSelected(String id) {
@@ -37,6 +39,16 @@ public class DictMainActivity extends FragmentActivity implements SlotListFragme
             Intent detailIntent = new Intent(this, SlotDetailActivity.class);
             detailIntent.putExtra(SlotDetailFragment.ARG_ITEM_ID, id);
             startActivity(detailIntent);
+    }
+
+    public String onSearchButtonClick(String searchWord) {
+        return null;
+    }
+
+    public void onWordMeaningArriving(String searchResult) {
+        //for async query
+        MainFragment mainFlagment = (MainFragment)mPagerAdapter.getItem(MAIN_PAGE_IDX);
+        mainFlagment.setWordMeaningString(searchResult);
     }
 
 }
