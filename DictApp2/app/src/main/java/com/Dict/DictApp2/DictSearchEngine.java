@@ -8,8 +8,25 @@ import android.os.Message;
  * Created by crazyhorse on 15-4-5.
  */
 public class DictSearchEngine {
-    private Callbacks mAsyncDeliverCB = null;
-    private static Handler mUIThreadHandler;
+    private static Callbacks mAsyncDeliverCB = null;
+    private static final int MESSAGE_MEANING_ARRIVING = 0;
+
+    private static Handler mUIThreadHandler  = new Handler(){
+        @Override
+        public void handleMessage(Message msg){
+            switch(msg.what){
+                case MESSAGE_MEANING_ARRIVING:
+                    if(mAsyncDeliverCB != null){
+                        String word = msg.getData().getString(CALLBACK_SEARCH_RESULT);
+                        mAsyncDeliverCB.onWordMeaningArriving(word);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+    };
     private final static String CALLBACK_SEARCH_RESULT = "searchResult";
 
 
@@ -23,11 +40,13 @@ public class DictSearchEngine {
         //will run at work thread
         Bundle bundle = new Bundle();
         bundle.putString(CALLBACK_SEARCH_RESULT,searchResult);
+       // Message msg = mUIThreadHandler.obtainMessage(MESSAGE_MEANING_ARRIVING);
         Message msg = Message.obtain();
         msg.setData(bundle);
         msg.setTarget(mUIThreadHandler);
         msg.sendToTarget();
     }
+
 
     public boolean addDictionary(String path){
         return false;
