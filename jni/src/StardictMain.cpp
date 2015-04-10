@@ -32,7 +32,7 @@ const char *ce_dict_path = "./bin/langdao-ce-gb.dict.dz";
 #endif
 
 
-int main(int argc,char **argv){
+int hello (){
 /*
     wii = sidx.getIdxWord("纵隔面");
     wii.dumpInfo(); 

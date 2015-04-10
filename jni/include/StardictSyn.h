@@ -1,5 +1,6 @@
 #ifndef __STARDICT_SYN_H__
 #define __STARDICT_SYN_H__
+/*
 #include"File.h"
 
 typedef struct synonym_word_t{
@@ -18,5 +19,6 @@ class StardictSyn{
         long syn_word_count;
         File syn_file;
 };
+*/
 
 #endif

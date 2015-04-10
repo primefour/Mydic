@@ -6,6 +6,7 @@
 #include<assert.h>
 #include<sys/types.h>
 #include<fcntl.h>
+/*
 #include"memory_test_tool.h"
 
 
@@ -75,3 +76,4 @@ int StardictSyn::find_word(const char *str){
         return (array + i)->original_word_index;
     }
 }
+*/

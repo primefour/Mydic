@@ -1,12 +1,11 @@
 #ifndef __STARDICT_H__
 #define __STARDICT_H__
+/*
 #include"sys/types.h"
 #include"list.h"
-#include"Dictionary.h"
 #include "StardictIdx.h"
 #include "StardictInfo.h"
 #include "StardictDict.h"
-#include"GzipFile.h"
 #include<stdio.h>
 #include<unistd.h>
 #include<sys/types.h>
@@ -30,5 +29,5 @@ class StardictDictionary : public Dictionary{
         StardictDict *sd;
         char *file_main_path;
 };
-
+*/
 #endif 

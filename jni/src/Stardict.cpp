@@ -7,16 +7,15 @@
 #include "StardictIdx.h"
 #include "StardictInfo.h"
 #include "StardictDict.h"
-#include"GzipFile.h"
 #include<stdio.h>
 #include<unistd.h>
 #include<sys/types.h>
 #include<fcntl.h>
 #include<stdio.h>
 #include<string.h>
-#include"DirectoryUtils.h"
-#include"memory_test_tool.h"
-
+//#include"DirectoryUtils.h"
+//#include"memory_test_tool.h"
+/*
 StardictDictionary::StardictDictionary(const char *dictionary_path){
     int len = strlen(dictionary_path) + 1;
     file_main_path = (char *)malloc(len);
@@ -158,4 +157,5 @@ int StardictDictionary::get_dictionary_word_count(){
         return 0;
     }
 }
+*/
 
