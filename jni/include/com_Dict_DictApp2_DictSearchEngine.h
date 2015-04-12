@@ -9,6 +9,8 @@ extern "C" {
 #endif
 #undef com_Dict_DictApp2_DictSearchEngine_MESSAGE_MEANING_ARRIVING
 #define com_Dict_DictApp2_DictSearchEngine_MESSAGE_MEANING_ARRIVING 0L
+#undef com_Dict_DictApp2_DictSearchEngine_MESSAGE_META_ARRIVING
+#define com_Dict_DictApp2_DictSearchEngine_MESSAGE_META_ARRIVING 1L
 /*
  * Class:     com_Dict_DictApp2_DictSearchEngine
  * Method:    engQueryWord
@@ -40,6 +42,22 @@ JNIEXPORT jboolean JNICALL Java_com_Dict_DictApp2_DictSearchEngine_engAddDiction
  */
 JNIEXPORT jboolean JNICALL Java_com_Dict_DictApp2_DictSearchEngine_engRemoveDictionary
   (JNIEnv *, jclass, jstring);
+
+/*
+ * Class:     com_Dict_DictApp2_DictSearchEngine
+ * Method:    initEng
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_initEng
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     com_Dict_DictApp2_DictSearchEngine
+ * Method:    destroyEng
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_destroyEng
+  (JNIEnv *, jclass);
 
 #ifdef __cplusplus
 }

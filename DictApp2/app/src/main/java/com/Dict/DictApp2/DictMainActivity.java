@@ -51,4 +51,8 @@ public class DictMainActivity extends FragmentActivity implements SlotListFragme
         mainFlagment.setWordMeaningString(searchResult);
     }
 
+    public void onWordMetaArriving(TextMetaData mt){
+
+    }
+
 }

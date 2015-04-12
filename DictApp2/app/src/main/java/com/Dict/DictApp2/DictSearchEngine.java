@@ -10,6 +10,7 @@ import android.os.Message;
 public class DictSearchEngine {
     private static Callbacks mAsyncDeliverCB = null;
     private static final int MESSAGE_MEANING_ARRIVING = 0;
+    private static final int MESSAGE_META_ARRIVING = 1;
 
     private static Handler mUIThreadHandler  = new Handler(){
         @Override
@@ -21,12 +22,19 @@ public class DictSearchEngine {
                         mAsyncDeliverCB.onWordMeaningArriving(word);
                     }
                     break;
+                case MESSAGE_META_ARRIVING:
+                    if(mAsyncDeliverCB != null){
+                        String word = msg.getData().getString(CALLBACK_SEARCH_RESULT);
+                        mAsyncDeliverCB.onWordMetaArriving(null);
+                    }
+
                 default:
                     break;
             }
         }
 
     };
+
     private final static String CALLBACK_SEARCH_RESULT = "searchResult";
 
 
@@ -35,11 +43,13 @@ public class DictSearchEngine {
     public static native void engAsyncQueryWord(String searchWord);
     public static native boolean engAddDictionary(String path);
     public static native boolean engRemoveDictionary(String path);
+    public static native void initEng();
+    public static native void destroyEng();
 
-    public static void nativeCallback(String searchResult){
+    public static void nativeCallback(TextMetaData searchResult){
         //will run at work thread
         Bundle bundle = new Bundle();
-        bundle.putString(CALLBACK_SEARCH_RESULT,searchResult);
+       // bundle.putString(CALLBACK_SEARCH_RESULT,searchResult);
        // Message msg = mUIThreadHandler.obtainMessage(MESSAGE_MEANING_ARRIVING);
         Message msg = Message.obtain();
         msg.setData(bundle);
@@ -67,6 +77,7 @@ public class DictSearchEngine {
          * Callback for delivering the word meaning to user
          */
         public void onWordMeaningArriving(String searchResult);
+        public void onWordMetaArriving(TextMetaData mt);
     }
 
     public void setCallback(Callbacks cb) {

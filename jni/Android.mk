@@ -41,6 +41,7 @@ LOCAL_PREBUILT_LIBS := libz.a
 include $(BUILD_MULTI_PREBUILT)
 LOCAL_PATH := $(MY_LOCAL_PATH)
 include $(CLEAR_VARS)
+
 LOCAL_MODULE := searchEngine
 
 LOCAL_C_INCLUDES = ./include/
@@ -55,3 +56,4 @@ LOCAL_STATIC_LIBRARIES := libz
 
 
 include $(BUILD_SHARED_LIBRARY)
+#include $(BUILD_EXECUTABLE)
