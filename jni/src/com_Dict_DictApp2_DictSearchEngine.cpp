@@ -1,23 +1,22 @@
 #include"com_Dict_DictApp2_DictSearchEngine.h"
 #include<stdio.h>
-#include"StardictInfo.h"
-#include"StardictIdx.h"
-#include"GzipHeaderParser.h"
-#include"GzipDeflate.h"
-#include"StardictDict.h"
+//#include "utils/log.h"
 #include"StardictMain.h"
 
-static StardictMain *pDictMain = NULL ;
+static StardictMain* pDictMain = NULL ;
 
-JNIEXPORT jstring JNICALL Java_com_Dict_DictApp2_DictSearchEngine_engQueryWord (JNIEnv *pEnv, jclass pobj, jstring pstring){
-    const jbyte *str;
-    jboolean *isCopy;
-    str = (*pEnv)->GetStringUTFChars(pEnv, pStringP, isCopy);
-    __android_log_print(ANDROID_LOG_INFO, "native", "print UTF-8 string: %s, %d", str, isCopy);
-    TextMetaData * tmd = pDictMain->getDictIdx(0)->DictQuery(str);
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-    (*pEnv)->ReleaseStringUTFChars(pEnv, pStringP, str)
-    return a; 
+JNIEXPORT jstring JNICALL Java_com_Dict_DictApp2_DictSearchEngine_engQueryWord (JNIEnv *pEnv, jclass pobj, jstring pString){
+    jboolean isCopy;
+    TextMetaData tmd;
+    const char* str = pEnv->GetStringUTFChars(pString, &isCopy);
+  //  __android_log_print(ANDROID_LOG_INFO, "native", "print UTF-8 string: %s, %d", str, isCopy);
+    pDictMain->getDictIdx(0)->DictQuery(str,&tmd);
+    pEnv->ReleaseStringUTFChars(pString, str);
+    return NULL  ; 
 }
 
 /*
@@ -35,16 +34,16 @@ JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_engAsyncQueryWord
  * Signature: (Ljava/lang/String;)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_Dict_DictApp2_DictSearchEngine_engAddDictionary (JNIEnv *pEnv, jclass pObj, jstring pString){
-    const jbyte *str;
+    const char *str = NULL;
     jboolean *isCopy;
-    str = (*pEnv)->GetStringUTFChars(pEnv, pString, isCopy);
-    __android_log_print(ANDROID_LOG_INFO, "native", "print UTF-8 string: %s, %d", str, isCopy);
+    str = pEnv->GetStringUTFChars(pString, isCopy);
+   // __android_log_print(ANDROID_LOG_INFO, "native", "print UTF-8 string: %s, %d", str, isCopy);
     if(pDictMain != NULL){
         pDictMain->InsertDict(str);
     }else{
         printf("StardictMain should be init before using\n");
     }
-    (*pEnv)->ReleaseStringUTFChars(pEnv, pString,str)
+    pEnv->ReleaseStringUTFChars(pString,str);
     return 1;
 }
 
@@ -79,7 +78,11 @@ JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_initEng(JNIEnv *p
 JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_destroyEng(JNIEnv *pEnv, jclass pObj){
     if(pDictMain != NULL){
         delete pDictMain ;
-        pDictMain NULL;
+        pDictMain = NULL;
     }
 }
+
+#ifdef __cplusplus
+}
+#endif
 

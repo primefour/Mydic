@@ -25,23 +25,18 @@ int StardictDict::CheckFileType(){
     return 0;
 }
 
-TextMetaData& StardictDict::read_word_data(int offset,int length){
+void StardictDict::read_word_data(int offset,int length,TextMetaData* tmd){
     printf("%s offset = %d length = %d \n",__func__,offset,length);
-    TextMetaData *tmd = new TextMetaData();
-
     GzipDeflate file_obj(file_path,O_RDONLY);
     file_obj.Seek(SEEK_SET,offset);
     unsigned char *buff = new unsigned char [length + 4] ;
     memset(buff,0,length +4);
-
     int ret = file_obj.Read(buff,length);
-
     if(ret != length){
         printf("%s ret error xxxxxxxx",__func__);
-        return *tmd;
+        return ;
     }
     parse_meta_data(tmd,buff,length);
-    return *tmd;
 }
 
 

@@ -64,7 +64,7 @@ class StardictDict{
     public:
         StardictDict(const char*file_name,const char *same_type_seq);
         ~StardictDict();
-        TextMetaData& read_word_data(int offset,int length);
+        void read_word_data(int offset,int length,TextMetaData* tmd);
     private:
         int CheckFileType();
         void parse_meta_data(TextMetaData *tmd, unsigned char *data,int length);

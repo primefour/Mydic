@@ -4,6 +4,8 @@
 #include"GzipHeaderParser.h"
 #include"GzipDeflate.h"
 #include"StardictDict.h"
+#include"Ref.h"
+#include"StardictMain.h"
 
 #if 0
 const char *ifo_path = "/home/crazyhorse/MyProject/GoldenDict/GitDict/MyCode/Version0.1/bin/langdao-ec-gb.ifo";
@@ -23,16 +25,6 @@ const char *ce_idx_path = "./bin/langdao-ce-gb.idx";
 const char *ce_dict_path = "./bin/langdao-ce-gb.dict.dz";
 #endif
 
-class StardictIntance:public Ref,DictInterface{
-    public:
-        StardictIntance(const char *path);
-        virtual ~StardictIntance();
-        virtual TextMetaData* DictQuery(const char *queryWord);
-    private:
-        StardictInfo *si;
-        StardictIdx  *sidx;
-        StardictDict *dict;
-};
 
 StardictIntance::~StardictIntance(){
     if(si != NULL){
@@ -46,18 +38,17 @@ StardictIntance::~StardictIntance(){
     }
 }
 
-TextMetaData* StardictIntance::DictQuery(const char *queryWord){
+void StardictIntance::DictQuery(const char *queryWord,TextMetaData*tmd){
     WordIdxItem wii = sidx->getIdxWord(queryWord);
     wii.dumpInfo(); 
-    return dict->read_word_data(wii.data_offset,wii.data_size);
+    dict->read_word_data(wii.data_offset,wii.data_size,tmd);
 }
 
-
-StardictIntance::StardictIntance(String8 *path){
+StardictIntance::StardictIntance(String8 path){
     si = NULL;
     sidx = NULL;
     dict = NULL;
-    si = new StardictInfo(path + ".ifo"); 
+    si = new StardictInfo(path + ".ifo");
     //check si
     if(si&&si->getWordCount() < 0){
         printf("check fail \n");
@@ -68,7 +59,7 @@ StardictIntance::StardictIntance(String8 *path){
         printf("check fail xx \n");
         return ;
     }
-    dict = new dict(path + ".dict.dz",si->getSameTypeSeq());
+    dict = new StardictDict(path + ".dict.dz",si->getSameTypeSeq());
     if(dict == NULL){
         printf("check fail xxxx \n");
     }
@@ -101,7 +92,7 @@ void StardictMain::InsertDict(const char *path){
     mDict[i] = tmp;
 }
 
-const DictInterface *StardictMain::getDictIdx(int idx){
+DictInterface *StardictMain::getDictIdx(int idx){
     if(idx < MAX_DICT_COUNT && mDict[idx] != NULL){
         return mDict[idx];
     }

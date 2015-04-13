@@ -9,16 +9,16 @@
 
 class DictInterface{
     public:
-        virtual TextMetaData* DictQuery(const char *queryWord){
-            return NULL;
+        virtual void DictQuery(const char *queryWord,TextMetaData*tmd){
+            return ;
         }
 };
 
-class StardictIntance:public Ref,DictInterface{
+class StardictIntance:public DictInterface{
     public:
-        StardictIntance(const char *path);
+        StardictIntance(String8 path);
         virtual ~StardictIntance();
-        virtual TextMetaData* DictQuery(const char *queryWord);
+        virtual void DictQuery(const char *queryWord,TextMetaData*tmd);
     private:
         StardictInfo *si;
         StardictIdx  *sidx;
@@ -32,9 +32,9 @@ class StardictMain{
         ~StardictMain();
         void InsertDict(const char *path);
         void DeleteDict(const char *path);
-        const DictInterface *getDictIdx(int idx); 
+        DictInterface *getDictIdx(int idx); 
     private:
-        DictIntance* mDict[MAX_DICT_COUNT];
-}
+      DictInterface* mDict[MAX_DICT_COUNT];
+};
 
 #endif
