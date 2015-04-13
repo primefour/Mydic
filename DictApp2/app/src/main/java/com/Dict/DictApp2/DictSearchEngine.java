@@ -85,5 +85,8 @@ public class DictSearchEngine {
         mAsyncDeliverCB = cb;
     }
 
+    static {
+        System.loadLibrary("searchEngine");
+    }
 
 }
