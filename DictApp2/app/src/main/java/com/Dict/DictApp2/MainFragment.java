@@ -18,7 +18,7 @@ import android.widget.TextView;
 public class MainFragment extends Fragment implements View.OnClickListener {
     private View mRootView = null;
     private Callbacks mCallbacks = null;
-    private final String WEB_ENCODE_FORMAT = "UTF-8";
+    private final String WEB_ENCODE_FORMAT = "utf-8";
     private final String WEB_MIME_TYPE = "text/html";
     private final String NOT_FOUND_WORD = "Hello World!";
 
@@ -48,7 +48,8 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         //show word Meaning
         WebView webView = ((WebView) mRootView.findViewById(R.id.MeaningWebView));
         webView.getSettings().setDefaultTextEncodingName(WEB_ENCODE_FORMAT);
-        webView.loadData(wordMeaning,WEB_MIME_TYPE,WEB_ENCODE_FORMAT) ;
+        webView.loadData(wordMeaning, "text/html; charset=UTF-8", null);
+        //webView.loadData(wordMeaning,WEB_MIME_TYPE,WEB_ENCODE_FORMAT) ;
     }
 
     public interface Callbacks {
