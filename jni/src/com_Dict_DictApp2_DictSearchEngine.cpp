@@ -32,7 +32,7 @@ JNIEXPORT jobject JNICALL  Java_com_Dict_DictApp2_DictSearchEngine_engQueryWord 
     LOGE("%s  %d ",__func__,__LINE__);
     LOGE("%s  %d ",__func__,__LINE__);
     LOGE("%s  %d ",__func__,__LINE__);
-    jmethodID cid = (*env)->GetMethodID(env, stringClass,"<init>", "()V");
+    jmethodID cid = pEnv->GetMethodID(tmd_class,"<init>", "()V");
     jobject obj = pEnv->NewObject(tmd_class,cid);
     if(obj == NULL){
         pEnv->DeleteLocalRef(tmd_class);
