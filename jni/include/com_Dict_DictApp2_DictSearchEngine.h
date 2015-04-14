@@ -14,9 +14,9 @@ extern "C" {
 /*
  * Class:     com_Dict_DictApp2_DictSearchEngine
  * Method:    engQueryWord
- * Signature: (Ljava/lang/String;)Ljava/lang/String;
+ * Signature: (Ljava/lang/String;)Lcom/Dict/DictApp2/TextMetaData;
  */
-JNIEXPORT jstring JNICALL Java_com_Dict_DictApp2_DictSearchEngine_engQueryWord
+JNIEXPORT jobject JNICALL Java_com_Dict_DictApp2_DictSearchEngine_engQueryWord
   (JNIEnv *, jclass, jstring);
 
 /*

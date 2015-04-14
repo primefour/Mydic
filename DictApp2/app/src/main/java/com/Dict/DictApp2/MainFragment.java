@@ -37,12 +37,11 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        String wordMeaning = mCallbacks.onSearchButtonClick(getSearchWord());
 
         if(getSearchWord() == null){
             return ;
         }
-
+        String wordMeaning = mCallbacks.onSearchButtonClick(getSearchWord());
         if(wordMeaning == null){
             wordMeaning = NOT_FOUND_WORD;
         }

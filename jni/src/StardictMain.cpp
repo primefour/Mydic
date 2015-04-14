@@ -7,6 +7,13 @@
 #include"Ref.h"
 #include"StardictMain.h"
 
+#if 1
+#define  LOG_TAG    "DICT2"
+#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
+#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
+#define printf LOGE
+#endif
+
 #if 0
 const char *ifo_path = "/home/crazyhorse/MyProject/GoldenDict/GitDict/MyCode/Version0.1/bin/langdao-ec-gb.ifo";
 const char *idx_path = "/home/crazyhorse/MyProject/GoldenDict/GitDict/MyCode/Version0.1/bin/langdao-ec-gb.idx";
@@ -74,13 +81,16 @@ StardictMain::~StardictMain(){
             delete mDict[i] ;
             mDict[i] = NULL;
         }
+        i++;
     }
 }
 
 void StardictMain::InsertDict(const char *path){
+    printf("%s %d %s ",__func__,__LINE__,path);
     //check the path
     String8 tmp_path(path);
     //just stardict now
+    printf("tmp_path.getBasePath() = %s ",tmp_path.getBasePath().string());
     DictInterface *tmp =  new StardictIntance(tmp_path.getBasePath());
     int i = 0;
     while(i < MAX_DICT_COUNT){
@@ -100,13 +110,14 @@ DictInterface *StardictMain::getDictIdx(int idx){
 }
 
 void StardictMain::DeleteDict(const char *path){
-
+    printf("%s %d ",__func__,__LINE__);
 }
 
 StardictMain::StardictMain(){
     int i = 0;
     while(i < MAX_DICT_COUNT){
         mDict[i] = NULL;
+        i++;
     }
 
 }

@@ -21,6 +21,9 @@
 #include <string.h> // for strcmp
 #include <stdarg.h>
 #include "Ref.h"
+#ifdef printf
+#undef printf
+#endif
 
 //! This is a string holding UTF-8 characters. Does not allow the value more
 // than 0x10FFFF, which is not valid unicode codepoint.

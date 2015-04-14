@@ -18,6 +18,7 @@
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/linux/types.h \
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/machine/kernel.h \
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/sys/sysmacros.h \
+ /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/android/log.h \
  include/StardictMain.h include/StardictInfo.h \
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/stdlib.h \
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/string.h \
@@ -89,6 +90,8 @@ include/com_Dict_DictApp2_DictSearchEngine.h:
 /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/machine/kernel.h:
 
 /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/sys/sysmacros.h:
+
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/android/log.h:
 
 include/StardictMain.h:
 

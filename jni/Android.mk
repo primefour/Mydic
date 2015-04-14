@@ -32,6 +32,8 @@ LOCAL_SRC_FILES := src/com_Dict_DictApp2_DictSearchEngine.cpp \
 LOCAL_MODULE := searchEngine
 
 LOCAL_C_INCLUDES += ./include/
+LOCAL_LDLIBS := -llog
+LOCAL_CFLAGS += -g
 
 
 include $(BUILD_SHARED_LIBRARY)

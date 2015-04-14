@@ -39,7 +39,7 @@ public class DictSearchEngine {
 
 
 
-    public static native String engQueryWord(String searchWord);
+    public static native TextMetaData engQueryWord(String searchWord);
     public static native void engAsyncQueryWord(String searchWord);
     public static native boolean engAddDictionary(String path);
     public static native boolean engRemoveDictionary(String path);
@@ -59,13 +59,16 @@ public class DictSearchEngine {
 
 
     public boolean addDictionary(String path){
-        return false;
+        return engAddDictionary(path);
     }
+
     public boolean removeDictionary(String path){
         return false;
     }
-    public String queryWord(String searchWord){
-        return null;
+
+    public TextMetaData queryWord(String searchWord){
+        return engQueryWord(searchWord);
+
     }
 
     public void asyncQueryWord(String searchWord){

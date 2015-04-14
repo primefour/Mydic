@@ -21,6 +21,7 @@
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/string.h \
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/malloc.h \
  include/Ref.h \
+ /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/android/log.h \
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/fcntl.h \
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/linux/fcntl.h \
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/asm/fcntl.h \
@@ -94,6 +95,8 @@ include/Unicode.h:
 /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/malloc.h:
 
 include/Ref.h:
+
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/android/log.h:
 
 /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/fcntl.h:
 

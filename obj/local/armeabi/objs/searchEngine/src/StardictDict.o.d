@@ -21,6 +21,7 @@
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/malloc.h \
  include/Ref.h \
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/stdio.h \
+ /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/android/log.h \
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/stdlib.h \
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/alloca.h \
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/strings.h \
@@ -114,6 +115,8 @@ include/Unicode.h:
 include/Ref.h:
 
 /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/stdio.h:
+
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/android/log.h:
 
 /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/stdlib.h:
 

@@ -17,7 +17,9 @@
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/linux/types.h \
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/machine/kernel.h \
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/sys/sysmacros.h \
- include/Ref.h include/String8.h include/Unicode.h \
+ include/Ref.h \
+ /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/android/log.h \
+ include/String8.h include/Unicode.h \
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/string.h \
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/malloc.h \
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/unistd.h \
@@ -83,6 +85,8 @@ include/StandardIO.h:
 /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/sys/sysmacros.h:
 
 include/Ref.h:
+
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/android/log.h:
 
 include/String8.h:
 

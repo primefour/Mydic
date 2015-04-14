@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.widget.Button;
 
 
@@ -14,6 +15,7 @@ import android.widget.Button;
 public class DictMainActivity extends FragmentActivity implements SlotListFragment.Callbacks,MainFragment.Callbacks,DictSearchEngine.Callbacks {
     MainPagerAdapter mPagerAdapter;
     ViewPager mViewPager;
+    DictSearchEngine mSE;
 
     public final static int SETTING_PAGE_IDX = 0;
     public final static int MAIN_PAGE_IDX = 1;
@@ -30,7 +32,18 @@ public class DictMainActivity extends FragmentActivity implements SlotListFragme
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.setCurrentItem(MAIN_PAGE_IDX);
+        mSE = new DictSearchEngine();
+        Log.d("%s","xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxDict");
+        mSE.initEng();
+        mSE.addDictionary("/sdcard/langdao-ec-gb.ifo");
+        Log.d("%s","xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxDictxxx");
+    }
 
+
+    @Override
+    protected void onDestroy() {
+        mSE.destroyEng();
+        super.onDestroy();
     }
 
     public void onItemSelected(String id) {
@@ -42,7 +55,9 @@ public class DictMainActivity extends FragmentActivity implements SlotListFragme
     }
 
     public String onSearchButtonClick(String searchWord) {
-        return null;
+        TextMetaData tmp = mSE.queryWord(searchWord);
+        return tmp != null ? tmp.mTextMeaning:null;
+
     }
 
     public void onWordMeaningArriving(String searchResult) {

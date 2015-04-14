@@ -44,6 +44,7 @@
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/linux/capability.h \
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/pathconf.h \
  include/StardictIdx.h include/String8.h include/Unicode.h include/Ref.h \
+ /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/android/log.h \
  include/AVLTreeTemplate.h include/BinTreeTemplate.h \
  include/StardictInfo.h include/StandardIO.h \
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/fcntl.h \
@@ -145,6 +146,8 @@ include/String8.h:
 include/Unicode.h:
 
 include/Ref.h:
+
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/android/log.h:
 
 include/AVLTreeTemplate.h:
 
