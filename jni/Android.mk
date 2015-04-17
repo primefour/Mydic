@@ -33,7 +33,7 @@ LOCAL_MODULE := searchEngine
 
 LOCAL_C_INCLUDES += ./include/
 LOCAL_LDLIBS := -llog
-LOCAL_CFLAGS += -g
+LOCAL_CFLAGS += -g -DANDROID_PLATFORM
 
 
 include $(BUILD_SHARED_LIBRARY)

@@ -19,7 +19,7 @@
 
 #endif
 
-#define MEM_FILE_MAX_SIZE 7 * 1024 *1024
+#define MEM_FILE_MAX_SIZE 15 * 1024 *1024
 
 //#define MEM_FILE_MAX_SIZE 20 
 

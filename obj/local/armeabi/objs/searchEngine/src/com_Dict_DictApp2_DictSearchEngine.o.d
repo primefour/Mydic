@@ -25,7 +25,9 @@
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/alloca.h \
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/strings.h \
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/memory.h \
- include/StandardIO.h include/Ref.h include/String8.h include/Unicode.h \
+ include/StandardIO.h include/Ref.h \
+ /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/android/log.h \
+ include/String8.h include/Unicode.h \
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/unistd.h \
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/sys/select.h \
  /home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/sys/time.h \
@@ -109,6 +111,8 @@ include/StardictInfo.h:
 include/StandardIO.h:
 
 include/Ref.h:
+
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-3/arch-arm/usr/include/android/log.h:
 
 include/String8.h:
 

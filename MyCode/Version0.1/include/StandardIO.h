@@ -83,6 +83,24 @@ class IOInterface{
 
 };
 
+class MemFile:public Ref,IOInterface{
+    public :
+        MemFile(const char *path,int mode=O_RDWR);
+        ~MemFile();
+        virtual int Read(unsigned char *buf,int len);
+        virtual int Seek(int where,int offset);
+        virtual int ReadLine(unsigned char *buf,int len);
+        virtual int ReadTerminating(unsigned char *buff,int len,unsigned char terminate);
+        virtual int Write(const unsigned char *buf,int len);
+    protected:
+        String8 file_path;
+        unsigned char *file_root;
+        size_t buff_len;
+        size_t buff_offset;
+        int file_des;
+        size_t file_size;
+};
+
 
 class SimpleFile:public Ref,IOInterface{
     public :

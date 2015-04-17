@@ -16,6 +16,7 @@ public class DictMainActivity extends FragmentActivity implements SlotListFragme
     MainPagerAdapter mPagerAdapter;
     ViewPager mViewPager;
     DictSearchEngine mSE;
+    Thread mInit = null;
 
     public final static int SETTING_PAGE_IDX = 0;
     public final static int MAIN_PAGE_IDX = 1;
@@ -33,10 +34,15 @@ public class DictMainActivity extends FragmentActivity implements SlotListFragme
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.setCurrentItem(MAIN_PAGE_IDX);
         mSE = new DictSearchEngine();
-        Log.d("%s","xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxDict");
-        mSE.initEng();
-        mSE.addDictionary("/sdcard/langdao-ec-gb.ifo");
-        Log.d("%s","xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxDictxxx");
+        mInit = new Thread() {
+            public void run() {
+                Log.d("%s","xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxDict");
+                mSE.initEng();
+                mSE.addDictionary("/sdcard/langdao-ec-gb.ifo");
+                Log.d("%s","xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxDictxxx");
+            }
+        };
+        mInit.start();
     }
 
 
@@ -55,6 +61,14 @@ public class DictMainActivity extends FragmentActivity implements SlotListFragme
     }
 
     public String onSearchButtonClick(String searchWord) {
+        if(mInit.isAlive()) {
+            try {
+                mInit.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
         TextMetaData tmp = mSE.queryWord(searchWord);
         return tmp != null ? tmp.mTextMeaning:null;
 

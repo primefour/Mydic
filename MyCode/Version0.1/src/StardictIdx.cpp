@@ -32,7 +32,7 @@ StardictIdx::~StardictIdx(){
 
 int StardictIdx::init(){
     unsigned char word_buff[1024]={0};
-    SimpleFile file_obj(file_path,O_RDONLY);
+    MemFile file_obj(file_path,O_RDONLY);
     int offset_read_size = 8;
     if(offsetbit == 64){
         offset_read_size = 12;
@@ -44,6 +44,7 @@ int StardictIdx::init(){
     while(i < word_count){
         memset(word_buff,0,sizeof(word_buff));
         int ret = file_obj.ReadTerminating(word_buff,sizeof(word_buff),'\0');
+
         if(ret <= 0){
             break;
         }
@@ -52,9 +53,9 @@ int StardictIdx::init(){
         if(ret <= 0){
             break;
         }
-        if(i%5000 == 0){
-        //    printf("word = %s %d\n",word_buff,::ntohl(*((long*)offset_buff)));
-        }
+        //if(i%5000 == 0){
+            printf("word = %s %d\n",word_buff,::ntohl(*((long*)offset_buff)));
+        //}
         WordIdxItem newItem((const char *)word_buff,::ntohl(*((long*)offset_buff)),::ntohl(*((long*)(offset_buff+4)))); 
         word_tree.InsertNode(newItem);
         i++;
