@@ -48,6 +48,13 @@ public class DictMainActivity extends FragmentActivity implements SlotListFragme
 
     @Override
     protected void onDestroy() {
+        if(mInit.isAlive()) {
+            try {
+                mInit.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         mSE.destroyEng();
         super.onDestroy();
     }
