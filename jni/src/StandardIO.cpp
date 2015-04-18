@@ -19,9 +19,9 @@
 
 #endif
 
-#define MEM_FILE_MAX_SIZE 15 * 1024 *1024
+//#define MEM_FILE_MAX_SIZE 15 * 1024 *1024
 
-//#define MEM_FILE_MAX_SIZE 20 
+#define MEM_FILE_MAX_SIZE 20 
 
 MemFile::MemFile(const char *path,int mode):file_path(path){
     file_des = -1;
@@ -110,6 +110,7 @@ int MemFile::Read(unsigned char *buf,int len){
         //for cache
         unsigned char *pos = buf ;
         int copy_len = len ;
+        printf("file_root = %p , buff_len = %ld buff_offset = %ld \n",file_root,buff_len,buff_offset);
         while(copy_len > 0){
             if(buff_len > 0){
                 if(copy_len > buff_len){
@@ -121,9 +122,9 @@ int MemFile::Read(unsigned char *buf,int len){
                 }else{
                     memcpy(pos,file_root + buff_offset,copy_len);
                     buff_offset += copy_len;
-                    copy_len -= copy_len;
                     pos += copy_len;
                     buff_len -= copy_len;
+                    copy_len -= copy_len;
                 }
             }else{
                 //file root is empty need read file
@@ -136,6 +137,7 @@ int MemFile::Read(unsigned char *buf,int len){
                 }
             }
         }
+        printf("len = %d copy_len = %d file_root = %p , buff_len = %ld buff_offset = %ld \n",len ,copy_len,file_root,buff_len,buff_offset);
         return len - copy_len;
     }
 }
