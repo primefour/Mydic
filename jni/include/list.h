@@ -42,14 +42,22 @@ class List{
         ~List();
         List(const List &list);
         void DumpList();
-        void InsertTail(T &data);
-        void InsertHead(T &data);
-        void RemoveItem(T &data);
-        void InsertLocal(T &prev_data,T &data);
+        void InsertTail(const T &data);
+        void InsertHead(const T &data);
+        void RemoveItem(const T &data);
+        void InsertLocal(const T &prev_data,const T &data);
+
+        bool IsEmpty(){
+            ListItem<T> *TmpItem = mHead.next; 
+            return TmpItem != &mHead;
+        }
+
 
         T* FindItem(const T &data);
         T* GetPrevItem(const T &data);
         T* GetNextItem(const T &data);
+        T* GetFirstItem();
+        T* GetLastItem();
     private:
         void remove_list_item_(ListItem<T> *prev_item,ListItem<T> *next_item,ListItem<T> *remove_item);
         void add_list_item_(ListItem<T>* prev_item,ListItem<T> *next_item,ListItem<T> *insert_item);
@@ -128,6 +136,23 @@ template <class T >
 void List<T>::InsertHead(T &data){
     ListItem<T> *newItem= new ListItem<T>(data);
     add_list_item_(&mHead,mHead.next,newItem);
+}
+template <class T>
+T* List<T>::GetLastItem(){
+    ListItem<T> *TmpItem = mHead.next; 
+    if(TmpItem == &mHead){
+        return NULL;
+    }
+    return &TmpItem->prev->mData;
+}
+
+template <class T>
+T* List<T>::GetFirstItem(){
+    ListItem<T> *TmpItem = mHead.next; 
+    if(TmpItem == &mHead){
+        return NULL;
+    }
+    return &TmpItem->mData;
 }
 
 template <class T >
