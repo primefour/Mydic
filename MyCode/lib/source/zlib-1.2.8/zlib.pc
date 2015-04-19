@@ -1,4 +1,4 @@
-prefix=~/test/golden_dic/MyDict/MyCode/lib/
+prefix=/usr/local
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 sharedlibdir=${libdir}

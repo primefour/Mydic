@@ -18,7 +18,7 @@
 
 CC=gcc
 
-CFLAGS=-O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -DZ_RANDOM_ACCESS_LIB
+CFLAGS=-O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
 #CFLAGS=-O -DMAX_WBITS=14 -DMAX_MEM_LEVEL=7
 #CFLAGS=-g -DDEBUG
 #CFLAGS=-O3 -Wall -Wwrite-strings -Wpointer-arith -Wconversion \
@@ -44,7 +44,8 @@ LDSHAREDLIBC=-lc
 TAR=tar
 SHELL=/bin/sh
 EXE=
-prefix =./../../
+
+prefix =/usr/local
 exec_prefix =${prefix}
 libdir =${exec_prefix}/lib
 sharedlibdir =${libdir}
@@ -54,7 +55,7 @@ man3dir = ${mandir}/man3
 pkgconfigdir = ${libdir}/pkgconfig
 
 OBJZ = adler32.o crc32.o deflate.o infback.o inffast.o inflate.o inftrees.o trees.o zutil.o
-OBJG = compress.o uncompr.o gzclose.o gzlib.o gzread.o gzwrite.o zran.o gzappend.o
+OBJG = compress.o uncompr.o gzclose.o gzlib.o gzread.o gzwrite.o
 OBJC = $(OBJZ) $(OBJG)
 
 PIC_OBJZ = adler32.lo crc32.lo deflate.lo infback.lo inffast.lo inflate.lo inftrees.lo trees.lo zutil.lo
@@ -112,7 +113,7 @@ test64: all64
 	fi; \
 	rm -f $$TMP64
 
-infcover.o: test/infcover.c zlib.h zconf.h zran.h gzappend.h
+infcover.o: test/infcover.c zlib.h zconf.h
 	$(CC) $(CFLAGS) -I. -c -o $@ test/infcover.c
 
 infcover: infcover.o libz.a
@@ -184,7 +185,6 @@ minigzip64$(EXE): minigzip64.o $(STATICLIB)
 	$(CC) $(CFLAGS) -o $@ minigzip64.o $(TEST_LDFLAGS)
 
 install-libs: $(LIBS)
-	@echo "hello world"
 	-@if [ ! -d $(DESTDIR)$(exec_prefix)  ]; then mkdir -p $(DESTDIR)$(exec_prefix); fi
 	-@if [ ! -d $(DESTDIR)$(libdir)       ]; then mkdir -p $(DESTDIR)$(libdir); fi
 	-@if [ ! -d $(DESTDIR)$(sharedlibdir) ]; then mkdir -p $(DESTDIR)$(sharedlibdir); fi
@@ -211,13 +211,12 @@ install-libs: $(LIBS)
 # ldconfig is for Linux
 
 install: install-libs
-	@echo "hello world"
 	-@if [ ! -d $(DESTDIR)$(includedir)   ]; then mkdir -p $(DESTDIR)$(includedir); fi
-	cp zlib.h zconf.h zran.h gzappend.h $(DESTDIR)$(includedir)
+	cp zlib.h zconf.h $(DESTDIR)$(includedir)
 	chmod 644 $(DESTDIR)$(includedir)/zlib.h $(DESTDIR)$(includedir)/zconf.h
 
 uninstall:
-	cd $(DESTDIR)$(includedir) && rm -f zlib.h zconf.h zran.h gzappend.h
+	cd $(DESTDIR)$(includedir) && rm -f zlib.h zconf.h
 	cd $(DESTDIR)$(libdir) && rm -f libz.a; \
 	if test -n "$(SHAREDLIBV)" -a -f $(SHAREDLIBV); then \
 	  rm -f $(SHAREDLIBV) $(SHAREDLIB) $(SHAREDLIBM); \

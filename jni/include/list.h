@@ -29,8 +29,8 @@ class ListItem{
         ListItem(const ListItem &item){
             mData = item.mData;
         }
-        ~ListItem(){
 
+        ~ListItem(){
         }
 }; 
 
