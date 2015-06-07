@@ -143,16 +143,27 @@ def ParserDSLLine(line) :
     meaning =""
     for tmp_str in content :
         meaning += tmp_str 
+        meaning += '\n' 
     #print(content)
-    print(meaning)
-    print(word)
+    """
+    if meaning != "" :
+        print(meaning)
+    if word != "" :
+        print(word)
+    """
+    return {'meaning':meaning,'word':word}
 
 
 file = open("gb2312.txt",'r')
+outfile = open("word_clean.txt",'w')
 count = 0
 for line in file :
-    ParserDSLLine(line)
-    if count > 10 :
+    value = ParserDSLLine(line)
+    if value['word'] != "" :
+        outfile.write(value['word'])
+    if value['meaning'] != "" :
+        outfile.write(value['meaning'])
+    if count > 1000 :
         break 
     count += 1
 
