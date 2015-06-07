@@ -1,1 +1,7 @@
 git clone git://git.postgresql.org/git/postgresql.git
+
+2665  ./sbin/php-fpm -c ./etc/php.ini --pid /var/run/php-fpm.pid --fpm-config=./etc/php-fpm.conf.default  -D
+ 2666  sudo ./sbin/php-fpm -c ./etc/php.ini --pid /var/run/php-fpm.pid --fpm-config=./etc/php-fpm.conf.default  -D
+ 2667  sudo groupadd nobody
+ 2668  sudo ./sbin/php-fpm -c ./etc/php.ini --pid /var/run/php-fpm.pid --fpm-config=./etc/php-fpm.conf.default  -D
+ 2669  ps -aux | grep "nginx\|php"
