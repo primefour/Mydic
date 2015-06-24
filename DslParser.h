@@ -4,6 +4,7 @@
 #include<list>
 #include<map>
 #include<vector>
+using namespace std;
 
 
 typedef struct DslDesNode{
@@ -21,21 +22,10 @@ typedef struct DslWordNode{
 
 enum PARSER_STATUE{
     PARSER_LINE_BEGIN,
-    SINGE_TAG_BEGIN,
-    SINGE_ATTR_BEGIN,
-    VALUE_START,
-    MUTIL_LTAG_BEGIN,
-    MUTIL_LTAG_CONTINUE,
-    MUTIL_LTAG_END,
-    MUTIL_RTAG_BEGIN,
-    MUTIL_RTAG_CONTINUE,
-    MUTIL_RTAG_END,
+    PARSER_TAG_START,
+    PARSER_TAG_END,
+    PARSER_DESC_START,
     PARSER_LINE_END
-}
-
-
-class DslLineParser{
-    public :
-}
+};
 
 #endif

@@ -1,32 +1,65 @@
 #include"DslParser.h"
+#include<list>
+#include<map>
+#include<string>
+#include"String8.h"
+#include<set>
+
+using namespace std;
 
 
+class TagCompare{
+    public:
+    bool operator()(const char *str1,const char *str2){
+        return strcmp(str1,str2);
+    }
+};
 
+
+const char *ParserTag(const char* line,const char* tag,DslDesNode *node){
+    map<const char *,const char *> tag_pair ={
+        {"[","]"},
+        {"{{","}}"},
+    };
+    const char *tag_end = strstr(line,tag_pair[tag]);
+    if(tag_end != NULL){
+        node->mAttrName = String8(line,tag_end-line);
+        return tag_end + strlen(tag_pair[tag]);
+    }else{
+        return line;
+    }
+}
 
 
 DslTagNode *ParserLine(String8 *line){
-
-    PARSER_LINE_BEGIN,
-    SINGE_TAG_BEGIN,
-    SINGE_ATTR_BEGIN,
-    VALUE_START,
-    MUTIL_LTAG_BEGIN,
-    MUTIL_LTAG_CONTINUE,
-    MUTIL_LTAG_END,
-    MUTIL_RTAG_BEGIN,
-    MUTIL_RTAG_CONTINUE,
-    MUTIL_RTAG_END,
-    PARSER_LINE_END
-
     const char *tmp = line->string();
-    status = PARSER_LINE_BEGIN;
+    int status = PARSER_LINE_BEGIN;
     char buff[10240]={0};
     int i = 0;
     DslDesNode *tmpDesNode = NULL;
     vector<DslDesNode> store_node_stack ;
     vector<DslDesNode> node_stack;
-
     int match = 0;
+    const char *ret = NULL;
+
+    while(*tmp != NULL){
+        if(status == PARSER_LINE_BEGIN){
+            if(*tmp == '['){
+                status = PARSER_TAG_START;
+                tmpDesNode = new DslDesNode;
+                i = 0 ;
+                memset(buff,0,sizeof(buff));
+            }else{
+                tmp ++;
+            }
+        }else if (status == PARSER_TAG_START){
+            tmp = ParserTag(tmp++,tmp,tmpDesNode);
+        }
+    }
+
+    return NULL;
+}
+/*
     while(*tmp != NULL){
         if(status = PARSER_LINE_BEGIN){
             if(*tmp == '['){
@@ -37,6 +70,11 @@ DslTagNode *ParserLine(String8 *line){
             }
             tmp ++;
         }else if(status == SINGLE_TAG_BEGIN){
+            //get tag
+            strstr(tmp,buff);
+
+
+
             if(*tmp == ' '){
                 //get attribute 
                 tmpDesNode->mAttrName = buff ;
@@ -94,6 +132,19 @@ DslTagNode *ParserLine(String8 *line){
                 buff[i++] = *tmp;
             }
             tmp ++;
+        }else if (MUTIL_LTAG_BEGIN == status){
+            if(*tmp == '{'}{
+                status = SINGLE_TAG_BEGIN;
+                tmpDesNode = new DslDesNode;
+                i = 0 ;
+                memset(buff,0,sizeof(buff));
+            }
         }
     }
+}
+*/
+
+
+int main(){
+    return 0;
 }
