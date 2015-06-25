@@ -37,24 +37,50 @@ DslTagNode *ParserLine(String8 *line){
     char buff[10240]={0};
     int i = 0;
     DslDesNode *tmpDesNode = NULL;
-    vector<DslDesNode> store_node_stack ;
-    vector<DslDesNode> node_stack;
+    vector<DslDesNode*> store_node_stack ;
+    vector<DslDesNode*> node_stack;
     int match = 0;
+    int escape = 0;
     const char *ret = NULL;
+    char *desc_tmp = buff ;
 
     while(*tmp != NULL){
         if(status == PARSER_LINE_BEGIN){
             if(*tmp == '['){
                 status = PARSER_TAG_START;
-                tmpDesNode = new DslDesNode;
-                i = 0 ;
-                memset(buff,0,sizeof(buff));
             }else{
                 tmp ++;
             }
         }else if (status == PARSER_TAG_START){
-            tmp = ParserTag(tmp++,tmp,tmpDesNode);
+            if(*tmp == '[' || *tmp == '{'){
+                tmpDesNode = new DslDesNode;
+                i = 0 ;
+                memset(buff,0,sizeof(buff));
+                if(*(tmp+1) == '{'){
+                    tmp = parsertag(tmp+2,tmp,tmpdesnode);
+                }else{
+                    tmp = parsertag(tmp++,tmp,tmpdesnode);
+                }
+                node_stack.push_back(tmpdesnode);
+            }else{
+                status = PARSER_DESC_START;
+            }
+        }else if (status == PARSER_DESC_START){
+            if(*tmp == '\\' && !escape){
+                escape = 1;
+                tmp ++;
+            }else if((*tmp == '[' || *tmp == '{') && !escape){
+                if(desc_tmp != buff){
+                    vector<DslDesNode*>::iterator node = node_stack.back();
+                    (*node)->mDes = String8(buff,strlen(buff)); 
+                }
+                status == PARSER_TAG_START;
+            }else{
+                *(desc_tmp++) = *(tmp ++);
+                escape = 0;
+            }
         }
+
     }
 
     return NULL;
