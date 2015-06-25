@@ -19,7 +19,9 @@ class TagCompare{
 const char *ParserTag(const char* line,const char* tag,DslDesNode *node){
     map<const char *,const char *> tag_pair ={
         {"[","]"},
+        {"[/","]"},
         {"{{","}}"},
+        {"{{/","}}"},
     };
     const char *tag_end = strstr(line,tag_pair[tag]);
     if(tag_end != NULL){
@@ -44,7 +46,7 @@ DslTagNode *ParserLine(String8 *line){
     const char *ret = NULL;
     char *desc_tmp = buff ;
 
-    while(*tmp != NULL){
+    while(*tmp != '\0'){
         if(status == PARSER_LINE_BEGIN){
             if(*tmp == '['){
                 status = PARSER_TAG_START;
@@ -57,11 +59,11 @@ DslTagNode *ParserLine(String8 *line){
                 i = 0 ;
                 memset(buff,0,sizeof(buff));
                 if(*(tmp+1) == '{'){
-                    tmp = parsertag(tmp+2,tmp,tmpdesnode);
+                    tmp = ParserTag(tmp+2,"{{",tmpDesNode);
                 }else{
-                    tmp = parsertag(tmp++,tmp,tmpdesnode);
+                    tmp = ParserTag(tmp+1,"[",tmpDesNode);
                 }
-                node_stack.push_back(tmpdesnode);
+                node_stack.push_back(tmpDesNode);
             }else{
                 status = PARSER_DESC_START;
             }
@@ -71,13 +73,40 @@ DslTagNode *ParserLine(String8 *line){
                 tmp ++;
             }else if((*tmp == '[' || *tmp == '{') && !escape){
                 if(desc_tmp != buff){
-                    vector<DslDesNode*>::iterator node = node_stack.back();
-                    (*node)->mDes = String8(buff,strlen(buff)); 
+                    DslDesNode* node = node_stack.back();
+                    node->mDes = String8(buff,strlen(buff)); 
+                    memset(buff,0,sizeof(buff));
+                    desc_tmp = buff ;
                 }
-                status == PARSER_TAG_START;
+                status = PARSER_TAG_END;
             }else{
                 *(desc_tmp++) = *(tmp ++);
                 escape = 0;
+            }
+        }else if(status == PARSER_TAG_END){
+            if(*tmp == '[' && *(tmp +1) == '/'){
+                DslDesNode desNode ;
+                tmp = ParserTag(tmp+2,"[/",&desNode);
+                DslDesNode* node = node_stack.back();
+                if(node->mAttrName == desNode.mAttrName){
+
+                    
+                }else{
+                    printf("%s  %s not match \n",desNode.mAttrName.string(),node->mAttrName.string());
+                }
+
+            }else if(*tmp == '{' && *(tmp +1) == '{' && *(tmp+2) == '/'){
+                DslDesNode desNode ;
+                tmp = ParserTag(tmp+3,"{{/",&desNode);
+                DslDesNode* node = node_stack.back();
+                if(node->mAttrName == desNode.mAttrName){
+
+                    
+                }else{
+                    printf("%s  %s not match \n",desNode.mAttrName.string(),node->mAttrName.string());
+                }
+            }else{
+                status = PARSER_LINE_BEGIN;
             }
         }
 
