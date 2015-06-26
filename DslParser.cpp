@@ -4,6 +4,10 @@
 #include<string>
 #include"String8.h"
 #include<set>
+#include<stdlib.h>
+#include<unistd.h>
+#include<sys/types.h>
+#include<fcntl.h>
 
 using namespace std;
 
@@ -24,7 +28,14 @@ const char *ParserTag(const char* line,const char* tag,DslDesNode *node){
         {"{{/","}}"},
     };
     const char *tag_end = strstr(line,tag_pair[tag]);
-    if(tag_end != NULL){
+    const char * value = strstr(line," ");
+    if (value != NULL && value < tag_end ){
+        //have attribute value 
+        node->mAttrName = String8(line,tag_end-line);
+        value ++;
+        node->mAttrValue = String8(value,tag_end -value);
+        return tag_end + strlen(tag_pair[tag]);
+    }else if(tag_end != NULL){
         node->mAttrName = String8(line,tag_end-line);
         return tag_end + strlen(tag_pair[tag]);
     }else{
@@ -32,19 +43,18 @@ const char *ParserTag(const char* line,const char* tag,DslDesNode *node){
     }
 }
 
-
-DslTagNode *ParserLine(String8 *line){
-    const char *tmp = line->string();
+vector<DslDesNode *> *ParserLine(const char *line){
+    const char *tmp = line;
     int status = PARSER_LINE_BEGIN;
     char buff[10240]={0};
     int i = 0;
     DslDesNode *tmpDesNode = NULL;
-    vector<DslDesNode*> store_node_stack ;
     vector<DslDesNode*> node_stack;
     int match = 0;
     int escape = 0;
     const char *ret = NULL;
     char *desc_tmp = buff ;
+    vector<DslDesNode *> *store_stack = new vector<DslDesNode *>();
 
     while(*tmp != '\0'){
         if(status == PARSER_LINE_BEGIN){
@@ -63,7 +73,12 @@ DslTagNode *ParserLine(String8 *line){
                 }else{
                     tmp = ParserTag(tmp+1,"[",tmpDesNode);
                 }
-                node_stack.push_back(tmpDesNode);
+
+                if(!strstr(tmpDesNode->mAttrName.string(),"id")){
+                    node_stack.push_back(tmpDesNode);
+                }else{
+                    delete tmpDesNode;
+                }
             }else{
                 status = PARSER_DESC_START;
             }
@@ -88,9 +103,8 @@ DslTagNode *ParserLine(String8 *line){
                 DslDesNode desNode ;
                 tmp = ParserTag(tmp+2,"[/",&desNode);
                 DslDesNode* node = node_stack.back();
-                if(node->mAttrName == desNode.mAttrName){
-
-                    
+                if(node->mAttrName == desNode.mAttrName){        
+                    store_stack->push_back(node);
                 }else{
                     printf("%s  %s not match \n",desNode.mAttrName.string(),node->mAttrName.string());
                 }
@@ -100,8 +114,7 @@ DslTagNode *ParserLine(String8 *line){
                 tmp = ParserTag(tmp+3,"{{/",&desNode);
                 DslDesNode* node = node_stack.back();
                 if(node->mAttrName == desNode.mAttrName){
-
-                    
+                    store_stack->push_back(node);
                 }else{
                     printf("%s  %s not match \n",desNode.mAttrName.string(),node->mAttrName.string());
                 }
@@ -111,95 +124,41 @@ DslTagNode *ParserLine(String8 *line){
         }
 
     }
-
-    return NULL;
+    return store_stack ;
 }
-/*
-    while(*tmp != NULL){
-        if(status = PARSER_LINE_BEGIN){
-            if(*tmp == '['){
-                status = SINGLE_TAG_BEGIN;
-                tmpDesNode = new DslDesNode;
-                i = 0 ;
-                memset(buff,0,sizeof(buff));
-            }
-            tmp ++;
-        }else if(status == SINGLE_TAG_BEGIN){
-            //get tag
-            strstr(tmp,buff);
 
 
-
-            if(*tmp == ' '){
-                //get attribute 
-                tmpDesNode->mAttrName = buff ;
-                memset(buff,0,sizeof(buff));
-                i = 0;
-                status == SINGLE_ATTR_BEGIN;
-
-            }else if (*tmp == ']'){
-                tmpDesNode->mAttrName = buff ;
-                memset(buff,0,sizeof(buff));
-                i = 0;
-                if(match){
-                    if(!DslDesNode.empty()){
-                        DslDesNode_iterator &a = node_stack.back();
-                        if (a == tmpDesNode){
-                            store_node_stack.push_back(a);
-                        }
-                    }else{
-                        printf("error for file \n");
-                    }
-                    match = 0;
-
-                }else{
-                    //complete one attribute node
-                    status == VALUE_START;
-                }
-            }else if (*tmp == '/'){
-                match = 1 ;
-            }else{
-                buff[i++] = *tmp ;
-            }
-            tmp ++;
-        }else if(SINGLE_ATTR_BEGIN == status){
-            if (*tmp == ']'){
-                tmpDesNode->mAttrValue = buff ;
-                memset(buff,0,sizeof(buff));
-                i = 0;
-                //complete one attribute node
-                status == VALUE_START;
-            }
-            tmp++;
-        }else if (VALUE_START == status){
-            if(*tmp == '['){
-                if(i != 0){
-                    tmpDesNode->mDes = buff ;
-                    memset(buff,0,sizeof(buff));
-                    i = 0;
-                }
-                node_stack.push_back(tmpDesNode);
-
-                status = SINGLE_TAG_BEGIN;
-                tmpDesNode = new DslDesNode;
-
-            }else{
-                buff[i++] = *tmp;
-            }
-            tmp ++;
-        }else if (MUTIL_LTAG_BEGIN == status){
-            if(*tmp == '{'}{
-                status = SINGLE_TAG_BEGIN;
-                tmpDesNode = new DslDesNode;
-                i = 0 ;
-                memset(buff,0,sizeof(buff));
-            }
+int readline(int fd,char *buff){
+    char data;
+    int ret = -1;
+    char *tmp = buff;
+    int count  = 0;
+    while((ret = read(fd,&data,1))){
+        if(data == '\n'){
+            break;
+        }else{
+            *(tmp++) = data;
         }
     }
+    return tmp - buff;
 }
-*/
-
 
 int main(){
+    int fileNo = open("./gb2312.txt",O_RDONLY);
+    if(fileNo < 0){
+        printf("open file failed \n");
+    }
+    char buff[2048]={0};
+    int count = 0;
+    while(readline(fileNo,buff)){
+        if(buff[0] != ' '){
+            vector<DslDesNode *> *tmp = ParserLine(buff);
+        }else{
+            printf("%s \n",buff);
+        }
+        if(count ++ > 20){
+            break;
+        }
+    }
     return 0;
 }

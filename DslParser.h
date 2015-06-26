@@ -16,7 +16,7 @@ typedef struct DslDesNode{
 
 typedef struct DslWordNode{
         String8 mWord;
-        vector<DslDesNode> mDesNode;
+        vector<vector<DslDesNode *> *> mDesNodeList;
 }DslTagNode;
 
 
