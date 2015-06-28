@@ -1,0 +1,6 @@
+#include"HashSet.h"
+
+int main(){
+
+    return 0;
+}
