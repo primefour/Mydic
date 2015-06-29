@@ -6,34 +6,32 @@
 using namespace std;
 
 template <class HASH_ITEM_TYPE>
-typedef int (*ptrGetHashValue)(HASH_ITEM_TYPE *item);
-
-
-template <class HASH_ITEM_TYPE>
 class DictHashSet{
     public:
-        DictHashSet(int set_count,ptrGetHashValue pfn);
+        DictHashSet(int set_count,int (*pfn)(HASH_ITEM_TYPE *item));
         DictHashSet(int set_count);
+        void DictHashInsert(const HASH_ITEM_TYPE &item)
     private:
         int defaultHashCode(HASH_ITEM_TYPE *item);
-        vector<list<HASH_ITEM_TYPE *>> mHashTable;
-        ptrGetHashValue mPfn;
+        vector<list<HASH_ITEM_TYPE> > mHashTable;
+        int (*mPfn)(HASH_ITEM_TYPE *item);
         int mMaxCapacity;
 };
 
 
 
 template<class HASH_ITEM_TYPE>
-DictHashSet<HASH_ITEM_TYPE>::DictHashSet(int set_count,ptrGetHashValue pfn){
+DictHashSet<HASH_ITEM_TYPE>::DictHashSet(int set_count,int (*pfn)(HASH_ITEM_TYPE *item)){
     mPfn = pfn;
     mHashTable.reserve(set_count);
 }
 
+
 template<class HASH_ITEM_TYPE>
 DictHashSet<HASH_ITEM_TYPE>::DictHashSet(int set_count){
-    mPfn = defaultHashCode;
     mHashTable.reserve(set_count);
 }
+
 
 template<class HASH_ITEM_TYPE>
 int DictHashSet<HASH_ITEM_TYPE>::defaultHashCode(HASH_ITEM_TYPE *item){
@@ -41,7 +39,7 @@ int DictHashSet<HASH_ITEM_TYPE>::defaultHashCode(HASH_ITEM_TYPE *item){
     const char *ptr;
     unsigned int val;
     val = 0;
-    ptr = key;
+    ptr = str_identity;
     while (*ptr != '\0') {
         unsigned int tmp;
         val = (val << 4) + (*ptr);
@@ -53,5 +51,61 @@ int DictHashSet<HASH_ITEM_TYPE>::defaultHashCode(HASH_ITEM_TYPE *item){
     }
     return val % mMaxCapacity;
 }
+
+
+template<class HASH_ITEM_TYPE>
+void DictHashSet<HASH_ITEM_TYPE>::DictHashInsert(const HASH_ITEM_TYPE &item){
+    int idx = 0;
+    if(mPfn){
+        idx = mPfn(&item);
+    }else{
+        idx = defaultHashCode(&item);
+    }
+    list<HASH_ITEM_TYPE>::iterator begin = mHashTable[idx].begin();
+    list<HASH_ITEM_TYPE>::iterator end = mHashTable[idx].end();
+    while(begin < end){
+        if(*begin == item){
+            return ;
+        }
+    }
+    mHashTable[idx].push_back(item);
+}
+
+template<class HASH_ITEM_TYPE>
+const HASH_ITEM_TYPE& DictHashSet<HASH_ITEM_TYPE>::DictHashfind(const HASH_ITEM_TYPE &item){
+    int idx = 0;
+    if(mPfn){
+        idx = mPfn(&item);
+    }else{
+        idx = defaultHashCode(&item);
+    }
+    list<HASH_ITEM_TYPE>::iterator begin = mHashTable[idx].begin();
+    list<HASH_ITEM_TYPE>::iterator end = mHashTable[idx].end();
+    while(begin < end){
+        if(*begin == item){
+            return *begin;
+        }
+    }
+    return item;
+}
+
+template<class HASH_ITEM_TYPE>
+void DictHashSet<HASH_ITEM_TYPE>::DictHashRemove(const HASH_ITEM_TYPE &item){
+    int idx = 0;
+    if(mPfn){
+        idx = mPfn(&item);
+    }else{
+        idx = defaultHashCode(&item);
+    }
+    list<HASH_ITEM_TYPE>::iterator begin = mHashTable[idx].begin();
+    list<HASH_ITEM_TYPE>::iterator end = mHashTable[idx].end();
+    while(begin < end){
+        if(*begin == item){
+
+        }
+    }
+}
+
+
 
 #endif //__HASH_SET_H__
