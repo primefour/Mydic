@@ -9,6 +9,7 @@
 #include"String8.h"
 #include"StandardIO.h"
 #include"AVLTreeTemplate.h"
+#include"HashSet.h"
 
 #ifdef ANDROID_PLATFORM
 #include <android/log.h>
@@ -69,7 +70,8 @@ int StardictIdx::init(){
         }
 
         WordIdxItem newItem((const char *)word_buff,ntohl(*(unsigned int *)offset_buff),ntohl(*(unsigned int *)(offset_buff+4))); 
-        word_tree.InsertNode(newItem);
+        //word_tree.InsertNode(newItem);
+        word_hash.DictHashInsert(newItem);
         i++;
     }
     return 0;
@@ -80,7 +82,10 @@ WordIdxItem StardictIdx::getIdxWord(const char *str){
     printf("%s %d \n",__func__,__LINE__);
     WordIdxItem tmp(str,0,0);
     printf("%s %d \n",__func__,__LINE__);
-    WordIdxItem c = word_tree.FindNode(tmp);
+    //WordIdxItem c = word_tree.FindNode(tmp);
+
+    WordIdxItem c = word_tree.DictHashfind(tmp);
+
     printf("%s %d \n",__func__,__LINE__);
     return c;
 }

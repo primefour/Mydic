@@ -1,4 +1,7 @@
 #include"HashSet.h"
+#include<list>
+#include<vector>
+
 
 using namespace std;
 
@@ -11,6 +14,8 @@ class tt{
             return "ehllo world";
         }
 };
+
+
 
 
 int hashFunction(tt *item){

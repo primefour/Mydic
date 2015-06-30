@@ -2,6 +2,7 @@
 #define __STARDICT_IDX__
 #include"String8.h"
 #include"AVLTreeTemplate.h"
+#include"HashSet.h"
 
 #ifdef ANDROID_PLATFORM
 #include <android/log.h>
@@ -50,7 +51,6 @@ class WordIdxItem:public Ref{
             return idx_word >= other.idx_word; 
         }
         bool operator>(const WordIdxItem & other) const{
-
             return idx_word > other.idx_word; 
         }
         void dumpInfo(){
@@ -70,7 +70,8 @@ class StardictIdx:public Ref{
         WordIdxItem getIdxWord(const char *word);
         int init();
     private:
-        AVLTreeTemplate<WordIdxItem> word_tree;
+        //AVLTreeTemplate<WordIdxItem> word_tree;
+        DictHashSet<WordIdxItem> word_hash;
         int  offsetbit;
         long word_count;
         long file_size;
