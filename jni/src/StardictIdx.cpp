@@ -32,7 +32,7 @@ uint32_t ntohl(uint32_t netlong);
 uint16_t ntohs(uint16_t netshort);
 */
 
-StardictIdx:: StardictIdx(const char *file_path,int word_count,int file_size,int offsetbit):file_path(file_path){
+StardictIdx:: StardictIdx(const char *file_path,int word_count,int file_size,int offsetbit):file_path(file_path),word_hash(word_count){
     this->word_count = word_count;
     this->offsetbit = offsetbit;
     this->file_size = file_size;
@@ -84,7 +84,7 @@ WordIdxItem StardictIdx::getIdxWord(const char *str){
     printf("%s %d \n",__func__,__LINE__);
     //WordIdxItem c = word_tree.FindNode(tmp);
 
-    WordIdxItem c = word_tree.DictHashfind(tmp);
+    const WordIdxItem c = word_hash.DictHashGet(tmp);
 
     printf("%s %d \n",__func__,__LINE__);
     return c;

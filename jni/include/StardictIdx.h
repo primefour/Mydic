@@ -56,6 +56,9 @@ class WordIdxItem:public Ref{
         void dumpInfo(){
             printf("word = %s offset = %d size = %d \n",idx_word.string(),data_offset,data_size);
         }
+        const char *string(){
+            return idx_word.string();
+        }
 
         String8 idx_word;
         int data_offset;

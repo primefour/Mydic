@@ -8,7 +8,6 @@ using namespace std;
 class tt{
     public:
         tt(){
-
         }
         const char * string(){
             return "ehllo world";
@@ -18,12 +17,14 @@ class tt{
 
 
 
-int hashFunction(tt *item){
+int hashFunction(const int *item){
     return 0;
 }
 
 int main(){
-    DictHashSet<tt> as(100);
-    DictHashSet<tt> ask(100,hashFunction);
+    DictHashSet<int> as(100);
+    DictHashSet<int> ask(100,hashFunction);
+    int a = 0;
+    as.DictHashInsert(a);
     return 0;
 }
