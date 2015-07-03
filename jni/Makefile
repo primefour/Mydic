@@ -34,7 +34,8 @@ SRC_C_FILE_LIST := src/adler32.c \
 
 
 
-test: memfile libz.a
+test: Stardict 
+#memfile libz.a 
 #Stardict list_test ref_test avl_test
 
 
@@ -45,7 +46,7 @@ ref_test:
 avl_test:
 	$(GCC) $(CFLAGS) $(LDFLAGS) $(TEST_PATH)/AVLTest.cpp $(SRC_PATH)/StandardIO.cpp $(SRC_PATH)/Unicode.cpp $(SRC_PATH)/String8.cpp -o $(BIN_PATH)/avl_test -lz
 Stardict:
-	$(GCC) $(CFLAGS) $(LDFLAGS)  $(SRC_FILE_LIST) -o $(BIN_PATH)/Stardict -lz
+	$(GCC) $(CFLAGS) $(LDFLAGS)  $(SRC_FILE_LIST) $(TEST_PATH)/StardictTest.cpp -o $(BIN_PATH)/Stardict -lz
 memfile:
 	$(GCC) $(CFLAGS) $(LDFLAGS)  $(SRC_FILE_LIST) $(TEST_PATH)/test.c -o $(BIN_PATH)/memfile -lz
 

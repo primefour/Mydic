@@ -21,23 +21,6 @@
 #endif
 
 
-#if 0
-const char *ifo_path = "/home/crazyhorse/MyProject/GoldenDict/GitDict/MyCode/Version0.1/bin/langdao-ec-gb.ifo";
-const char *idx_path = "/home/crazyhorse/MyProject/GoldenDict/GitDict/MyCode/Version0.1/bin/langdao-ec-gb.idx";
-const char *dict_path = "/home/crazyhorse/MyProject/GoldenDict/GitDict/MyCode/Version0.1/bin/langdao-ec-gb.dict.dz";
-
-const char *ce_ifo_path = "/home/crazyhorse/MyProject/GoldenDict/GitDict/MyCode/Version0.1/bin/langdao-ce-gb.ifo";
-const char *ce_idx_path = "/home/crazyhorse/MyProject/GoldenDict/GitDict/MyCode/Version0.1/bin/langdao-ce-gb.idx";
-const char *ce_dict_path = "/home/crazyhorse/MyProject/GoldenDict/GitDict/MyCode/Version0.1/bin/langdao-ce-gb.dict.dz";
-#else
-const char *ifo_path = "./bin/langdao-ec-gb.ifo";
-const char *idx_path = "./bin/langdao-ec-gb.idx";
-const char *dict_path = "./bin/langdao-ec-gb.dict.dz";
-
-const char *ce_ifo_path = "./bin/langdao-ce-gb.ifo";
-const char *ce_idx_path = "./bin/langdao-ce-gb.idx";
-const char *ce_dict_path = "./bin/langdao-ce-gb.dict.dz";
-#endif
 
 
 StardictIntance::~StardictIntance(){

@@ -46,7 +46,6 @@ StardictIdx::~StardictIdx(){
 int StardictIdx::init(){
     unsigned char word_buff[1024]={0};
     MemFile file_obj(file_path,O_RDONLY);
-    printf("helllo \n");
     int offset_read_size = 8;
     if(offsetbit == 64){
         offset_read_size = 12;
