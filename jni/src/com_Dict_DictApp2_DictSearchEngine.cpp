@@ -1,20 +1,7 @@
 #include"com_Dict_DictApp2_DictSearchEngine.h"
 #include<stdio.h>
 #include"StardictMain.h"
-
-#ifdef ANDROID_PLATFORM
-#include <android/log.h>
-#define  LOG_TAG    "DICT2"
-#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
-#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
-#define printf LOGE
-#else
-
-#define LOGE printf
-#define LOGI printf
-
-#endif
-
+#include"GoldenDictLog.h"
 
 static StardictMain* pDictMain = NULL ;
 
@@ -31,7 +18,7 @@ JNIEXPORT jobject JNICALL  Java_com_Dict_DictApp2_DictSearchEngine_engQueryWord 
     jboolean isCopy;
     TextMetaData tmd;
     const char* str = pEnv->GetStringUTFChars(pString, &isCopy);
-    __android_log_print(ANDROID_LOG_INFO, "native", "print UTF-8 string: %s, %d", str, isCopy);
+    golden_printfi("print UTF-8 string: %s, %d", str, isCopy);
     pDictMain->getDictIdx(0)->DictQuery(str,&tmd);
 
     pEnv->ReleaseStringUTFChars(pString, str);
@@ -40,11 +27,6 @@ JNIEXPORT jobject JNICALL  Java_com_Dict_DictApp2_DictSearchEngine_engQueryWord 
     if(tmd_class == NULL){
         return NULL;
     }
-    LOGE("%s  %d ",__func__,__LINE__);
-
-    LOGE("%s  %d ",__func__,__LINE__);
-    LOGE("%s  %d ",__func__,__LINE__);
-    LOGE("%s  %d ",__func__,__LINE__);
     jmethodID cid = pEnv->GetMethodID(tmd_class,"<init>", "()V");
     jobject obj = pEnv->NewObject(tmd_class,cid);
     if(obj == NULL){
@@ -81,14 +63,10 @@ JNIEXPORT jboolean JNICALL Java_com_Dict_DictApp2_DictSearchEngine_engAddDiction
     const char *str = NULL;
     jboolean *isCopy;
     str = pEnv->GetStringUTFChars(pString, isCopy);
-
-    LOGE("%s  %d \n",__func__,__LINE__);
-    LOGE("print UTF-8 string: %s", str); 
     if(pDictMain != NULL){
-    LOGE("%s  %d \n",__func__,__LINE__);
         pDictMain->InsertDict(str);
     }else{
-        printf("StardictMain should be init before using\n");
+        golden_printfe("StardictMain should be init before using\n");
     }
     pEnv->ReleaseStringUTFChars(pString,str);
     return 1;
@@ -110,7 +88,6 @@ JNIEXPORT jboolean JNICALL Java_com_Dict_DictApp2_DictSearchEngine_engRemoveDict
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_initEng(JNIEnv *pEnv, jclass pObj){
-    LOGE("%s  %d \n",__func__,__LINE__);
     if(pDictMain != NULL){
         return ;
     }else{
@@ -125,7 +102,6 @@ JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_initEng(JNIEnv *p
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_destroyEng(JNIEnv *pEnv, jclass pObj){
-    LOGE("%s  %d \n",__func__,__LINE__);
     if(pDictMain != NULL){
         delete pDictMain ;
         pDictMain = NULL;

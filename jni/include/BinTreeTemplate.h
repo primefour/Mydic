@@ -1,5 +1,6 @@
 #ifndef __BIT_TREE_TEMPLATE_H__ 
 #define __BIT_TREE_TEMPLATE_H__ 
+#include"GoldenDictLog.h"
 template <class T>
 class TreeNode{
     public:
@@ -160,12 +161,12 @@ class BinTree{
             if(node_parent[0] == NULL){
                 return ;
             }
-            printf("\n");
+            golden_printfd("\n");
             bin_tree_layer_scan(parent);
         }
 
         void dump_data(T&data){
-            printf(" %d   ",data);
+            //printf(" %d   ",data);
         }
 
         void bin_tree_preorder_scan(TreeNode<T> *node){

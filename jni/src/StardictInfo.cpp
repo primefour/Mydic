@@ -6,19 +6,7 @@
 #include<unistd.h>
 #include<fcntl.h>
 #include"String8.h"
-
-#ifdef ANDROID_PLATFORM
-#include <android/log.h>
-#define  LOG_TAG    "DICT2"
-#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
-#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
-#define printf LOGE
-#else
-
-#define LOGE printf
-#define LOGI printf
-
-#endif
+#include"GoldenDictLog.h"
 
 const char *StardictInfo::infoFileList[]= {"version",
             "bookname",
@@ -60,8 +48,8 @@ StardictInfo::StardictInfo(const char *file_path):file_name(file_path){
 void StardictInfo::dumpInfo(){
     int i = 0;
     while(i < INFO_MAX){
-        printf("mInfoString = %s ",mInfoString[i].string());
+        golden_printfd("mInfoString = %s ",mInfoString[i].string());
         i++;
     }
-    printf("\n");
+    golden_printfd("\n");
 }

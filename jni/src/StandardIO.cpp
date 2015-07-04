@@ -5,19 +5,7 @@
 #include<sys/types.h>
 #include<fcntl.h>
 #include<sys/mman.h>
-
-#ifdef ANDROID_PLATFORM
-#include <android/log.h>
-#define  LOG_TAG    "DICT2"
-#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
-#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
-#define printf LOGE
-#else
-
-#define LOGE printf
-#define LOGI printf
-
-#endif
+#include"GoldenDictLog.h"
 
 #define MEM_FILE_MAX_SIZE 7 * 1024 *1024
 
@@ -35,7 +23,7 @@ MemFile::MemFile(const char *path,int mode):file_path(path){
 
     file_des = ::open(path,def_mode);
     if(file_des < 0){
-        printf("open file error %s \n",file_path.string());
+        golden_printfe("open file error %s \n",file_path.string());
     }
 
     //check the sizeof file 
@@ -46,7 +34,7 @@ MemFile::MemFile(const char *path,int mode):file_path(path){
         //using mmap
         file_root = (unsigned char *)mmap(NULL,file_size,PROT_READ|PROT_WRITE,MAP_PRIVATE,file_des,0);
         if(file_root == NULL){
-            LOGE("mmap file failed");
+            golden_printfe("mmap file failed");
             return ;
         }
         buff_len = file_size;
@@ -56,7 +44,7 @@ MemFile::MemFile(const char *path,int mode):file_path(path){
         file_root = new unsigned char[1+MEM_FILE_MAX_SIZE];
 
         if(file_root == NULL){
-            LOGE("NO MEMORY FOR FILE \n");
+            golden_printfe("NO MEMORY FOR FILE \n");
             return;
         }
 
@@ -65,7 +53,7 @@ MemFile::MemFile(const char *path,int mode):file_path(path){
         int n = read(file_des,file_root,MEM_FILE_MAX_SIZE);
 
         if(n != MEM_FILE_MAX_SIZE){
-            LOGE("read file failed \n");
+            golden_printfe("read file failed \n");
             return ;
         }
         buff_len = MEM_FILE_MAX_SIZE;
@@ -110,7 +98,7 @@ int MemFile::Read(unsigned char *buf,int len){
         //for cache
         unsigned char *pos = buf ;
         int copy_len = len ;
-        printf("file_root = %p , buff_len = %ld buff_offset = %ld \n",file_root,buff_len,buff_offset);
+        golden_printfi("file_root = %p , buff_len = %ld buff_offset = %ld \n",file_root,buff_len,buff_offset);
         while(copy_len > 0){
             if(buff_len > 0){
                 if(copy_len > buff_len){
@@ -137,7 +125,7 @@ int MemFile::Read(unsigned char *buf,int len){
                 }
             }
         }
-        printf("len = %d copy_len = %d file_root = %p , buff_len = %ld buff_offset = %ld \n",len ,copy_len,file_root,buff_len,buff_offset);
+        golden_printfi("len = %d copy_len = %d file_root = %p , buff_len = %ld buff_offset = %ld \n",len ,copy_len,file_root,buff_len,buff_offset);
         return len - copy_len;
     }
 }
@@ -235,7 +223,7 @@ int MemFile::ReadTerminating(unsigned char *buff,int len,unsigned char terminate
 }
 
 int MemFile::Write(const unsigned char *buf,int len){
-    printf("write failed \n");
+    golden_printfe("write failed \n");
     return 0;
 }
 
@@ -250,7 +238,7 @@ SimpleFile::SimpleFile(const char *path,int mode):file_path(path){
     }
     file_des = ::open(path,def_mode);
     if(file_des < 0){
-        printf("open file error %s \n",file_path.string());
+        golden_printfe("open file error %s \n",file_path.string());
     }
 }
 
@@ -267,7 +255,7 @@ int SimpleFile::Seek(int whence,int offset){
     if(file_des >= 0){
         return ::lseek(file_des,offset,whence);
     }else{
-        printf("%s\n","fd is negative");
+        golden_printfe("%s\n","fd is negative");
         return -1;
     }
 }
@@ -275,7 +263,6 @@ int SimpleFile::Seek(int whence,int offset){
 int SimpleFile::Write(const unsigned char *buf,int len){
     int ret = -1;
     const unsigned char *ptr = buf;
-    //printf("buf = %s len = %d ",buf,len);
     if(file_des >= 0 && ptr != NULL){
         while(len > 0){
             ret = ::write(file_des,ptr,len);
@@ -283,12 +270,12 @@ int SimpleFile::Write(const unsigned char *buf,int len){
                 len -= ret;
                 ptr += ret;
             }else{
-                printf("%s \n","write failed");
+                golden_printfe("%s \n","write failed");
                 return -1;
             }
         }
     }else{
-        printf("%s\n","fd is negative");
+        golden_printfe("%s\n","fd is negative");
     }
     return ret;
 }
@@ -297,11 +284,10 @@ int SimpleFile::Write(const unsigned char *buf,int len){
 int SimpleFile::Read(unsigned char *buf,int len){
     int ret = -1;
     memset(buf,0,len);
-    //printf("%s \n",__func__);
     if(file_des >= 0){
        ret = ::read(file_des,buf,len); 
     }else{
-        printf("%s\n","fd is negative");
+        golden_printfe("%s\n","fd is negative");
     }
     return ret;
 }
@@ -324,10 +310,8 @@ int SimpleFile::ReadTerminating(unsigned char *buf,int len,unsigned char termina
     unsigned char *ptr = buf;
     memset(buf,0,len);
     int i = 0;
-    //printf("file_des = %d len = %d \n",file_des,len);
     while(((ret = ::read(file_des,ptr,1)) > 0) && (*ptr != terminate ) && ++i < len){ 
         ptr++;
     }
-    //printf("%s  %s",__func__,buf);
     return i;
 }

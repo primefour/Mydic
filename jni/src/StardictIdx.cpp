@@ -10,19 +10,8 @@
 #include"StandardIO.h"
 #include"AVLTreeTemplate.h"
 #include"HashSet.h"
+#include"GoldenDictLog.h"
 
-#ifdef ANDROID_PLATFORM
-#include <android/log.h>
-#define  LOG_TAG    "DICT2"
-#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
-#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
-#define printf LOGE
-#else
-
-#define LOGE printf
-#define LOGI printf
-
-#endif
 /*
 uint32_t htonl(uint32_t hostlong);
 
@@ -36,7 +25,7 @@ StardictIdx:: StardictIdx(const char *file_path,int word_count,int file_size,int
     this->word_count = word_count;
     this->offsetbit = offsetbit;
     this->file_size = file_size;
-    printf("word_count  = %d file_size = %d  offsetbit=%d \n",word_count,file_size,offsetbit);
+    golden_printfi("word_count  = %d file_size = %d  offsetbit=%d \n",word_count,file_size,offsetbit);
     init();
 }
 
@@ -64,9 +53,11 @@ int StardictIdx::init(){
         if(ret <= 0){
             break;
         }
+#if 0
         if(i%5000 == 0){
-            //printf("word = %s %d\n",word_buff,::ntohl(*((long*)offset_buff)));
+            golden_printfi("word = %s %d\n",word_buff,::ntohl(*((long*)offset_buff)));
         }
+#endif
 
         WordIdxItem newItem((const char *)word_buff,ntohl(*(unsigned int *)offset_buff),ntohl(*(unsigned int *)(offset_buff+4))); 
         //word_tree.InsertNode(newItem);
@@ -78,14 +69,9 @@ int StardictIdx::init(){
 
 
 WordIdxItem StardictIdx::getIdxWord(const char *str){
-    printf("%s %d \n",__func__,__LINE__);
     WordIdxItem tmp(str,0,0);
-    printf("%s %d \n",__func__,__LINE__);
     //WordIdxItem c = word_tree.FindNode(tmp);
-
     const WordIdxItem c = word_hash.DictHashGet(tmp);
-
-    printf("%s %d \n",__func__,__LINE__);
     return c;
 }
 

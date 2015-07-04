@@ -1,35 +1,27 @@
 #ifndef __GOLDEN_DICT_REF__
 #define __GOLDEN_DICT_REF__
 #include<stdio.h>
-
-#ifdef ANDROID_PLATFORM
-#include <android/log.h>
-#define  LOG_TAG    "DICT2"
-#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
-#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
-#define printf LOGE
-#endif
-
+#include"GoldenDictLog.h"
 class Ref {
     public:
         Ref(){
             ref = 1;
-            //printf("ref() ref = %d \n",ref);
+            golden_printfi("ref() ref = %d \n",ref);
         }
 
         Ref(const Ref & obj){
             ref = 1;
-            //printf("ref (obj) ref = %d \n",ref);
+            golden_printfi("ref (obj) ref = %d \n",ref);
         }
 
         void get(){
             ref ++;
-            //printf("get ref = %d \n",ref);
+            golden_printfi("get ref = %d \n",ref);
         }
 
         int put(){
             ref --;
-            //printf("put ref = %d \n",ref);
+            golden_printfi("put ref = %d \n",ref);
             return ref ;
         }
 
@@ -40,9 +32,9 @@ class Ref {
         virtual ~Ref(){
             ref --;
             if(ref > 0){
-                //printf("~ref leak error !\n");
+                golden_printfi("~ref leak error !\n");
             }else{
-                //printf("~ref delete object! \n");
+                golden_printfi("~ref delete object! \n");
             }
         }
     private:
@@ -64,7 +56,7 @@ class SimpleObject{
         */
 
         SimpleObject(T *obj){
-            printf("SimpleObject(T *obj)\n");
+            golden_printfi("SimpleObject(T *obj)\n");
             if(obj != NULL){
                 m_obj = obj ;
                 m_obj->get();
@@ -73,7 +65,7 @@ class SimpleObject{
 
         /*
         SimpleObject(const T &obj){
-            printf("SimpleObject(const T&obj)\n");
+            golden_printfi("SimpleObject(const T&obj)\n");
             m_obj = &obj;
             if(m_obj != NULL){
                 m_obj->get();
@@ -81,7 +73,7 @@ class SimpleObject{
         }
 
         SimpleObject(T &obj){
-            printf("SimpleObject(T&obj)\n");
+            golden_printfi("SimpleObject(T&obj)\n");
             m_obj = &obj;
             if(m_obj != NULL){
                 m_obj->get();
@@ -90,13 +82,13 @@ class SimpleObject{
         */
 
         SimpleObject(){
-            printf("SimpleObject()\n");
+            golden_printfi("SimpleObject()\n");
             m_obj = NULL;
         }
 
         //copy constructor
         SimpleObject(SimpleObject &obj){
-            printf("SimpleObject(const SimpleObject &obj)\n");
+            golden_printfi("SimpleObject(const SimpleObject &obj)\n");
             m_obj = obj.m_obj;
             if(m_obj != NULL){
                 m_obj->get();
@@ -105,12 +97,12 @@ class SimpleObject{
 
 
         SimpleObject& operator=(SimpleObject &ob){
-            printf("SimpleObject& operator=(const SimpleObject)\n");
+            golden_printfi("SimpleObject& operator=(const SimpleObject)\n");
             if(m_obj && m_obj->put() <= 0){
                 delete m_obj;
             }
             if(ob.m_obj == NULL){
-                printf("m_obj  is NULL\n");
+                golden_printfi("m_obj  is NULL\n");
             }else{
                 m_obj = ob.m_obj;
                 m_obj->get();
@@ -119,7 +111,7 @@ class SimpleObject{
         }
         /*
         SimpleObject* operator=(const SimpleObject *ob){
-            printf("SimpleObject& operator=(const SimpleObject *)\n");
+            golden_printfi("SimpleObject& operator=(const SimpleObject *)\n");
             if(ob == NULL){
                 return this;
             }else{
@@ -128,7 +120,7 @@ class SimpleObject{
                 }
                 m_obj = NULL;
                 if(ob->m_obj == NULL){
-                    printf("m_obj  is NULL\n");
+                    golden_printfi("m_obj  is NULL\n");
                 }else{
                     m_obj = ob->m_obj;
                     m_obj->get();
@@ -140,7 +132,7 @@ class SimpleObject{
         
         /*
         void operator=(const T &ob){
-            printf("operator=(const T &ob) \n");
+            golden_printfi("operator=(const T &ob) \n");
             if(m_obj && m_obj->put() <= 0){
                 delete m_obj;
             }
@@ -150,13 +142,13 @@ class SimpleObject{
         */
 
         void operator=(const T *ob){
-            printf("operator=(const T *ob)\n");
+            golden_printfi("operator=(const T *ob)\n");
             if(m_obj && m_obj->put() <= 0){
                 delete m_obj;
             }
             m_obj = NULL;
             if(ob == NULL){
-                printf("m_obj  is NULL\n");
+                golden_printfi("m_obj  is NULL\n");
             }else{
                 m_obj = ob;
                 m_obj->get();
@@ -164,7 +156,7 @@ class SimpleObject{
         }
 
         ~SimpleObject(){
-            printf("~SimpleObject()\n");
+            golden_printfi("~SimpleObject()\n");
             if(m_obj && m_obj->put() <= 0){
                 delete m_obj;
                 m_obj = NULL;

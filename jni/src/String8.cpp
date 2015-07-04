@@ -17,6 +17,7 @@
 #include "String8.h"
 #include <ctype.h>
 #include <stdio.h>
+#include "GoldenDictLog.h"
 
 /*
  * Functions outside android is below the namespace android, since they use
@@ -105,7 +106,6 @@ static char* allocFromUTF32(const char32_t* in, size_t len)
 String8::String8()
     : mString(getEmptyString())
 {
-    //printf("%s %d \n",__func__,__LINE__);
 }
 
 String8::String8(StaticLinkage)
@@ -125,7 +125,6 @@ String8::String8(const String8& o)
     if(!o.isEmpty()){
         mString = allocFromUTF8(o.mString, strlen(o.mString));
     }else{
-        printf("p = %p construte a empty string \n",o.mString);
         mString = getEmptyString();
     }
 }
@@ -402,7 +401,7 @@ void String8::toUpper(size_t start, size_t length)
         }
         mString  = buf;
     }else{
-        printf("%s no memory \n",__func__);
+        golden_printfe("no memory \n");
         return ;
     }
 
@@ -431,7 +430,7 @@ void String8::setPathName(const char* name, size_t len)
         }
         mString  = buf;
     }else{
-        printf("%s no memory \n",__func__);
+        golden_printfe("no memory \n");
         return;
     }
 
@@ -568,7 +567,7 @@ String8& String8::appendPath(const char* name)
             }
             mString = buf;
         }else{
-            printf("%s no memory \n",__func__);
+            golden_printfe("no memory \n");
             return *(new String8());
         }
 
@@ -607,14 +606,14 @@ String8 String8::getStringValue(char delimite){
         return String8(NULL);
     }
 
-    printf("####%p %s %s\n",mString,mString,__func__);
+    golden_printfi("####%p %s %s\n",mString,mString,__func__);
     const char* p = strchr(mString, delimite);
     if(p != NULL){
         p++;
         while(*p == ' '){
             p++;
         }
-        printf("%p %s %s\n",mString,mString,__func__);
+        golden_printfi("%p %s %s\n",mString,mString,__func__);
         return String8(p);
     }else{
         return String8(NULL);

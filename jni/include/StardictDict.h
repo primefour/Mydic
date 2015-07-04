@@ -3,6 +3,7 @@
 #include<sys/types.h>
 #include"String8.h"
 #include<string.h>
+#include"GoldenDictLog.h"
 
 class TextMetaData :public Ref{
     public:
@@ -16,13 +17,13 @@ class TextMetaData :public Ref{
         unsigned char *mWav;
         unsigned char *mPic;
         TextMetaData(){
-            printf("TextMetaData copy construct function \n");
+            golden_printfd("TextMetaData copy construct function \n");
             mWav = NULL;
             mPic = NULL;
         }
 
         TextMetaData(const TextMetaData &tmp){
-            printf("TextMetaData copy construct function \n");
+            golden_printfd("TextMetaData copy construct function \n");
             mWav = tmp.mWav;
             mPic = tmp.mPic;
             mTextMeaning = tmp.mTextMeaning;
@@ -33,17 +34,17 @@ class TextMetaData :public Ref{
             mOther = tmp.mOther;
         }
         void dumpInfo(){
-            printf("Text Mean: %s \n",mTextMeaning.string());
-            printf("Text Phonetic: %s \n",mTextPhonetic.string());
-            printf("Image Path : %s \n",mImagePath.string());
-            printf("Video path : %s \n",mVideoPath.string());
-            printf("Sound Path: %s \n",mSoundPath.string());
-            printf("Other : %s \n",mOther.string());
+            golden_printfd("Text Mean: %s \n",mTextMeaning.string());
+            golden_printfd("Text Phonetic: %s \n",mTextPhonetic.string());
+            golden_printfd("Image Path : %s \n",mImagePath.string());
+            golden_printfd("Video path : %s \n",mVideoPath.string());
+            golden_printfd("Sound Path: %s \n",mSoundPath.string());
+            golden_printfd("Other : %s \n",mOther.string());
             if(mWav != NULL){
-                printf("there is wav data \n");
+                golden_printfd("there is wav data \n");
             }
             if(mPic != NULL){
-                printf("there is pic data \n");
+                golden_printfd("there is pic data \n");
             }
         }
 

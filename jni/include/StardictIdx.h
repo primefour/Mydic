@@ -3,14 +3,7 @@
 #include"String8.h"
 #include"AVLTreeTemplate.h"
 #include"HashSet.h"
-
-#ifdef ANDROID_PLATFORM
-#include <android/log.h>
-#define  LOG_TAG    "DICT2"
-#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
-#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
-#define printf LOGE
-#endif
+#include"GoldenDictLog.h"
 
 class WordIdxItem:public Ref{
     public:
@@ -54,9 +47,9 @@ class WordIdxItem:public Ref{
             return idx_word > other.idx_word; 
         }
         void dumpInfo(){
-            printf("word = %s offset = %d size = %d \n",idx_word.string(),data_offset,data_size);
+            golden_printfd("####word = %s offset = %d size = %d \n",idx_word.string(),data_offset,data_size);
         }
-        const char *string(){
+        const char *string()const {
             return idx_word.string();
         }
 

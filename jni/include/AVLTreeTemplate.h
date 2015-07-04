@@ -2,6 +2,7 @@
 #define __AVL_TREE_TEMPLATE_H__
 #include<stdio.h>
 #include"BinTreeTemplate.h"
+#include"GoldenDictLog.h"
 
 enum{
     WEIGHT_LEFT_HEAVY =1,
@@ -103,17 +104,16 @@ class AVLTreeTemplate{
                 }else if(((*ppNode)->mData) < data){
                     ppNode = &((*ppNode)->right);
                 }else {
-                    printf("%s %d \n",__func__,__LINE__);
+                    golden_printfi("%s %d \n",__func__,__LINE__);
                     if(!(*ppNode)->hide){
                         return (*ppNode)->mData;
                     }else{
-
-                    printf("%s %d \n",__func__,__LINE__);
+                        golden_printfi("%s %d \n",__func__,__LINE__);
                         return T();
                     }
                 }
             }
-            printf("%s %d \n",__func__,__LINE__);
+            golden_printfi("%s %d \n",__func__,__LINE__);
             return T();
         }
 
@@ -354,7 +354,6 @@ class AVLTreeTemplate{
             if(node_parent[0] == NULL){
                 return ;
             }
-            printf("\n");
             avl_tree_layer_scan(parent);
         }
 

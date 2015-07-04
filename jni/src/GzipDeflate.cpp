@@ -3,13 +3,7 @@ extern "C"{
 #include"zlib.h"
 }
 
-#ifdef ANDROID_PLATFORM
-#include <android/log.h>
-#define  LOG_TAG    "DICT2"
-#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
-#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
-#define printf LOGE
-#endif
+#include"GoldenDictLog.h"
 
 #define IN_BUFFER_SIZE 0xffffL
 #define OUT_BUFFER_SIZE 0xffffL
@@ -41,13 +35,13 @@ int GzipDeflate::Read(unsigned char *buf,int len){
    zStream.avail_out = 0;
 
    if(inflateInit2(&zStream, -15 ) != Z_OK){
-       printf("zStream init failed  \n");
+       golden_printfe("zStream init failed  \n");
    }
    int end = (mEnd + len)/mCheckLength;
    if(end > mCheckCount -1){
        end = mCheckCount -1;
    }
-   printf("end = %d \n",end);
+   golden_printfi("end = %d \n",end);
 
    SimpleFile file_obj(file_path.string(),O_RDONLY);
    int i = 0;
@@ -55,13 +49,13 @@ int GzipDeflate::Read(unsigned char *buf,int len){
    unsigned char *inBuff = new unsigned char[IN_BUFFER_SIZE];
    unsigned char *outBuff = new unsigned char[OUT_BUFFER_SIZE];
    unsigned char *ptrOut = buf;
-   printf("mHeaderLength + mPos = %d mbegin = %d end = %d \n",mHeaderLength + mPos,mbegin,end);
+   golden_printfi("mHeaderLength + mPos = %d mbegin = %d end = %d \n",mHeaderLength + mPos,mbegin,end);
    file_obj.Seek(SEEK_SET,mHeaderLength + mPos);
    for(i = mbegin ;i <=end ;i++){
-       printf("*(mChunkArray + %d) = %d \n",i,*(mChunkArray + i));
+       golden_printfi("*(mChunkArray + %d) = %d \n",i,*(mChunkArray + i));
        int ret = file_obj.Read(inBuff,*(mChunkArray + i)); 
        if(ret != *(mChunkArray + i)){
-           printf("error read file failed \n");
+           golden_printfe("error read file failed \n");
        }
 
        zStream.next_in   = (Bytef* )inBuff;
@@ -71,19 +65,17 @@ int GzipDeflate::Read(unsigned char *buf,int len){
        zStream.avail_out = OUT_BUFFER_SIZE;
 
        if(inflate(&zStream,Z_PARTIAL_FLUSH) != Z_OK){
-           printf("inflate failed \n");
+           golden_printfe("inflate failed \n");
        }
-       printf("zStream.avail_in = %d zStream.avail_out = %d mOffset = %d \n",zStream.avail_in,zStream.avail_out,mOffset );
+       golden_printfi("zStream.avail_in = %d zStream.avail_out = %d mOffset = %d \n",zStream.avail_in,zStream.avail_out,mOffset );
        if(zStream.avail_in){
-           printf("zstream flush mode failed \n");
+           golden_printfe("zstream flush mode failed \n");
        }
        int avail_content = OUT_BUFFER_SIZE - zStream.avail_out ;
-       printf(" avail_content  = %d \n",avail_content); 
-        //printf(" avail_content  = %s \n",outBuff ); 
-       
+       golden_printfi(" avail_content  = %d \n",avail_content); 
        if(mbegin == i){
            if(mOffset > avail_content ){
-               printf("error mOffset > (OUT_BUFFER_SIZE - zStream.avail_out)\n");
+               golden_printfe("error mOffset > (OUT_BUFFER_SIZE - zStream.avail_out)\n");
            }
            if(len > avail_content - mOffset){
                cpylen = avail_content - mOffset;
@@ -115,13 +107,13 @@ int GzipDeflate::Seek(int where,int offset){
     if(where != SEEK_SET){
         return -1;
     }
-    printf("offset = %d mCheckLength = %d \n",offset,mCheckLength);
+    golden_printfi("offset = %d mCheckLength = %d \n",offset,mCheckLength);
     mbegin = offset/mCheckLength;
     int i = 0;
     mOffset = offset - mbegin * mCheckLength;
     mPos = 0;
     mEnd = 0;
-    printf("mbegin  = %d \n",mbegin); 
+    golden_printfi("mbegin  = %d \n",mbegin); 
     while(i < mbegin){
         mPos += *(mChunkArray + i);
         mEnd += mCheckLength;

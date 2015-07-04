@@ -6,21 +6,7 @@
 #include"StardictDict.h"
 #include"Ref.h"
 #include"StardictMain.h"
-
-#ifdef ANDROID_PLATFORM
-#include <android/log.h>
-#define  LOG_TAG    "DICT2"
-#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
-#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
-#define printf LOGE
-#else
-
-#define LOGE printf
-#define LOGI printf
-
-#endif
-
-
+#include"GoldenDictLog.h"
 
 
 StardictIntance::~StardictIntance(){
@@ -48,17 +34,17 @@ StardictIntance::StardictIntance(String8 path){
     si = new StardictInfo(path + ".ifo");
     //check si
     if(si&&si->getWordCount() < 0){
-        printf("check fail \n");
+        golden_printfe("check fail \n");
         return ;
     }
     sidx = new StardictIdx(path+".idx",si->getWordCount(),si->getIdxFileSize(),si->getOffsetBits());
     if(!sidx){
-        printf("check fail xx \n");
+        golden_printfe("check fail xx \n");
         return ;
     }
     dict = new StardictDict(path + ".dict.dz",si->getSameTypeSeq());
     if(dict == NULL){
-        printf("check fail xxxx \n");
+        golden_printfe("check fail xxxx \n");
     }
 }
 
@@ -76,11 +62,10 @@ StardictMain::~StardictMain(){
 }
 
 void StardictMain::InsertDict(const char *path){
-    printf("%s %d %s ",__func__,__LINE__,path);
     //check the path
     String8 tmp_path(path);
     //just stardict now
-    printf("tmp_path.getBasePath() = %s ",tmp_path.getBasePath().string());
+    golden_printfd("tmp_path.getBasePath() = %s ",tmp_path.getBasePath().string());
     DictInterface *tmp =  new StardictIntance(tmp_path.getBasePath());
     int i = 0;
     while(i < MAX_DICT_COUNT){
@@ -100,7 +85,7 @@ DictInterface *StardictMain::getDictIdx(int idx){
 }
 
 void StardictMain::DeleteDict(const char *path){
-    printf("%s %d ",__func__,__LINE__);
+    golden_printfd("%s %d ",__func__,__LINE__);
 }
 
 StardictMain::StardictMain(){

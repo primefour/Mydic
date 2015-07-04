@@ -10,14 +10,7 @@
 #include"StandardIO.h"
 #include"GzipHeaderParser.h"
 #include"GzipDeflate.h"
-
-#ifdef ANDROID_PLATFORM
-#include <android/log.h>
-#define  LOG_TAG    "DICT2"
-#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
-#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
-#define printf LOGE
-#endif
+#include"GoldenDictLog.h"
 
 StardictDict::StardictDict(const char*file_name,const char *same_type_seq):mSeq(same_type_seq),file_path(file_name){
 
@@ -32,14 +25,14 @@ int StardictDict::CheckFileType(){
 }
 
 void StardictDict::read_word_data(int offset,int length,TextMetaData* tmd){
-    printf("%s offset = %d length = %d \n",__func__,offset,length);
+    golden_printfi("%s offset = %d length = %d \n",__func__,offset,length);
     GzipDeflate file_obj(file_path,O_RDONLY);
     file_obj.Seek(SEEK_SET,offset);
     unsigned char *buff = new unsigned char [length + 4] ;
     memset(buff,0,length +4);
     int ret = file_obj.Read(buff,length);
     if(ret != length){
-        printf("%s ret error xxxxxxxx",__func__);
+        golden_printfe("%s ret error xxxxxxxx",__func__);
         return ;
     }
     parse_meta_data(tmd,buff,length);
@@ -66,7 +59,7 @@ void StardictDict::parse_meta_data(TextMetaData *tmd, unsigned char *data,int le
 
 
 int StardictDict::parse_common_flag(TextMetaData *tmp,char flag,unsigned char *data){
-    printf("%s flag = %c \n",__func__,flag);
+    golden_printfi("%s flag = %c \n",__func__,flag);
     int length = 0;
     switch(flag){
         case 'm':
@@ -109,7 +102,7 @@ int StardictDict::parse_common_flag(TextMetaData *tmp,char flag,unsigned char *d
             length = parse_X_data(tmp,data);
             break;
         default:
-            printf("get a error format \n");
+            golden_printfe("get a error format \n");
             break;
     }
     return length;
@@ -264,7 +257,7 @@ int StardictDict::parse_P_data(TextMetaData *tmp,unsigned char *data){
 //this type identifier is reserved  for experimental extensions
 int StardictDict::parse_X_data(TextMetaData *tmp ,unsigned char *data){
     //error
-    printf("%s get a X type \n",__func__);
+    golden_printfe("%s get a X type \n",__func__);
     return 0;
 }
 
