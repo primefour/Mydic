@@ -1,12 +1,16 @@
 package com.Dict.DictApp2;
 
 import android.app.Activity;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -21,6 +25,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     private final String WEB_ENCODE_FORMAT = "utf-8";
     private final String WEB_MIME_TYPE = "text/html";
     private final String NOT_FOUND_WORD = "Hello World!";
+    private final String TAG = "MainFragment";
 
     @Override
     public void onAttach(Activity activity) {
@@ -65,6 +70,29 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         mRootView = inflater.inflate(R.layout.fragment_main_page,container,false);
         Button searchButton = ((Button) mRootView.findViewById(R.id.SearchButton));
         searchButton.setOnClickListener(this);
+        //show word Meaning
+        WebView mWebView = ((WebView) mRootView.findViewById(R.id.MeaningWebView));
+        mWebView.setWebViewClient(new WebViewClient(){
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                /*
+                if (url.endsWith(".wav")){
+                    Log.d(TAG, "Reproducir archivo wav");
+                    Uri tempPath = Uri.parse(url);
+                    MediaPlayer player = MediaPlayer.create(getActivity(), tempPath);
+                    player.start();
+                    return true;
+                }else{
+                    Log.d(TAG, "Reproducir archivo xxxx" + url);
+                    return super.shouldOverrideUrlLoading(view, url);
+                }
+                */
+                MediaPlayer player = MediaPlayer.create(getActivity(), Uri.parse("file:///sdcard/hello.wav"));
+                player.start();
+                return true;
+            }
+
+        });
         return mRootView;
     }
 
