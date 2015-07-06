@@ -40,6 +40,7 @@ JNIEXPORT jobject JNICALL  Java_com_Dict_DictApp2_DictSearchEngine_engQueryWord 
         return NULL;
     }
     //jstring text = pEnv->GetObjectField(obj,meaning_fid); 
+    tmd.mTextMeaning += "<p> </p> \n<a href hello.wav > audio </a> <p></p> " ; 
     jstring text = pEnv->NewStringUTF(tmd.mTextMeaning.string());
     pEnv->SetObjectField(obj,meaning_fid,text);
     return obj ; 

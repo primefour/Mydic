@@ -10,7 +10,6 @@ LOCAL_SRC_FILES := src/com_Dict_DictApp2_DictSearchEngine.cpp \
 	src/StardictIdx.cpp \
 	src/StardictInfo.cpp \
 	src/StardictMain.cpp \
-	src/StardictSyn.cpp \
 	src/String8.cpp \
 	src/Unicode.cpp \
 	src/adler32.c \

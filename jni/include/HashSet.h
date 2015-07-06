@@ -39,6 +39,7 @@ template<class HASH_ITEM_TYPE>
 DictHashSet<HASH_ITEM_TYPE>::DictHashSet(int set_count):mHashTable(set_count,list<HASH_ITEM_TYPE>()){
     mLatestItem  = NULL;
     mMaxCapacity = set_count;
+    mPfn  = NULL;
 }
 
 

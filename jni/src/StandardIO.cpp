@@ -9,8 +9,6 @@
 
 #define MEM_FILE_MAX_SIZE 7 * 1024 *1024
 
-//#define MEM_FILE_MAX_SIZE 20 
-
 MemFile::MemFile(const char *path,int mode):file_path(path){
     file_des = -1;
     file_root = NULL;

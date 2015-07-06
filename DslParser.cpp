@@ -310,8 +310,6 @@ int main(){
             }
         }else{
             if(word != NULL){
-                //printWord(word);
-                //printf("\n");
                 writeHTMLFile(word);
             }
             word = new DslWordNode();
