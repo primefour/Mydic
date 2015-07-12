@@ -1,4 +1,3 @@
-#include"StardictDict.h"
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
@@ -6,36 +5,146 @@
 #include<assert.h>
 #include<sys/types.h>
 #include<fcntl.h>
-#include"String8.h"
-#include"StandardIO.h"
-#include"GzipHeaderParser.h"
-#include"GzipDeflate.h"
+#include"GoldenStandardIO.h"
+#include"GoldenGzipHeaderParser.h"
+#include"GoldenGzipInflate.h"
 #include"GoldenDictLog.h"
+#include"StardictDict.h"
+#include"String8.h"
+
+TextMetaData:: TextMetaData(){
+    golden_printfd("TextMetaData copy construct function \n");
+    mWavDataLength = 0;
+    mPicDataLength = 0;
+    mWav = NULL;
+    mPic = NULL;
+}
+
+TextMetaData::TextMetaData(const TextMetaData &tmp){
+    golden_printfd("TextMetaData copy construct function \n");
+    mWavDataLength = tmp.mWavDataLength;
+    if(mWavDataLength != 0){
+        mWav = new unsigned char[mWavDataLength];
+        memcpy(mPic,tmp.mPic,mWavDataLength);
+    }
+
+    if(mPicDataLength != NULL){
+        mPic = new unsigned char[mPicDataLength];
+        memcpy(mPic,tmp.mPic,mPicDataLength);
+
+    }
+    mTextMeaning = tmp.mTextMeaning;
+    mTextPhonetic = tmp.mTextPhonetic;
+    mImagePath = tmp.mImagePath;
+    mVideoPath = tmp.mVideoPath;
+    mSoundPath = tmp.mSoundPath;
+    mOther = tmp.mOther;
+}
+
+void TextMetaData::generateHTML(String8 &result){
+    const int buff_len = 10240;
+    char *buff = new char[buff_len] ;
+    memset(buff,0,buff_len);
+    tmp = buff;
+    int n = buff_len;
+    int len = 0;
+    const char *meta_data = "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /> \n <hr/> \n";
+    snprintf(tmp,n,"<HTML> \n<H4>%s</H4>\n<body>\n%s\n",mWord,meta_data);
+    len = strlen(tmp);
+    tmp += len;
+    n -= len;
+
+    snprintf(tmp,n,"%s <p>",mTextPhonetic.string());
+    len = strlen(tmp);
+    tmp += len;
+    n -= len;
+
+    char *ptr_m = mTextMeaning.string();
+    const char * html_p = " <p>\n";
+    const int html_p_len = strlen(html_p);
+    while(*ptr_m){
+        if(*ptr_m == '\n'){
+            strcat(tmp," <p>\n");
+            tmp += html_p_len;
+        }else{
+            *tmp = *ptr_m;
+            tmp ++;
+        }
+        ptr_m ++;
+    }
+    n = buff_len - strlen(buff):
+
+    snprintf(tmp,n,"%s","</body> \n </HTML>");
+    len = strlen(tmp);
+    tmp += len;
+    n -= len;
+
+    result.setTo(buff);
+    delete buff[];
+}
+
+void TextMetaData::dumpInfo(){
+    golden_printfd("Text Mean: %s \n",mTextMeaning.string());
+    golden_printfd("Text Phonetic: %s \n",mTextPhonetic.string());
+    golden_printfd("Image Path : %s \n",mImagePath.string());
+    golden_printfd("Video path : %s \n",mVideoPath.string());
+    golden_printfd("Sound Path: %s \n",mSoundPath.string());
+    golden_printfd("Other : %s \n",mOther.string());
+    if(mWav != NULL){
+        golden_printfd("there is wav data \n");
+    }
+    if(mPic != NULL){
+        golden_printfd("there is pic data \n");
+    }
+}
+
+virtual ~TextMetaData::TextMetaData(){
+    if(mWav != NULL){
+        delete mWav;
+    }
+    mWav = NULL;
+    if(mPic != NULL){
+        delete mPic;
+    }
+    mPic = NULL;
+}
+
+
+/********************************************stardict dictionary**********************************************/
 
 StardictDict::StardictDict(const char*file_name,const char *same_type_seq):mSeq(same_type_seq),file_path(file_name){
-
+    SObject<GzipInflate> file_obj = NULL;
+    try{
+        file_obj = new GzipInflate(file_path,O_RDONLY);
+    }catch(exception &e){
+        throw exception("Gzip file error %s ",e.what());
+    }
 }
 
 StardictDict::~StardictDict(){
 
 }
 
-int StardictDict::CheckFileType(){
-    return 0;
-}
 
 void StardictDict::read_word_data(int offset,int length,TextMetaData* tmd){
     golden_printfi("%s offset = %d length = %d \n",__func__,offset,length);
-    GzipDeflate file_obj(file_path,O_RDONLY);
-    file_obj.Seek(SEEK_SET,offset);
+    SObject<GzipInflate> file_obj = NULL;
+    try{
+        file_obj = new GzipInflate(file_path,O_RDONLY);
+    }catch(exception &e){
+        golden_printfe("gzip file error %s ",e.what()); 
+        throw exception("get word fail");
+    }
+    file_obj->Seek(SEEK_SET,offset);
     unsigned char *buff = new unsigned char [length + 4] ;
     memset(buff,0,length +4);
-    int ret = file_obj.Read(buff,length);
+    int ret = file_obj->Read(buff,length);
     if(ret != length){
         golden_printfe("%s ret error xxxxxxxx",__func__);
-        return ;
+        throw exception("get word fail");
     }
     parse_meta_data(tmd,buff,length);
+    delete buff[];
 }
 
 
@@ -239,6 +348,7 @@ int StardictDict::parse_r_data(TextMetaData *tmp,unsigned char *data){
 //file's size,immediately followed by the file's content
 int StardictDict::parse_W_data(TextMetaData *tmp,unsigned char *data){
     int len = ntohl(*((unsigned int*)data));
+    mWavDataLength = len;
     tmp->mWav = new unsigned char[len];
     memcpy(tmp->mWav,data+4,len);
     return len + 4; 
@@ -250,7 +360,8 @@ int StardictDict::parse_W_data(TextMetaData *tmp,unsigned char *data){
 int StardictDict::parse_P_data(TextMetaData *tmp,unsigned char *data){
     int len = ntohl(*((unsigned int*)data));
     tmp->mPic = new unsigned char[len];
-    memcpy(tmp->mWav,data+4,len);
+    mPicDataLength = len;
+    memcpy(tmp->mPic,data+4,len);
     return len + 4;
 }
 

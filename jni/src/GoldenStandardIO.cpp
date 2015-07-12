@@ -5,9 +5,11 @@
 #include<sys/types.h>
 #include<fcntl.h>
 #include<sys/mman.h>
+#include<stdexcept>
 #include"GoldenDictLog.h"
-
 #define MEM_FILE_MAX_SIZE 7 * 1024 *1024
+
+using namespace std;
 
 MemFile::MemFile(const char *path,int mode):file_path(path){
     file_des = -1;
@@ -18,10 +20,10 @@ MemFile::MemFile(const char *path,int mode):file_path(path){
     if(mode != 0){
         def_mode = mode; 
     }
-
     file_des = ::open(path,def_mode);
     if(file_des < 0){
         golden_printfe("open file error %s \n",file_path.string());
+        throw exception("file open error");
     }
 
     //check the sizeof file 
@@ -33,7 +35,8 @@ MemFile::MemFile(const char *path,int mode):file_path(path){
         file_root = (unsigned char *)mmap(NULL,file_size,PROT_READ|PROT_WRITE,MAP_PRIVATE,file_des,0);
         if(file_root == NULL){
             golden_printfe("mmap file failed");
-            return ;
+            close(file_des);
+            throw exception("mmap file failed");
         }
         buff_len = file_size;
         buff_offset = 0;
@@ -43,16 +46,16 @@ MemFile::MemFile(const char *path,int mode):file_path(path){
 
         if(file_root == NULL){
             golden_printfe("NO MEMORY FOR FILE \n");
-            return;
+            close(file_des);
+            throw exception("mmap file failed");
         }
-
         file_root[MEM_FILE_MAX_SIZE]= 0;
-
         int n = read(file_des,file_root,MEM_FILE_MAX_SIZE);
-
         if(n != MEM_FILE_MAX_SIZE){
+            close(file_des);
+            delete file_root[];
             golden_printfe("read file failed \n");
-            return ;
+            throw exception("read file failed");
         }
         buff_len = MEM_FILE_MAX_SIZE;
         buff_offset = 0;
@@ -69,9 +72,7 @@ MemFile::~MemFile(){
         }
     }
     file_root = NULL;
-    if(file_des >= 0){
-        close(file_des);
-    }
+    close(file_des);
     file_des = -1;
 }
 
@@ -237,31 +238,25 @@ SimpleFile::SimpleFile(const char *path,int mode):file_path(path){
     file_des = ::open(path,def_mode);
     if(file_des < 0){
         golden_printfe("open file error %s \n",file_path.string());
+        throw exception("open file error");
     }
 }
 
 
 SimpleFile::~SimpleFile(){
-    if(file_des >= 0){
-        close(file_des);
-        file_des = -1;
-    }
+    close(file_des);
+    file_des = -1;
 }
 
 
 int SimpleFile::Seek(int whence,int offset){
-    if(file_des >= 0){
-        return ::lseek(file_des,offset,whence);
-    }else{
-        golden_printfe("%s\n","fd is negative");
-        return -1;
-    }
+    return ::lseek(file_des,offset,whence);
 }
 
 int SimpleFile::Write(const unsigned char *buf,int len){
     int ret = -1;
     const unsigned char *ptr = buf;
-    if(file_des >= 0 && ptr != NULL){
+    if(ptr != NULL){
         while(len > 0){
             ret = ::write(file_des,ptr,len);
             if(ret >= 0){
@@ -273,7 +268,7 @@ int SimpleFile::Write(const unsigned char *buf,int len){
             }
         }
     }else{
-        golden_printfe("%s\n","fd is negative");
+        return 0;
     }
     return ret;
 }
@@ -281,12 +276,7 @@ int SimpleFile::Write(const unsigned char *buf,int len){
 
 int SimpleFile::Read(unsigned char *buf,int len){
     int ret = -1;
-    memset(buf,0,len);
-    if(file_des >= 0){
-       ret = ::read(file_des,buf,len); 
-    }else{
-        golden_printfe("%s\n","fd is negative");
-    }
+    ret = ::read(file_des,buf,len); 
     return ret;
 }
 

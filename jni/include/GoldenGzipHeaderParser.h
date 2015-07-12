@@ -15,13 +15,17 @@ enum {
 
 class GZipHeader:public Ref{
     public:
+        //throw runtime_error exception when file isn't exist
+        //or parse file fail
         GZipHeader(const char *gzip_path);
+
         virtual ~GZipHeader(){
             if(mExtraBuff != NULL){
                 delete mExtraBuff;
                 mExtraBuff = NULL;
             }
         }
+
         void getExtraInfo(int &chunk_num,int &chunk_len,int & version);
         unsigned int getChunkCode(int index);
         bool getDeflateFlag(){

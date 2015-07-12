@@ -2,11 +2,13 @@
 #include<stdlib.h>
 #include<stdio.h>
 #include<string.h>
-#include"StandardIO.h"
 #include<unistd.h>
 #include<fcntl.h>
 #include"String8.h"
 #include"GoldenDictLog.h"
+#include"GoldenStandardIO.h"
+#include"GoldenRef.h"
+#include<stdexcept>
 
 const char *StardictInfo::infoFileList[]= {"version",
             "bookname",
@@ -23,8 +25,13 @@ const char *StardictInfo::infoFileList[]= {"version",
             NULL};
 
 StardictInfo::StardictInfo(const char *file_path):file_name(file_path){
-    SimpleFile file_obj(file_path,O_RDONLY);
-    char buff[10240]={0};
+    SObject<SimpleFile> file_obj = NULL;
+    try{
+        file_obj = new SimpleFile(file_path,O_RDONLY);
+    }catch (exception &e){
+        golden_printfd("info file fail %s\n",e.what());
+    };
+    char *buff= new char[10240];
     while(1){
         memset(buff,0,sizeof(buff));
         int n = file_obj.ReadLine((unsigned char *)buff,sizeof(buff));
@@ -43,6 +50,7 @@ StardictInfo::StardictInfo(const char *file_path):file_name(file_path){
             i++;
         }
     }
+    delete buff;
 }
 
 void StardictInfo::dumpInfo(){

@@ -1,18 +1,26 @@
-#include"GzipDeflate.h"
+#include"GoldenGzipInflate.h"
 extern "C"{
 #include"zlib.h"
 }
-
+#include"GoldenRef.h"
 #include"GoldenDictLog.h"
 
 #define IN_BUFFER_SIZE 0xffffL
 #define OUT_BUFFER_SIZE 0xffffL
 
 
-GzipDeflate::GzipDeflate(const char *path,int mode):file_path(path){
+GzipInflate::GzipInflate(const char *path,int mode):file_path(path){
     mPos = 0;
-    GZipHeader header(path);
-    header.getExtraInfo(mCheckCount,mCheckLength,mVersion);
+    SObject<GZipHeader> header = NULL;
+
+    try{
+        header = new GZipHeader(path);
+    }catch (exception &e){
+        golden_printfe("failed  %s \n",e.what());
+        throw exception("Gzip header parser");
+    }
+    header->getExtraInfo(mCheckCount,mCheckLength,mVersion);
+
     mChunkArray = new int[mCheckCount];
     memset(mChunkArray,0,mCheckCount * sizeof(int));
     int i = 0;
@@ -23,7 +31,7 @@ GzipDeflate::GzipDeflate(const char *path,int mode):file_path(path){
     mHeaderLength = header.getDataOffset();
 }
 
-int GzipDeflate::Read(unsigned char *buf,int len){
+int GzipInflate::Read(unsigned char *buf,int len){
    z_stream zStream;
 
    zStream.zalloc    = NULL;
@@ -103,7 +111,7 @@ int GzipDeflate::Read(unsigned char *buf,int len){
    return cpylen;
 }
 
-int GzipDeflate::Seek(int where,int offset){
+int GzipInflate::Seek(int where,int offset){
     if(where != SEEK_SET){
         return -1;
     }
@@ -122,16 +130,20 @@ int GzipDeflate::Seek(int where,int offset){
     return mPos;
 }
 
-GzipDeflate::~GzipDeflate(){
+GzipInflate::~GzipInflate(){
     if(mChunkArray != NULL){
         delete mChunkArray ;
     }
     mChunkArray = NULL;
 }
 
-int GzipDeflate::ReadLine(unsigned char *buf,int len){
+int GzipInflate::ReadLine(unsigned char *buf,int len){
     return 0;
 }
-int GzipDeflate::ReadTerminating(unsigned char *buff,int len,unsigned char terminate){
+int GzipInflate::ReadTerminating(unsigned char *buff,int len,unsigned char terminate){
+    return 0;
+}
+
+int GzipInflate::Write(const unsigned char *buf,int len){
     return 0;
 }

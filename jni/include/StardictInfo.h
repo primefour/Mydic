@@ -3,8 +3,9 @@
 #include<stdlib.h>
 #include<stdio.h>
 #include<string.h>
-#include"StandardIO.h"
+#include"GoldenStandardIO.h"
 #include"String8.h"
+#include"GoldenRef.h"
 
 typedef enum{
     INFO_VERSION,

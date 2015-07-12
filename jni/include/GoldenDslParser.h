@@ -9,8 +9,6 @@
 
 using namespace std;
 
-
-
 enum PARSER_STATUE{
     PARSER_LINE_BEGIN,
     PARSER_TAG_START,

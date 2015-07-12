@@ -1,63 +1,42 @@
 #ifndef __STARDICT_DICT__
 #define __STARDICT_DICT__
 #include<sys/types.h>
-#include"String8.h"
 #include<string.h>
 #include"GoldenDictLog.h"
+#include"GoldenRef.h"
+#include"String8.h"
+
 
 class TextMetaData :public Ref{
+    friend StardictDict;
     public:
+        TextMetaData(); 
+        TextMetaData(const TextMetaData & inst); 
+        TextMetaData(const char *word):mWord(word){
+            mWavDataLength = 0;
+            mPicDataLength = 0;
+            mWav = NULL;
+            mPic = NULL;
+        }
+        void generateHTML(String8 &result);
+        void setWord(const char *word){
+            mWord.setTo(word);
+        }
+        void dumpInfo();
+        ~TextMetaData();
+    private:
         //text meaning
+        String8 mWord;
         String8 mTextMeaning;//m l g
         String8 mTextPhonetic;
         String8 mImagePath;
         String8 mVideoPath;
         String8 mSoundPath;
         String8 mOther;
+        int mWavDataLength;
+        int mPicDataLength;
         unsigned char *mWav;
         unsigned char *mPic;
-        TextMetaData(){
-            golden_printfd("TextMetaData copy construct function \n");
-            mWav = NULL;
-            mPic = NULL;
-        }
-
-        TextMetaData(const TextMetaData &tmp){
-            golden_printfd("TextMetaData copy construct function \n");
-            mWav = tmp.mWav;
-            mPic = tmp.mPic;
-            mTextMeaning = tmp.mTextMeaning;
-            mTextPhonetic = tmp.mTextPhonetic;
-            mImagePath = tmp.mImagePath;
-            mVideoPath = tmp.mVideoPath;
-            mSoundPath = tmp.mSoundPath;
-            mOther = tmp.mOther;
-        }
-        void dumpInfo(){
-            golden_printfd("Text Mean: %s \n",mTextMeaning.string());
-            golden_printfd("Text Phonetic: %s \n",mTextPhonetic.string());
-            golden_printfd("Image Path : %s \n",mImagePath.string());
-            golden_printfd("Video path : %s \n",mVideoPath.string());
-            golden_printfd("Sound Path: %s \n",mSoundPath.string());
-            golden_printfd("Other : %s \n",mOther.string());
-            if(mWav != NULL){
-                golden_printfd("there is wav data \n");
-            }
-            if(mPic != NULL){
-                golden_printfd("there is pic data \n");
-            }
-        }
-
-        virtual ~TextMetaData(){
-            if(mWav != NULL){
-                delete mWav;
-            }
-            mWav = NULL;
-            if(mPic != NULL){
-                delete mPic;
-            }
-            mPic = NULL;
-        }
 };
 
 
@@ -67,7 +46,6 @@ class StardictDict{
         ~StardictDict();
         void read_word_data(int offset,int length,TextMetaData* tmd);
     private:
-        int CheckFileType();
         void parse_meta_data(TextMetaData *tmd, unsigned char *data,int length);
         int parse_common_flag(TextMetaData *tmp,char flag,unsigned char *data);
 

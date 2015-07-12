@@ -1,21 +1,31 @@
-#include"GzipHeaderParser.h"
 #include<sys/types.h>
 #include<fcntl.h>
 #include<string.h>
 #include<stdlib.h>
+#include<stdexcept>
+
+#include"GoldenGzipHeaderParser.h"
 #include"String8.h"
 #include"StandardIO.h"
-#include"AVLTreeTemplate.h"
 #include"GoldenDictLog.h"
+#include"GoldenRef.h"
+
+using namespace std;
 
 GZipHeader::GZipHeader(const char *gzip_path){
     unsigned char word_buff[12]={0};
-    SimpleFile file_obj(gzip_path,O_RDONLY);
-    int ret = file_obj.Read(word_buff,sizeof(word_buff));
+    SObject<SimpleFile> file_obj = NULL;
+    try{
+        file_obj = new SimpleFile(gzip_path,O_RDONLY);
+    }catch (exception & a){
+        golden_printfd(" EXCEPTION %s \n",a.what());
+        throw exception("new Simplefile fail!");
+    }
+    int ret = file_obj->Read(word_buff,sizeof(word_buff));
     mExtraBuff = 0;
     int contain_length = 0;
     if(ret <=0){
-        return ;
+        throw exception("Simplefile read fail");
     }
     golden_printfi("check head %x   %x \n",word_buff[0],word_buff[1]);
     //check file type
@@ -38,20 +48,21 @@ GZipHeader::GZipHeader(const char *gzip_path){
             mEXlength = xlen;
             if(mExtraBuff == NULL){ 
                 golden_printfe("no memory for extra buff\n");
-                return ;
+                throw exception("No memory for extra buff");
             }else{
                 memset(mExtraBuff,0,xlen);
-                ret = file_obj.Read(mExtraBuff,xlen);
+                ret = file_obj->Read(mExtraBuff,xlen);
                 if(ret != xlen){
                     golden_printfe("Read extra buff fail \n");
-                    return ;
+                    delete mExtraBuff; 
+                    throw exception("read file fail");
                 }
             }
             contain_length += xlen;
         }
         if(GZIP_FNAME & word_buff[3]){
             char fname_buff[1024]={0};
-            ret = file_obj.ReadTerminating((unsigned char *)fname_buff,sizeof(fname_buff),'\0');
+            ret = file_obj->ReadTerminating((unsigned char *)fname_buff,sizeof(fname_buff),'\0');
             golden_printfi("pfname = %s \n",fname_buff);
             contain_length += strlen(fname_buff);
             contain_length ++;
@@ -59,7 +70,7 @@ GZipHeader::GZipHeader(const char *gzip_path){
 
         if(GZIP_FCOMMENT & word_buff[3]){
             char fcomment_buff[1024]={0};
-            ret = file_obj.ReadTerminating((unsigned char *)fcomment_buff,sizeof(fcomment_buff),'\0');
+            ret = file_obj->ReadTerminating((unsigned char *)fcomment_buff,sizeof(fcomment_buff),'\0');
             golden_printfi("pfname = %s \n",fcomment_buff);
             contain_length += strlen(fcomment_buff);
             contain_length ++;
@@ -76,14 +87,16 @@ GZipHeader::GZipHeader(const char *gzip_path){
     }
     //parse file end
     memset(word_buff,0,sizeof(word_buff));
-    ret = file_obj.Seek(SEEK_END,-8);
+    ret = file_obj->Seek(SEEK_END,-8);
     if(ret < 0){
         golden_printfe("seek fail \n");
-        return ;
+        delete mExtraBuff; 
+        throw exception("parse fail ");
     }
-    ret = file_obj.Read(word_buff,8);
+    ret = file_obj->Read(word_buff,8);
     if(ret != 8){
-        return ;
+        delete mExtraBuff; 
+        throw exception("parse fail ");
     }
     mCRC32 = word_buff[3]<<24 | word_buff[2]<<16 | word_buff[1]<< 8 | word_buff[0];
     golden_printfi("mCRC32  = %u  %x \n",mCRC32,mCRC32);
