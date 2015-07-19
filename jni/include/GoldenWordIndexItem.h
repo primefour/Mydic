@@ -84,6 +84,9 @@ class GoldenWordHashList:public Ref{
     public:
         GoldenWordHashList(int max_count);
         void DictHashInsert(SObject<WordIdxItem> &newItem);
+        bool DictHashfind(const SObject<WordIdxItem> &item);
+        const SObject<WordIdxItem>& DictHashGet(const SObject<WordIdxItem>&item);
+
     private:
         DictHashSet<SObject<WordIdxItem> > word_hash;
 };

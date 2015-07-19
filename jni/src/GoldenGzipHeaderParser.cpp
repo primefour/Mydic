@@ -5,10 +5,10 @@
 #include<stdexcept>
 
 #include"GoldenGzipHeaderParser.h"
-#include"String8.h"
-#include"StandardIO.h"
+#include"GoldenStandardIO.h"
 #include"GoldenDictLog.h"
 #include"GoldenRef.h"
+#include"String8.h"
 
 using namespace std;
 
@@ -19,13 +19,13 @@ GZipHeader::GZipHeader(const char *gzip_path){
         file_obj = new SimpleFile(gzip_path,O_RDONLY);
     }catch (exception & a){
         golden_printfd(" EXCEPTION %s \n",a.what());
-        throw exception("new Simplefile fail!");
+        throw exception();//"new Simplefile fail!");
     }
     int ret = file_obj->Read(word_buff,sizeof(word_buff));
     mExtraBuff = 0;
     int contain_length = 0;
     if(ret <=0){
-        throw exception("Simplefile read fail");
+        throw exception();//"Simplefile read fail");
     }
     golden_printfi("check head %x   %x \n",word_buff[0],word_buff[1]);
     //check file type
@@ -48,14 +48,14 @@ GZipHeader::GZipHeader(const char *gzip_path){
             mEXlength = xlen;
             if(mExtraBuff == NULL){ 
                 golden_printfe("no memory for extra buff\n");
-                throw exception("No memory for extra buff");
+                throw exception();//"No memory for extra buff");
             }else{
                 memset(mExtraBuff,0,xlen);
                 ret = file_obj->Read(mExtraBuff,xlen);
                 if(ret != xlen){
                     golden_printfe("Read extra buff fail \n");
                     delete mExtraBuff; 
-                    throw exception("read file fail");
+                    throw exception();//"read file fail");
                 }
             }
             contain_length += xlen;
@@ -91,12 +91,12 @@ GZipHeader::GZipHeader(const char *gzip_path){
     if(ret < 0){
         golden_printfe("seek fail \n");
         delete mExtraBuff; 
-        throw exception("parse fail ");
+        throw exception();//"parse fail ");
     }
     ret = file_obj->Read(word_buff,8);
     if(ret != 8){
         delete mExtraBuff; 
-        throw exception("parse fail ");
+        throw exception();//"parse fail ");
     }
     mCRC32 = word_buff[3]<<24 | word_buff[2]<<16 | word_buff[1]<< 8 | word_buff[0];
     golden_printfi("mCRC32  = %u  %x \n",mCRC32,mCRC32);

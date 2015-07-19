@@ -132,6 +132,10 @@ class SObject{
             return m_obj ;
         }
 
+        bool operator==(const SObject<T> &inst){
+            return (*m_obj == *(inst.m_obj));
+        }
+
         ~SObject(){
             golden_printfi("~SimpleObject()\n");
             if(m_obj && m_obj->put() <= 0){

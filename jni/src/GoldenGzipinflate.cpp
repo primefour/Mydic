@@ -4,6 +4,8 @@ extern "C"{
 }
 #include"GoldenRef.h"
 #include"GoldenDictLog.h"
+#include<stdexcept>
+using namespace std;
 
 #define IN_BUFFER_SIZE 0xffffL
 #define OUT_BUFFER_SIZE 0xffffL
@@ -17,7 +19,7 @@ GzipInflate::GzipInflate(const char *path,int mode):file_path(path){
         header = new GZipHeader(path);
     }catch (exception &e){
         golden_printfe("failed  %s \n",e.what());
-        throw exception("Gzip header parser");
+        throw exception();//"Gzip header parser");
     }
     header->getExtraInfo(mCheckCount,mCheckLength,mVersion);
 
@@ -25,10 +27,10 @@ GzipInflate::GzipInflate(const char *path,int mode):file_path(path){
     memset(mChunkArray,0,mCheckCount * sizeof(int));
     int i = 0;
     while(i < mCheckCount){
-        *(mChunkArray + i) = header.getChunkCode(i + 1);
+        *(mChunkArray + i) = header->getChunkCode(i + 1);
         i ++;
     }
-    mHeaderLength = header.getDataOffset();
+    mHeaderLength = header->getDataOffset();
 }
 
 int GzipInflate::Read(unsigned char *buf,int len){

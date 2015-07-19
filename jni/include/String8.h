@@ -20,7 +20,7 @@
 #include "Unicode.h"
 #include <string.h> // for strcmp
 #include <stdarg.h>
-#include "Ref.h"
+#include "GoldenRef.h"
 #include"GoldenDictLog.h"
 
 //! This is a string holding UTF-8 characters. Does not allow the value more

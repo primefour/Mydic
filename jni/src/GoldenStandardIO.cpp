@@ -1,4 +1,4 @@
-#include"StandardIO.h"
+#include"GoldenStandardIO.h"
 #include<string.h>
 #include<stdlib.h>
 #include<unistd.h>
@@ -23,7 +23,7 @@ MemFile::MemFile(const char *path,int mode):file_path(path){
     file_des = ::open(path,def_mode);
     if(file_des < 0){
         golden_printfe("open file error %s \n",file_path.string());
-        throw exception("file open error");
+        throw exception();//"file open error");
     }
 
     //check the sizeof file 
@@ -36,7 +36,7 @@ MemFile::MemFile(const char *path,int mode):file_path(path){
         if(file_root == NULL){
             golden_printfe("mmap file failed");
             close(file_des);
-            throw exception("mmap file failed");
+            throw exception();//"mmap file failed");
         }
         buff_len = file_size;
         buff_offset = 0;
@@ -47,15 +47,15 @@ MemFile::MemFile(const char *path,int mode):file_path(path){
         if(file_root == NULL){
             golden_printfe("NO MEMORY FOR FILE \n");
             close(file_des);
-            throw exception("mmap file failed");
+            throw exception();//"mmap file failed");
         }
         file_root[MEM_FILE_MAX_SIZE]= 0;
         int n = read(file_des,file_root,MEM_FILE_MAX_SIZE);
         if(n != MEM_FILE_MAX_SIZE){
             close(file_des);
-            delete file_root[];
+            delete[] file_root;
             golden_printfe("read file failed \n");
-            throw exception("read file failed");
+            throw exception();//"read file failed");
         }
         buff_len = MEM_FILE_MAX_SIZE;
         buff_offset = 0;
@@ -238,7 +238,7 @@ SimpleFile::SimpleFile(const char *path,int mode):file_path(path){
     file_des = ::open(path,def_mode);
     if(file_des < 0){
         golden_printfe("open file error %s \n",file_path.string());
-        throw exception("open file error");
+        throw exception();//"open file error");
     }
 }
 

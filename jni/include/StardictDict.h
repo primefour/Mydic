@@ -6,6 +6,7 @@
 #include"GoldenRef.h"
 #include"String8.h"
 
+class StardictDict;
 
 class TextMetaData :public Ref{
     friend StardictDict;
@@ -40,7 +41,7 @@ class TextMetaData :public Ref{
 };
 
 
-class StardictDict{
+class StardictDict:public Ref{
     public:
         StardictDict(const char*file_name,const char *same_type_seq);
         ~StardictDict();

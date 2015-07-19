@@ -9,6 +9,7 @@
 #include"GoldenStandardIO.h"
 #include"GoldenRef.h"
 #include<stdexcept>
+using namespace std;
 
 const char *StardictInfo::infoFileList[]= {"version",
             "bookname",
@@ -30,11 +31,12 @@ StardictInfo::StardictInfo(const char *file_path):file_name(file_path){
         file_obj = new SimpleFile(file_path,O_RDONLY);
     }catch (exception &e){
         golden_printfd("info file fail %s\n",e.what());
+        throw exception();
     };
     char *buff= new char[10240];
     while(1){
         memset(buff,0,sizeof(buff));
-        int n = file_obj.ReadLine((unsigned char *)buff,sizeof(buff));
+        int n = file_obj->ReadLine((unsigned char *)buff,sizeof(buff));
         if(n <= 0){
             break;
         }
@@ -50,7 +52,7 @@ StardictInfo::StardictInfo(const char *file_path):file_name(file_path){
             i++;
         }
     }
-    delete buff;
+    delete[] buff;
 }
 
 void StardictInfo::dumpInfo(){

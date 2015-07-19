@@ -3,16 +3,15 @@
 #include"GoldenWordIndexItem.h"
 #include"GoldenHashSet.h"
 #include"GoldenRef.h"
-#include"String.h"
+#include"String8.h"
 
 class StardictIdx:public Ref{
     public:
-        StardictIdx(const char* path,int word_count,
-                            int file_size,int offsetbit = 32,);
+        StardictIdx(GoldenWordHashList *idx_list,
+                            const char* path,int word_count,
+                            int file_size,
+                            int offsetbit = 32);
         ~StardictIdx();
-        void setWordList(GoldenWordHashList *word_list){
-            this->word_list = word_list;
-        }
         int init();
 
     private:

@@ -10,7 +10,7 @@ using namespace std;
 template <class HASH_ITEM_TYPE>
 class DictHashSet{
     public:
-        DictHashSet(int set_count,int (*pfn)(const HASH_ITEM_TYPE *item));
+        DictHashSet(int set_count,int (*pfn)(const HASH_ITEM_TYPE &item));
         DictHashSet(int set_count);
         void DictHashInsert(const HASH_ITEM_TYPE &item);
         void DictHashRemove(const HASH_ITEM_TYPE &item);
@@ -18,17 +18,17 @@ class DictHashSet{
         const HASH_ITEM_TYPE& DictHashGet(const HASH_ITEM_TYPE &item);
         void DictHashAnalysis();
     private:
-        int defaultHashCode(const HASH_ITEM_TYPE *item);
+        int defaultHashCode(const HASH_ITEM_TYPE &item);
         vector< list<HASH_ITEM_TYPE> > mHashTable;
-        HASH_ITEM_TYPE *mLatestItem;
-        int (*mPfn)(const HASH_ITEM_TYPE *item);
+        HASH_ITEM_TYPE mLatestItem;
+        int (*mPfn)(const HASH_ITEM_TYPE &item);
         int mMaxCapacity;
 };
 
 
 
 template<class HASH_ITEM_TYPE>
-DictHashSet<HASH_ITEM_TYPE>::DictHashSet(int set_count,int (*pfn)(const HASH_ITEM_TYPE *item)):mHashTable(set_count,list<HASH_ITEM_TYPE>()){
+DictHashSet<HASH_ITEM_TYPE>::DictHashSet(int set_count,int (*pfn)(const HASH_ITEM_TYPE &item)):mHashTable(set_count,list<HASH_ITEM_TYPE>()){
     mLatestItem  = NULL;
     mMaxCapacity = set_count;
     mPfn = pfn;
@@ -44,7 +44,7 @@ DictHashSet<HASH_ITEM_TYPE>::DictHashSet(int set_count):mHashTable(set_count,lis
 
 
 template<class HASH_ITEM_TYPE>
-int DictHashSet<HASH_ITEM_TYPE>::defaultHashCode(const HASH_ITEM_TYPE *item){
+int DictHashSet<HASH_ITEM_TYPE>::defaultHashCode(const HASH_ITEM_TYPE &item){
     unsigned int val;
     val = 0;
     const char *ptr = item->string();
@@ -66,9 +66,9 @@ template<class HASH_ITEM_TYPE>
 void DictHashSet<HASH_ITEM_TYPE>::DictHashInsert(const HASH_ITEM_TYPE &item){
     int idx = 0;
     if(mPfn){
-        idx = mPfn(&item);
+        idx = mPfn(item);
     }else{
-        idx = defaultHashCode(&item);
+        idx = defaultHashCode(item);
     }
 
     typename list<HASH_ITEM_TYPE>::iterator begin = mHashTable[idx].begin();
@@ -91,9 +91,9 @@ const HASH_ITEM_TYPE& DictHashSet<HASH_ITEM_TYPE>::DictHashGet(const HASH_ITEM_T
     }
 
     if(mPfn){
-        idx = mPfn(&item);
+        idx = mPfn(item);
     }else{
-        idx = defaultHashCode(&item);
+        idx = defaultHashCode(item);
     }
     typename list<HASH_ITEM_TYPE>::iterator begin = mHashTable[idx].begin();
     typename list<HASH_ITEM_TYPE>::iterator end = mHashTable[idx].end();
@@ -111,9 +111,9 @@ template<class HASH_ITEM_TYPE>
 bool DictHashSet<HASH_ITEM_TYPE>::DictHashfind(const HASH_ITEM_TYPE &item){
     int idx = 0;
     if(mPfn){
-        idx = mPfn(&item);
+        idx = mPfn(item);
     }else{
-        idx = defaultHashCode(&item);
+        idx = defaultHashCode(item);
     }
     typename list<HASH_ITEM_TYPE>::iterator begin = mHashTable[idx].begin();
     typename list<HASH_ITEM_TYPE>::iterator end = mHashTable[idx].end();
@@ -131,9 +131,9 @@ template<class HASH_ITEM_TYPE>
 void DictHashSet<HASH_ITEM_TYPE>::DictHashRemove(const HASH_ITEM_TYPE &item){
     int idx = 0;
     if(mPfn){
-        idx = mPfn(&item);
+        idx = mPfn(item);
     }else{
-        idx = defaultHashCode(&item);
+        idx = defaultHashCode(item);
     }
     typename list<HASH_ITEM_TYPE>::iterator begin = mHashTable[idx].begin();
     typename list<HASH_ITEM_TYPE>::iterator end = mHashTable[idx].end();

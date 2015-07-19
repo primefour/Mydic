@@ -9,7 +9,7 @@
 class StardictInstance:public GoldenDictInterface{
     public:
         StardictInstance(String8 path);
-        virtual const String8 &getDictionaryName();
+        virtual const String8 &GetDictonaryName();
         virtual int GoldenDictQuery(const char *word,char *buff);
         virtual ~StardictInstance();
     private:

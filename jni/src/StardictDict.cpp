@@ -5,12 +5,14 @@
 #include<assert.h>
 #include<sys/types.h>
 #include<fcntl.h>
+#include<stdexcept>
 #include"GoldenStandardIO.h"
 #include"GoldenGzipHeaderParser.h"
 #include"GoldenGzipInflate.h"
 #include"GoldenDictLog.h"
 #include"StardictDict.h"
 #include"String8.h"
+using namespace std;
 
 TextMetaData:: TextMetaData(){
     golden_printfd("TextMetaData copy construct function \n");
@@ -28,7 +30,7 @@ TextMetaData::TextMetaData(const TextMetaData &tmp){
         memcpy(mPic,tmp.mPic,mWavDataLength);
     }
 
-    if(mPicDataLength != NULL){
+    if(mPicDataLength != 0){
         mPic = new unsigned char[mPicDataLength];
         memcpy(mPic,tmp.mPic,mPicDataLength);
 
@@ -45,11 +47,11 @@ void TextMetaData::generateHTML(String8 &result){
     const int buff_len = 10240;
     char *buff = new char[buff_len] ;
     memset(buff,0,buff_len);
-    tmp = buff;
+    char *tmp = buff;
     int n = buff_len;
     int len = 0;
     const char *meta_data = "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /> \n <hr/> \n";
-    snprintf(tmp,n,"<HTML> \n<H4>%s</H4>\n<body>\n%s\n",mWord,meta_data);
+    snprintf(tmp,n,"<HTML> \n<H4>%s</H4>\n<body>\n%s\n",mWord.string(),meta_data);
     len = strlen(tmp);
     tmp += len;
     n -= len;
@@ -59,7 +61,7 @@ void TextMetaData::generateHTML(String8 &result){
     tmp += len;
     n -= len;
 
-    char *ptr_m = mTextMeaning.string();
+    const char *ptr_m = mTextMeaning.string();
     const char * html_p = " <p>\n";
     const int html_p_len = strlen(html_p);
     while(*ptr_m){
@@ -72,7 +74,7 @@ void TextMetaData::generateHTML(String8 &result){
         }
         ptr_m ++;
     }
-    n = buff_len - strlen(buff):
+    n = buff_len - strlen(buff);
 
     snprintf(tmp,n,"%s","</body> \n </HTML>");
     len = strlen(tmp);
@@ -80,7 +82,7 @@ void TextMetaData::generateHTML(String8 &result){
     n -= len;
 
     result.setTo(buff);
-    delete buff[];
+    delete[] buff;
 }
 
 void TextMetaData::dumpInfo(){
@@ -98,7 +100,7 @@ void TextMetaData::dumpInfo(){
     }
 }
 
-virtual ~TextMetaData::TextMetaData(){
+TextMetaData::~TextMetaData(){
     if(mWav != NULL){
         delete mWav;
     }
@@ -117,7 +119,7 @@ StardictDict::StardictDict(const char*file_name,const char *same_type_seq):mSeq(
     try{
         file_obj = new GzipInflate(file_path,O_RDONLY);
     }catch(exception &e){
-        throw exception("Gzip file error %s ",e.what());
+        throw exception();//"Gzip file error %s ",e.what());
     }
 }
 
@@ -133,7 +135,7 @@ void StardictDict::read_word_data(int offset,int length,TextMetaData* tmd){
         file_obj = new GzipInflate(file_path,O_RDONLY);
     }catch(exception &e){
         golden_printfe("gzip file error %s ",e.what()); 
-        throw exception("get word fail");
+        throw exception();//"get word fail");
     }
     file_obj->Seek(SEEK_SET,offset);
     unsigned char *buff = new unsigned char [length + 4] ;
@@ -141,10 +143,10 @@ void StardictDict::read_word_data(int offset,int length,TextMetaData* tmd){
     int ret = file_obj->Read(buff,length);
     if(ret != length){
         golden_printfe("%s ret error xxxxxxxx",__func__);
-        throw exception("get word fail");
+        throw exception();//"get word fail");
     }
     parse_meta_data(tmd,buff,length);
-    delete buff[];
+    delete[] buff;
 }
 
 
@@ -348,7 +350,7 @@ int StardictDict::parse_r_data(TextMetaData *tmp,unsigned char *data){
 //file's size,immediately followed by the file's content
 int StardictDict::parse_W_data(TextMetaData *tmp,unsigned char *data){
     int len = ntohl(*((unsigned int*)data));
-    mWavDataLength = len;
+    tmp->mWavDataLength = len;
     tmp->mWav = new unsigned char[len];
     memcpy(tmp->mWav,data+4,len);
     return len + 4; 
@@ -360,7 +362,7 @@ int StardictDict::parse_W_data(TextMetaData *tmp,unsigned char *data){
 int StardictDict::parse_P_data(TextMetaData *tmp,unsigned char *data){
     int len = ntohl(*((unsigned int*)data));
     tmp->mPic = new unsigned char[len];
-    mPicDataLength = len;
+    tmp->mPicDataLength = len;
     memcpy(tmp->mPic,data+4,len);
     return len + 4;
 }

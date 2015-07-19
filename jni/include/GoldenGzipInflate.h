@@ -13,7 +13,7 @@ extern "C"{
 #include"zlib.h"
 }
 
-class GzipInflate:public IOInterface,Ref{
+class GzipInflate:public Ref,IOInterface{
     public:
         GzipInflate(const char *file_path,int mode = O_RDWR);
         virtual ~GzipInflate();

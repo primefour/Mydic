@@ -5,15 +5,17 @@ TEST_PATH= ./test/
 BIN_PATH= ./bin
 SRC_PATH= ./src
 
-SRC_FILE_LIST:= $(SRC_PATH)/String8.cpp \
-	$(SRC_PATH)/StandardIO.cpp \
-	$(SRC_PATH)/Unicode.cpp \
-	$(SRC_PATH)/StardictInfo.cpp \
-	$(SRC_PATH)/StardictMain.cpp \
-	$(SRC_PATH)/StardictIdx.cpp \
-	$(SRC_PATH)/GzipHeaderParser.cpp \
-	$(SRC_PATH)/GzipDeflate.cpp \
+SRC_FILE_LIST:= $(SRC_PATH)/GoldenDictManager.cpp \
+	$(SRC_PATH)/GoldenGzipHeaderParser.cpp \
+	$(SRC_PATH)/GoldenGzipinflate.cpp \
+	$(SRC_PATH)/GoldenStandardIO.cpp \
+	$(SRC_PATH)/GoldenWordIndexItem.cpp \
 	$(SRC_PATH)/StardictDict.cpp \
+	$(SRC_PATH)/StardictIdx.cpp \
+	$(SRC_PATH)/StardictInfo.cpp \
+	$(SRC_PATH)/StardictManager.cpp \
+	$(SRC_PATH)/String8.cpp \
+	$(SRC_PATH)/Unicode.cpp \
 
 SRC_C_FILE_LIST := src/adler32.c \
 	src/compress.c \
@@ -34,7 +36,7 @@ SRC_C_FILE_LIST := src/adler32.c \
 
 
 
-test: Stardict 
+test:GoldenDictTest
 #memfile libz.a 
 #Stardict list_test ref_test avl_test
 
@@ -45,8 +47,8 @@ ref_test:
 	$(GCC) $(CFLAGS) $(LDFLAGS) $(TEST_PATH)/ref_test.cpp -o $(BIN_PATH)/ref_test -lz
 avl_test:
 	$(GCC) $(CFLAGS) $(LDFLAGS) $(TEST_PATH)/AVLTest.cpp $(SRC_PATH)/StandardIO.cpp $(SRC_PATH)/Unicode.cpp $(SRC_PATH)/String8.cpp -o $(BIN_PATH)/avl_test -lz
-Stardict:
-	$(GCC) $(CFLAGS) $(LDFLAGS)  $(SRC_FILE_LIST) $(TEST_PATH)/StardictTest.cpp -o $(BIN_PATH)/Stardict -lz
+GoldenDictTest:
+	$(GCC) $(CFLAGS) $(LDFLAGS)  $(SRC_FILE_LIST) $(TEST_PATH)/StardictTest.cpp -o $(BIN_PATH)/GoldenDictText -lz
 memfile:
 	$(GCC) $(CFLAGS) $(LDFLAGS)  $(SRC_FILE_LIST) $(TEST_PATH)/test.c -o $(BIN_PATH)/memfile -lz
 

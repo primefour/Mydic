@@ -12,13 +12,14 @@
 #include"GoldenWordIndexItem.h"
 #include"StardictIdx.h"
 #include"String8.h"
+using namespace std;
 
 
-StardictIdx:: StardictIdx(const char *file_path,int word_count,int file_size,int offsetbit):file_path(file_path){
+StardictIdx:: StardictIdx(GoldenWordHashList *idx_list,const char *file_path,
+                    int word_count,int file_size,int offsetbit):word_list(idx_list),file_path(file_path){
     this->word_count = word_count;
     this->offsetbit = offsetbit;
     this->file_size = file_size;
-    word_list = NULL;
     golden_printfi("word_count  = %d file_size = %d  offsetbit=%d \n",word_count,file_size,offsetbit);
 }
 
@@ -33,7 +34,7 @@ int StardictIdx::init(){
         file_obj = new MemFile(file_path,O_RDONLY);
     }catch (exception &e){
         golden_printfe("index file open fail %s ",e.what());
-        throw exception("index file open fail");
+        throw exception();//"index file open fail");
     }
     
     int offset_read_size = 8;
@@ -58,12 +59,11 @@ int StardictIdx::init(){
         if(i%5000 == 0){
             golden_printfi("word = %s %d\n",word_buff,::ntohl(*((long*)offset_buff)));
         }
-        i++;
 #endif
-
+        i++;
         SObject<WordIdxItem> newItem(new WordIdxItem((const char *)word_buff,
                                                 ntohl(*(unsigned int *)offset_buff),
-                                                ntohl(*(unsigned int *)(offset_buff+4))); 
+                                                ntohl(*(unsigned int *)(offset_buff+4))));
         word_list->DictHashInsert(newItem);
     }
     return 0;

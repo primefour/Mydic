@@ -1,5 +1,5 @@
 #include<stdio.h>
-#include"StardictMain.h"
+#include"GoldenDictManager.h"
 #include"GoldenDictLog.h"
 
 #if 0
@@ -22,21 +22,17 @@ const char *ce_dict_path = "./bin/langdao-ce-gb.dict.dz";
 
 
 int main(){
-    static StardictMain* pDictMain = NULL ;
-    pDictMain = new StardictMain();
-    pDictMain->InsertDict(ifo_path);
-    char buff[1024]={0};
-    TextMetaData tmd;
+    static GoldenDictManager goldenDict;
+    goldenDict.GoldenDictAdd(ifo_path);
 
+    char buff[1024]={0};
+    char queryResult[4096]={0};
     while(1){
         scanf("%s",buff);
         golden_printfd("####query word is %s \n",buff);
-        pDictMain->getDictIdx(0)->DictQuery(buff,&tmd);
-
-        golden_printfd("####begin\n");
-        tmd.dumpInfo();
-        golden_printfd("####end\n");
-
+        memset(queryResult,0,sizeof(queryResult));
+        goldenDict.GoldenDictQuery(buff,queryResult);
+        golden_printfd("####%s \n",queryResult);
     }
     return 0;
 }
