@@ -10,8 +10,14 @@ class GoldenDictInterface:public virtual Ref{
         virtual int GoldenDictQuery(const char *word,char *buff) = 0;
 };
 
+enum{
+    STAR_DICT_TYPE,
+    DSL_DICT_TYPE,
+    DICT_TYPE,MAX,
+};
 
-class GoldenDictManager{
+
+class GoldenDictManager :public Ref{
     public:
        GoldenDictManager(); 
        void GoldenDictAdd(const char *path);
@@ -19,6 +25,7 @@ class GoldenDictManager{
        int GoldenDictQuery(const char *word,char *buff);
     private:
        map<String8,SObject<GoldenDictInterface> > mDictionaryMap;
+       map<String8,int> mDictionaryType;
 };
 
 #endif

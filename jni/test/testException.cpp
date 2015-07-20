@@ -7,6 +7,8 @@
 #include<string.h>
 #include<stdexcept>
 #include "GoldenHashSet.h"
+#include "String8.h"
+#include<map>
 
 using namespace std;
 
@@ -45,6 +47,8 @@ int main(){
     }else{
         delete obj;
     }
+    map<String8,int> Hello = { {String8("ifo"),1},{String8("dsl"),2}};
+    int a = Hello[String8("ifo")];
     return 0;
 }
 

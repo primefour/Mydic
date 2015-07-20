@@ -167,6 +167,13 @@ public:
     String8 getBasePath(void) const;
 
     /*
+     * Return the path without the extension.  Rules for what constitutes
+     * an extension are described in the comment for getPathExtension().
+     *
+     * "/tmp/foo/bar.dsl.gz" --> "dsl.gz"
+     */
+    String8 getFullExtension() const; 
+    /*
      * Add a component to the pathname.  We guarantee that there is
      * exactly one path separator between the old path and the new.
      * If there is no existing name, we just copy the new name in.

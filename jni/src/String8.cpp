@@ -150,7 +150,7 @@ String8::String8(const char* o, size_t len)
 String8::~String8()
 {
     if(mString != NULL){
-        delete mString;
+        delete[] mString;
     }
     mString = NULL;
 }
@@ -182,7 +182,7 @@ void String8::setTo(const String8& other)
 int String8::setTo(const char* other)
 {
     if(mString != NULL){
-        delete mString; 
+        delete[] mString; 
         mString = NULL;
     }
     if(other == NULL){
@@ -202,7 +202,7 @@ int String8::setTo(const char* other)
 int String8::setTo(const char* other, size_t len)
 {
     if(mString != NULL){
-        delete mString; 
+        delete[] mString; 
         mString = NULL;
     }
     if(other == NULL){
@@ -279,8 +279,8 @@ int String8::appendFormatV(const char* fmt, va_list args)
         char *buf = new char[oldLength + n + 1];
         if (buf) {
             if(mString != NULL){
-                memcpy(buf,mString,oldLength);
-                delete mString;
+                memcpy(buf,mString,size());
+                delete[] mString;
             }
             mString = buf;
             vsnprintf(buf + oldLength, n + 1, fmt, args);
@@ -300,7 +300,7 @@ int String8::real_append(const char* other, size_t otherLen)
         char* str = (char*)buf;
         if(mString != NULL){
             memcpy(str,mString,myLen);
-            delete mString;
+            delete[] mString;
         }
         mString = str;
         str += myLen;
@@ -330,7 +330,8 @@ bool String8::removeAll(const char* other) {
     char* buf = new char[size()];
     if (!buf) return false; // out of memory
     if(mString != NULL){
-        delete mString ;
+        memcpy(buf,mString,size());
+        delete[] mString ;
     }
     mString  = buf;
 
@@ -367,16 +368,16 @@ void String8::toLower(size_t start, size_t length)
     char* buf = new char[len];
     if(buf != NULL){
         if(mString != NULL){
-            delete mString ;
+            memcpy(buf,mString,len);
+            delete[] mString ;
         }
         mString  = buf;
-    }
-
-    buf += start;
-    while (length > 0) {
-        *buf = tolower(*buf);
-        buf++;
-        length--;
+        buf += start;
+        while (length > 0) {
+            *buf = tolower(*buf);
+            buf++;
+            length--;
+        }
     }
 }
 
@@ -397,7 +398,8 @@ void String8::toUpper(size_t start, size_t length)
     char* buf = new char[len];
     if(buf != NULL){
         if(mString != NULL){
-            delete mString ;
+            memcpy(buf,mString,len);
+            delete[] mString ;
         }
         mString  = buf;
     }else{
@@ -426,7 +428,7 @@ void String8::setPathName(const char* name, size_t len)
     char* buf = new char[len];
     if(buf != NULL){
         if(mString != NULL){
-            delete mString ;
+            delete[] mString ;
         }
         mString  = buf;
     }else{
@@ -529,6 +531,27 @@ String8 String8::getPathExtension(void) const
         return String8("");
 }
 
+String8 String8::getFullExtension() const {
+    const char* lastSlash;
+    const char* const str = mString;
+    const char* firstDot;
+
+    // only look at the filename
+    lastSlash = strrchr(str, OS_PATH_SEPARATOR);
+    if (lastSlash == NULL)
+        lastSlash = str;
+    else
+        lastSlash++;
+
+    // find the last dot
+    firstDot = strchr(lastSlash, '.');
+    if (firstDot == NULL){
+        return String8("");
+    }else{
+        return String8(firstDot+1);
+    }
+}
+
 String8 String8::getBasePath(void) const
 {
     char* ext;
@@ -563,7 +586,8 @@ String8& String8::appendPath(const char* name)
         char* buf = new char[(len+1+newlen)];
         if(buf != NULL){
             if(mString != NULL){
-                delete mString;
+                memcpy(buf,mString,len);
+                delete[] mString;
             }
             mString = buf;
         }else{

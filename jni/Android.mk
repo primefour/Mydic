@@ -2,14 +2,16 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := src/com_Dict_DictApp2_DictSearchEngine.cpp \
-	src/GzipDeflate.cpp \
-	src/GzipHeaderParser.cpp \
-	src/StandardIO.cpp \
-	src/Stardict.cpp \
+	src/GoldenDictManager.cpp \
+	src/GoldenDslParser.cpp \
+	src/GoldenGzipHeaderParser.cpp \
+	src/GoldenGzipinflate.cpp \
+	src/GoldenStandardIO.cpp \
+	src/GoldenWordIndexItem.cpp \
 	src/StardictDict.cpp \
 	src/StardictIdx.cpp \
 	src/StardictInfo.cpp \
-	src/StardictMain.cpp \
+	src/StardictManager.cpp \
 	src/String8.cpp \
 	src/Unicode.cpp \
 	src/adler32.c \

@@ -78,6 +78,13 @@ void TextMetaData::generateHTML(String8 &result){
     }
     n = buff_len - strlen(buff);
 
+    const char *audio = "<p> </p> \n<a href hello.wav > audio </a> <p></p> " ;
+
+    snprintf(tmp,n,"%s",audio);
+    len = strlen(tmp);
+    tmp += len;
+    n -= len;
+
     snprintf(tmp,n,"%s","</body> \n </HTML>");
     len = strlen(tmp);
     tmp += len;

@@ -1,9 +1,9 @@
 #include"com_Dict_DictApp2_DictSearchEngine.h"
 #include<stdio.h>
-#include"StardictMain.h"
+#include"GoldenDictManager.h"
 #include"GoldenDictLog.h"
 
-static StardictMain* pDictMain = NULL ;
+static SObject<GoldenDictManager> GoldenDict = NULL;
 
 #ifdef __cplusplus
 extern "C" {
@@ -16,11 +16,10 @@ extern "C" {
  */
 JNIEXPORT jobject JNICALL  Java_com_Dict_DictApp2_DictSearchEngine_engQueryWord (JNIEnv *pEnv, jclass pobj, jstring pString){
     jboolean isCopy;
-    TextMetaData tmd;
     const char* str = pEnv->GetStringUTFChars(pString, &isCopy);
     golden_printfi("print UTF-8 string: %s, %d", str, isCopy);
-    pDictMain->getDictIdx(0)->DictQuery(str,&tmd);
-
+    char queryResult[4096]={0};
+    GoldenDict->GoldenDictQuery(str,queryResult);
     pEnv->ReleaseStringUTFChars(pString, str);
 
     jclass tmd_class = pEnv->FindClass("com/Dict/DictApp2/TextMetaData");
@@ -39,10 +38,9 @@ JNIEXPORT jobject JNICALL  Java_com_Dict_DictApp2_DictSearchEngine_engQueryWord 
         pEnv->DeleteLocalRef(obj);
         return NULL;
     }
-    //jstring text = pEnv->GetObjectField(obj,meaning_fid); 
-    tmd.mTextMeaning += "<p> </p> \n<a href hello.wav > audio </a> <p></p> " ; 
-    jstring text = pEnv->NewStringUTF(tmd.mTextMeaning.string());
+    jstring text = pEnv->NewStringUTF(queryResult);
     pEnv->SetObjectField(obj,meaning_fid,text);
+
     return obj ; 
 }
 
@@ -64,8 +62,8 @@ JNIEXPORT jboolean JNICALL Java_com_Dict_DictApp2_DictSearchEngine_engAddDiction
     const char *str = NULL;
     jboolean *isCopy;
     str = pEnv->GetStringUTFChars(pString, isCopy);
-    if(pDictMain != NULL){
-        pDictMain->InsertDict(str);
+    if(GoldenDict.GetPoint() != NULL){
+        GoldenDict->GoldenDictAdd(str);
     }else{
         golden_printfe("StardictMain should be init before using\n");
     }
@@ -89,10 +87,10 @@ JNIEXPORT jboolean JNICALL Java_com_Dict_DictApp2_DictSearchEngine_engRemoveDict
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_initEng(JNIEnv *pEnv, jclass pObj){
-    if(pDictMain != NULL){
+    if(GoldenDict.GetPoint() != NULL){
         return ;
     }else{
-        pDictMain = new StardictMain();
+        GoldenDict = new GoldenDictManager();
     }
     return ;
 }
@@ -103,10 +101,6 @@ JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_initEng(JNIEnv *p
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_destroyEng(JNIEnv *pEnv, jclass pObj){
-    if(pDictMain != NULL){
-        delete pDictMain ;
-        pDictMain = NULL;
-    }
 }
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved){
