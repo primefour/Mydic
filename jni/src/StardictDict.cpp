@@ -56,10 +56,12 @@ void TextMetaData::generateHTML(String8 &result){
     tmp += len;
     n -= len;
 
-    snprintf(tmp,n,"%s <p>",mTextPhonetic.string());
-    len = strlen(tmp);
-    tmp += len;
-    n -= len;
+    if(!mTextPhonetic.isEmpty()){
+        snprintf(tmp,n,"%s <p>",mTextPhonetic.string());
+        len = strlen(tmp);
+        tmp += len;
+        n -= len;
+    }
 
     const char *ptr_m = mTextMeaning.string();
     const char * html_p = " <p>\n";

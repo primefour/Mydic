@@ -6,6 +6,8 @@
 #include<unistd.h>
 #include<string.h>
 #include<stdexcept>
+#include "GoldenHashSet.h"
+
 using namespace std;
 
 class File{
@@ -21,6 +23,9 @@ class File{
         }
         ~File(){
             golden_printfd("file destruction\n");
+        }
+        const char *string(){
+            return "Hello world";
         }
     private:
         int m_fd;

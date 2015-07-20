@@ -33,10 +33,13 @@ StardictInfo::StardictInfo(const char *file_path):file_name(file_path){
         golden_printfd("info file fail %s\n",e.what());
         throw exception();
     };
-    char *buff= new char[10240];
+    golden_printfi("###################################\n");
+    const int buff_len = 10240 ;
+    char *buff= new char[buff_len];
     while(1){
-        memset(buff,0,sizeof(buff));
-        int n = file_obj->ReadLine((unsigned char *)buff,sizeof(buff));
+        memset(buff,0,buff_len);
+        int n = file_obj->ReadLine((unsigned char *)buff,buff_len);
+        golden_printfi("n = %d buff = %s \n",n,buff);
         if(n <= 0){
             break;
         }

@@ -20,7 +20,7 @@ class DictHashSet{
     private:
         int defaultHashCode(const HASH_ITEM_TYPE &item);
         vector< list<HASH_ITEM_TYPE> > mHashTable;
-        HASH_ITEM_TYPE mLatestItem;
+        typename list<HASH_ITEM_TYPE>::iterator mLatestItem;
         int (*mPfn)(const HASH_ITEM_TYPE &item);
         int mMaxCapacity;
 };
@@ -29,7 +29,7 @@ class DictHashSet{
 
 template<class HASH_ITEM_TYPE>
 DictHashSet<HASH_ITEM_TYPE>::DictHashSet(int set_count,int (*pfn)(const HASH_ITEM_TYPE &item)):mHashTable(set_count,list<HASH_ITEM_TYPE>()){
-    mLatestItem  = NULL;
+    mLatestItem  = mHashTable[0].end();
     mMaxCapacity = set_count;
     mPfn = pfn;
 }
@@ -37,7 +37,7 @@ DictHashSet<HASH_ITEM_TYPE>::DictHashSet(int set_count,int (*pfn)(const HASH_ITE
 
 template<class HASH_ITEM_TYPE>
 DictHashSet<HASH_ITEM_TYPE>::DictHashSet(int set_count):mHashTable(set_count,list<HASH_ITEM_TYPE>()){
-    mLatestItem  = NULL;
+    mLatestItem  = mHashTable[0].end();
     mMaxCapacity = set_count;
     mPfn  = NULL;
 }
@@ -85,9 +85,10 @@ void DictHashSet<HASH_ITEM_TYPE>::DictHashInsert(const HASH_ITEM_TYPE &item){
 template<class HASH_ITEM_TYPE>
 const HASH_ITEM_TYPE& DictHashSet<HASH_ITEM_TYPE>::DictHashGet(const HASH_ITEM_TYPE &item){
     int idx = 0;
-
-    if(mLatestItem != NULL && *mLatestItem == item){
-        return *mLatestItem ;
+    if(mLatestItem != mHashTable[0].end()){
+        if(*mLatestItem == item){
+            return *mLatestItem ;
+        }
     }
 
     if(mPfn){
@@ -140,7 +141,7 @@ void DictHashSet<HASH_ITEM_TYPE>::DictHashRemove(const HASH_ITEM_TYPE &item){
     while(begin != end){
         if(*begin == item){
             if(*mLatestItem == item){
-                mLatestItem = NULL;
+                mLatestItem  = mHashTable[0].end();
             }
             mHashTable[idx].remove(begin);
         }

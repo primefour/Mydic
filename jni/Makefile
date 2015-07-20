@@ -48,7 +48,7 @@ ref_test:
 avl_test:
 	$(GCC) $(CFLAGS) $(LDFLAGS) $(TEST_PATH)/AVLTest.cpp $(SRC_PATH)/StandardIO.cpp $(SRC_PATH)/Unicode.cpp $(SRC_PATH)/String8.cpp -o $(BIN_PATH)/avl_test -lz
 GoldenDictTest:
-	$(GCC) $(CFLAGS) $(LDFLAGS)  $(SRC_FILE_LIST) $(TEST_PATH)/StardictTest.cpp -o $(BIN_PATH)/GoldenDictText -lz
+	$(GCC) $(CFLAGS) $(LDFLAGS)  $(SRC_FILE_LIST) $(TEST_PATH)/StardictTest.cpp -o $(BIN_PATH)/GoldenDictTest -lz
 memfile:
 	$(GCC) $(CFLAGS) $(LDFLAGS)  $(SRC_FILE_LIST) $(TEST_PATH)/test.c -o $(BIN_PATH)/memfile -lz
 

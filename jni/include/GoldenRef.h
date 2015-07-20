@@ -7,31 +7,31 @@ class Ref {
     public:
         Ref(){
             ref = 0;
-            golden_printfd("ref() ref = %d \n",ref);
+            golden_printfi("ref() ref = %d \n",ref);
         }
 
         Ref(const Ref & obj){
             ref = 0;
-            golden_printfd("ref (obj) ref = %d \n",ref);
+            golden_printfi("ref (obj) ref = %d \n",ref);
         }
 
         void get(){
             ref ++;
-            golden_printfd("get ref = %d \n",ref);
+            golden_printfi("get ref = %d \n",ref);
         }
 
         int put(){
             ref --;
-            golden_printfd("put ref = %d \n",ref);
+            golden_printfi("put ref = %d \n",ref);
             return ref ;
         }
 
         virtual ~Ref(){
             ref --;
             if(ref > 0){
-                golden_printfd("~ref leak error !\n");
+                golden_printfi("~ref leak error !\n");
             }else{
-                golden_printfd("~ref delete object! \n");
+                golden_printfi("~ref delete object! \n");
             }
         }
     private:

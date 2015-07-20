@@ -33,6 +33,8 @@ StardictInstance::StardictInstance(String8 path):mStarInfo(NULL),mStarIdx(NULL),
         throw exception();//"info get word count fail");
     }
 
+    golden_printfd("mStarInfo->getWordCount() = %d \n",mStarInfo->getWordCount());
+    mStarInfo->dumpInfo();
     mWordList = new GoldenWordHashList(mStarInfo->getWordCount());
 
     try{
@@ -54,11 +56,11 @@ StardictInstance::StardictInstance(String8 path):mStarInfo(NULL),mStarIdx(NULL),
 
 
 int StardictInstance::GoldenDictQuery(const char *word,char *buff){
-    WordIdxItem tmp(word,0,0);
+    SObject<WordIdxItem> tmp = new WordIdxItem(word,0,0);
     if(word && buff && mWordList->DictHashfind(tmp)){
         TextMetaData targetHTML(word);
-        const WordIdxItem &target = mWordList->DictHashGet(tmp);
-        mDict->read_word_data(target.data_offset,target.data_size,&targetHTML);
+        const SObject<WordIdxItem>&target = mWordList->DictHashGet(tmp);
+        mDict->read_word_data(target->data_offset,target->data_size,&targetHTML);
         String8 HTML;
         targetHTML.generateHTML(HTML);
         strcpy(buff,HTML.string());
