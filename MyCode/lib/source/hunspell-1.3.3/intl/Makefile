@@ -37,7 +37,7 @@ top_builddir = ..
 #    files it finds in srcdir = ../../gettext-runtime/intl.
 
 
-prefix = /home/crazyhorse/test/golden_dic/MyDict/lib/libSource
+prefix = /usr/local
 exec_prefix = ${prefix}
 transform = s,x,x,
 libdir = ${exec_prefix}/lib
@@ -55,12 +55,12 @@ INSTALL_DATA = ${INSTALL} -m 644
 # We use $(mkdir_p).
 # In automake <= 1.9.x, $(mkdir_p) is defined either as "mkdir -p --" or as
 # "$(mkinstalldirs)" or as "$(install_sh) -d". For these automake versions,
-# ${SHELL} /home/crazyhorse/test/golden_dic/MyDict/lib/libSource/source/hunspell-1.3.3/install-sh does not start with $(SHELL), so we add it.
+# ${SHELL} /home/crazyhorse/MyProject/GoldenDict/GitDict/MyCode/lib/source/hunspell-1.3.3/install-sh does not start with $(SHELL), so we add it.
 # In automake >= 1.10, /bin/mkdir -p is derived from ${MKDIR_P}, which is defined
 # either as "/path/to/mkdir -p" or ".../install-sh -c -d". For these automake
 # versions, $(mkinstalldirs) and $(install_sh) are unused.
-mkinstalldirs = $(SHELL) ${SHELL} /home/crazyhorse/test/golden_dic/MyDict/lib/libSource/source/hunspell-1.3.3/install-sh -d
-install_sh = $(SHELL) ${SHELL} /home/crazyhorse/test/golden_dic/MyDict/lib/libSource/source/hunspell-1.3.3/install-sh
+mkinstalldirs = $(SHELL) ${SHELL} /home/crazyhorse/MyProject/GoldenDict/GitDict/MyCode/lib/source/hunspell-1.3.3/install-sh -d
+install_sh = $(SHELL) ${SHELL} /home/crazyhorse/MyProject/GoldenDict/GitDict/MyCode/lib/source/hunspell-1.3.3/install-sh
 MKDIR_P = /bin/mkdir -p
 mkdir_p = /bin/mkdir -p
 
@@ -70,7 +70,7 @@ AR = ar
 CC = gcc
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 RANLIB = ranlib
-YACC = bison -y -d
+YACC = : -y -d
 YFLAGS = --name-prefix=__gettext
 WINDRES = 
 
@@ -82,7 +82,7 @@ DEFS = -DLOCALEDIR=\"$(localedir)\" -DLOCALE_ALIAS_PATH=\"$(aliaspath)\" \
 -Dset_relocation_prefix=libintl_set_relocation_prefix \
 -Drelocate=libintl_relocate \
 -DDEPENDS_ON_LIBICONV=1 -DHAVE_CONFIG_H
-CPPFLAGS = -I/home/crazyhorse/test/golden_dic/MyDict/lib/libSource/include
+CPPFLAGS = 
 CFLAGS = -g -O2 -fvisibility=hidden
 LDFLAGS =  $(LDFLAGS_no)
 LDFLAGS_yes = -Wl,--export-all-symbols
@@ -193,7 +193,7 @@ libintl.a libgnuintl.a: $(OBJECTS)
 libintl.la libgnuintl.la: $(OBJECTS) $(OBJECTS_RES_no)
 	$(LIBTOOL) --mode=link \
 	  $(CC) $(CPPFLAGS) $(CFLAGS) $(XCFLAGS) $(LDFLAGS) -o $@ \
-	  $(OBJECTS) -L/home/crazyhorse/test/golden_dic/MyDict/lib/libSource/lib -liconv -R/home/crazyhorse/test/golden_dic/MyDict/lib/libSource/lib  $(LIBS)  -lc \
+	  $(OBJECTS)   $(LIBS)  -lc \
 	  $(OBJECTS_RES_no) \
 	  -version-info $(LTV_CURRENT):$(LTV_REVISION):$(LTV_AGE) \
 	  -rpath $(libdir) \

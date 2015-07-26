@@ -1,4 +1,4 @@
-prefix=/home/crazyhorse/test/golden_dic/MyDict/lib/libSource
+prefix=/usr/local
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include

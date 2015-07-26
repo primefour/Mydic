@@ -6,8 +6,19 @@
 using namespace std;
 class GoldenDictInterface:public virtual Ref{
     public:
+        GoldenDictInterface(){
+            mIsEnable = true;
+        }
         virtual const String8& GetDictonaryName() = 0;
         virtual int GoldenDictQuery(const char *word,char *buff) = 0;
+        virtual void SetEnable(bool enable){
+            mIsEnable = enable;
+        }
+        virtual bool IsEnable(){
+            return mIsEnable;
+        }
+    private:
+        bool mIsEnable;
 };
 
 enum{
