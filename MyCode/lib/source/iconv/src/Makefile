@@ -20,6 +20,8 @@ LDFLAGS_yes = -Wl,--export-all-symbols
 LDFLAGS_no =
 INCLUDES = -I. -I$(srcdir) -I $(top_builddir)/charset/ -I $(top_builddir)/include/
 
+include_dir =  $(top_builddir)/include/
+
 # -DBUILDING_LIBICONV: Change expansion of LIBICONV_DLL_EXPORTED macro.
 # -DBUILDING_DLL: Change expansion of RELOCATABLE_DLL_EXPORTED macro.
 DEFS = -DLIBDIR=\"$(libdir)\" -DBUILDING_LIBICONV -DBUILDING_DLL \
@@ -54,7 +56,7 @@ OBJECTS = iconv.o localcharset.o relocatable.o iconv_string.o
 all : libiconv.a
 
 libiconv.a : $(OBJECTS)
-	$(AR) $(ARFLAGS) $@ $?
+	$(AR) $(ARFLAGS) $@ $+
 
 iconv.o : $(srcdir)/iconv.c $(srcdir)/converters.h \
            $(srcdir)/encodings.def $(srcdir)/encodings_aix.def $(srcdir)/encodings_osf1.def $(srcdir)/encodings_dos.def $(srcdir)/encodings_local.def \
@@ -72,7 +74,8 @@ localcharset.o : $(top_builddir)/charset/localcharset.c $(srcdir)/relocatable.h
 relocatable.o : $(srcdir)/relocatable.c $(srcdir)/relocatable.h
 	$(CC) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $(DEFS) -c $(srcdir)/relocatable.c
 
-iconv_string.o : $(srcdir)/iconv_string.c $(srcdir)/iconv_string.h
+iconv_string.o : $(srcdir)/iconv_string.c $(include_dir)/iconv_string.h
+	$(CC) $(INCLUDES) $(CPPFLAGS) $(CFLAGS) $(DEFS) -c $(srcdir)/iconv_string.c
 
 clean:
 	rm -rf *.o *.a
