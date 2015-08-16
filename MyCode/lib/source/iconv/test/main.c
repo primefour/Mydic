@@ -4,6 +4,7 @@
 #include<sys/types.h>
 #include<string.h>
 #include<wchar.h>
+#include "iconv_string.h"
 
 
 const char *utf8_type = "UTF-8";
@@ -51,21 +52,28 @@ int main(int argc,char **argv){
     unsigned short read_buff[1024]={0};
     unsigned short new_line = L'\n';
     unsigned short *tmp = read_buff;
-    unsigned short wc_tmp = 0;
     printf("new line char value sizeof = %ld 0x%04x \n",sizeof(new_line),new_line);
-    while(read(fd,&wc_tmp,sizeof(unsigned short)) && (wc_tmp != new_line)){
-        printf("0x%04x \n",wc_tmp);
+    while(read(fd,tmp,sizeof(unsigned short)) && (*tmp != new_line)){
+        printf("0x%04x \n",*tmp);
+        tmp ++;
     }
-
-    printf("xx 0x%04x \n",wc_tmp);
+    //printf("read_buff = %s \n",read_buff);
 
     char utf8_buff[1024]={0};
-/*
+
+    //extern int iconv_string (const char* tocode, const char* fromcode, 
+    //const char* start, const char* end, char** resultp, size_t* lengthp);
+    size_t length = sizeof(utf8_buff);
+    extern int printfk(int a);
+    printfk(2);
+
     ret = iconv_string(utf8_type,encode_type, 
-                            read_buff,tmp, 
-                            &utf8_buff,
-                            sizeof(utf8_buff));
+                            (const char *)read_buff,
+                            (const char *)tmp, 
+                            (char **)&utf8_buff,
+                            &length);
+
     printf("iconv_string ret value = %d  %s ",ret,utf8_buff);
-    */
+    
     return 0;
 }

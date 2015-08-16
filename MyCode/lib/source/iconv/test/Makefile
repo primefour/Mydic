@@ -1,6 +1,6 @@
 GCC = gcc
 
-CFLAGS = -I ../include/ -L ../src/ -liconv
+CFLAGS = -I ../include/ -L ../src/ -liconv -L../ libhello.a
 
 source =$(wildcard *.c)
 
