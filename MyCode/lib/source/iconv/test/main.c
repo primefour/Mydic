@@ -4,6 +4,10 @@
 #include<sys/types.h>
 #include<string.h>
 #include<wchar.h>
+#include <iconv.h>
+#include <errno.h>
+#include <stdlib.h>
+#include <string.h>
 #include "iconv_string.h"
 
 const char *utf8_type = "UTF-8";
@@ -188,17 +192,110 @@ const char *utf32_big_type = "UTF-32BE";
 const char *GetFileEncoding(unsigned char *buff){
     if(buff[0] == 0xEF && buff[1] == 0xBB && buff[2] == 0xBF){
         return utf8_type;
-    }else if(buff[0] == 0xFE && buff[1] == 0xFF){
-        return utf16_little_type;
-    }else if(buff[0] == 0xFF && buff[1] == 0xFE){
-        return utf16_big_type;
     }else if(buff[0] == 0xff && buff[1] == 0xfe &&  buff[2] == 0x00 && buff[3] == 0x00){
-        return utf32_little_type;
+        return utf32_big_type;
     }else if(buff[3] == 0xff && buff[2] == 0xfe &&  buff[1] == 0x00 && buff[0] == 0x00){
-        return utf32_big_type; 
+        return utf32_little_type; 
+    }else if(buff[0] == 0xFE && buff[1] == 0xFF){
+        return utf16_big_type;
+    }else if(buff[0] == 0xFF && buff[1] == 0xFE){
+        return utf16_little_type;
     }else{
         return utf8_type;
     }
+}
+
+
+int read_line(int fd,const char *encode_type,const char *to_type,char *buff,int length){
+    int ret = -1;
+    printf("encode-type = %s \n",encode_type);
+    unsigned short read_buff[1024]={0};
+    unsigned short new_line = L'\n';
+    unsigned short *tmp = read_buff;
+
+    while(read(fd,tmp,sizeof(unsigned short)) && (*tmp != new_line)){
+        tmp ++;
+    }
+
+    char *utf8_buff=buff;
+
+    //extern int iconv_string (const char* tocode, const char* fromcode, 
+    //const char* start, const char* end, char** resultp, size_t* lengthp);
+
+
+
+    iconv_t cd = iconv_open(to_type,encode_type);
+    if (cd == (iconv_t)(-1)) {
+        printf("iconv open fail \n");
+        return ret;
+    }
+
+    size_t input_size = tmp - read_buff;
+    while(input_size > 0){
+        ret = iconv(cd,&inptr,&insize,&outptr,&outsize);
+        if(ret == -1){
+            if(errno == EINVAL){
+            }else{
+                perror("iconv fail");
+            }
+            iconv_close(cd);
+            return ret;
+        }
+    }
+
+    {
+      size_t res = iconv(cd,NULL,NULL,&outptr,&outsize);
+      if (res == (size_t)(-1)) {
+        int saved_errno = errno;
+        iconv_close(cd);
+        errno = saved_errno;
+        return -1;
+      }
+    }
+    iconv_close(cd);
+
+  /* Do the conversion for real. */
+  {
+    const char* inptr = start;
+    size_t insize = end-start;
+    char* outptr = result;
+    size_t outsize = length;
+    while (insize > 0) {
+      size_t res = iconv(cd,&inptr,&insize,&outptr,&outsize);
+      if (res == (size_t)(-1)) {
+        if (errno == EINVAL)
+          break;
+        else {
+          int saved_errno = errno;
+          iconv_close(cd);
+          errno = saved_errno;
+          return -1;
+        }
+      }
+    }
+    {
+      size_t res = iconv(cd,NULL,NULL,&outptr,&outsize);
+      if (res == (size_t)(-1)) {
+        int saved_errno = errno;
+        iconv_close(cd);
+        errno = saved_errno;
+        return -1;
+      }
+    }
+    if (outsize != 0) abort();
+  }
+  iconv_close(cd);
+
+
+    /*
+    ret = iconv_string(utf8_type,encode_type, 
+                            (const char *)read_buff,
+                            (const char *)tmp, 
+                            (char **)buff,
+                            &length);
+    */
+    printf("iconv_string ret value = %d  %s \n",ret,*utf8_buff);
+    return ret;
 }
 
 const char *file_path = "/home/crazyhorse/MyProject/Advanced_Learners_Dictionary.dsl";
@@ -216,35 +313,15 @@ int main(int argc,char **argv){
         close(fd);
         return 0;
     }
-
     const char *encode_type = GetFileEncoding(buff);
 
-    printf("encode-type = %s \n",encode_type);
-    unsigned short read_buff[1024]={0};
-    unsigned short new_line = L'\n';
-    unsigned short *tmp = read_buff;
-    printf("new line char value sizeof = %ld 0x%04x \n",sizeof(new_line),new_line);
-    while(read(fd,tmp,sizeof(unsigned short)) && (*tmp != new_line)){
-        //printf("0x%x \n",*tmp);
-        tmp ++;
+    char dest_buff[4096]={0};
+    int i = 0;
+    while(i < 1000){
+        read_line(fd,encode_type,utf8_type,&dest_buff,sizeof(dest_buff));
+        memset(dest_buff,0,sizeof(dest_buff));
+        i++;
     }
-    //printf("read_buff = %s \n",read_buff);
-
-    char utf8_buff[1024]={0};
-
-    //extern int iconv_string (const char* tocode, const char* fromcode, 
-    //const char* start, const char* end, char** resultp, size_t* lengthp);
-    size_t length = sizeof(utf8_buff);
-    extern int printfk(int a);
-    printfk(2);
-
-    ret = iconv_string(utf8_type,"utf16",//encode_type, 
-                            (const char *)read_buff,
-                            (const char *)tmp, 
-                            (char **)&utf8_buff,
-                            &length);
-
-    printf("iconv_string ret value = %d  %s \n",ret,utf8_buff);
-    
+    close(fd);
     return 0;
 }
