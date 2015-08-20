@@ -1,20 +1,5 @@
-#include<stdio.h>
-#include<unistd.h>
-#include<fcntl.h>
-#include<sys/types.h>
-#include<string.h>
-#include<wchar.h>
-#include <iconv.h>
-#include <errno.h>
-#include <stdlib.h>
-#include <string.h>
-#include "iconv_string.h"
-
-const char *utf8_type = "UTF-8";
-const char *utf16_little_type = "UTF-16LE";
-const char *utf16_big_type = "UTF-16BE";
-const char *utf32_little_type = "UTF-32LE";
-const char *utf32_big_type = "UTF-32BE";
+#ifndef __GOLDEN_ICONV_TOOL_H__
+#define __GOLDEN_ICONV_TOOL_H__
 /* 
   437, 500, 500V1, 850, 851, 852, 855, 856, 857, 860, 861, 862, 863, 864, 865,
   866, 866NAV, 869, 874, 904, 1026, 1046, 1047, 8859_1, 8859_2, 8859_3, 8859_4,
@@ -188,109 +173,13 @@ const char *utf32_big_type = "UTF-32BE";
   WINDOWS-1257, WINDOWS-1258, WINSAMI2, WS2, YU
   */
 
+class GoldenIConvTool {
+    public:
+        static const char *GetFileEncoding(int fd);
+        static const char *GetFileEncoding(unsigned char *buff);
+        static int IConvString(const char *encode_type,const char *to_type,char **input_buff,int ilength,char *output_buff,int olength);
+        static int ReadLine16(int fd,const char *encode_type,const char *to_type,char *buff,int length);
+        static int ReadLine32(int fd,const char *encode_type,const char *to_type,char *buff,int length);
+};
 
-const char *GetFileEncoding(unsigned char *buff){
-    if(buff[0] == 0xEF && buff[1] == 0xBB && buff[2] == 0xBF){
-        return utf8_type;
-    }else if(buff[0] == 0xff && buff[1] == 0xfe &&  buff[2] == 0x00 && buff[3] == 0x00){
-        return utf32_big_type;
-    }else if(buff[3] == 0xff && buff[2] == 0xfe &&  buff[1] == 0x00 && buff[0] == 0x00){
-        return utf32_little_type; 
-    }else if(buff[0] == 0xFE && buff[1] == 0xFF){
-        return utf16_big_type;
-    }else if(buff[0] == 0xFF && buff[1] == 0xFE){
-        return utf16_little_type;
-    }else{
-        return utf8_type;
-    }
-}
-
-
-int read_line(int fd,const char *encode_type,const char *to_type,char **buff,int length){
-    int ret = -1;
-    printf("encode-type = %s \n",encode_type);
-    unsigned short read_buff[1024]={0};
-    char dest_buff[4096]={0};
-    unsigned short new_line = L'\n';
-    unsigned short *tmp = read_buff;
-
-    while(read(fd,tmp,sizeof(unsigned short)) && (*tmp != new_line)){
-        tmp ++;
-    }
-
-    //extern int iconv_string (const char* tocode, const char* fromcode, 
-    //const char* start, const char* end, char** resultp, size_t* lengthp);
-    
-    iconv_t cd = iconv_open(to_type,encode_type);
-    if (cd == (iconv_t)(-1)) {
-        printf("iconv open fail \n");
-        return ret;
-    }
-
-    size_t input_size = tmp - read_buff;
-    printf("input_size  = %d \n",input_size );
-    char **utf8_buff=buff;
-    char *input_buff = read_buff;
-    char *dest = dest_buff;
-
-    while(input_size > 0){
-        ret = iconv(cd,&input_buff,&input_size,&dest,&length);
-        printf("input_size  = %d \n",input_size );
-        if(ret == -1){
-            if(errno == EINVAL){
-                printf("EINVAL \n");
-            }else{
-                perror("iconv fail");
-            }
-            iconv_close(cd);
-            return ret;
-        }
-    }
-
-    ret = iconv(cd,NULL,NULL,buff,&length);
-    if (ret == (-1)) {
-        if(errno == EINVAL){
-            printf("EINVAL \n");
-        }else{
-            perror("iconv fail");
-        }
-        iconv_close(cd);
-        return ret;
-    }
-
-    iconv_close(cd);
-
-    printf("iconv_string ret value = %d  %s \n",ret,dest_buff);
-    return ret;
-}
-
-//const char *file_path = "/home/crazyhorse/MyProject/Advanced_Learners_Dictionary.dsl";
-
-const char *file_path = "/home/crazyhorse/test/golden_dic/AdvancedLearnersDictionary.dsl" ;
-
-int main(int argc,char **argv){
-    int fd = open(file_path,O_RDONLY);
-    if(fd < 0){
-        printf("open file fail %s \n",file_path);
-        return 0;
-    }
-
-    unsigned char buff[4];
-
-    int ret = read(fd,buff,sizeof(buff));
-    if(ret != sizeof(buff)){
-        close(fd);
-        return 0;
-    }
-    const char *encode_type = GetFileEncoding(buff);
-
-    char dest_buff[4096]={0};
-    int i = 0;
-    while(i < 1000){
-        read_line(fd,encode_type,utf8_type,&dest_buff,sizeof(dest_buff));
-        memset(dest_buff,0,sizeof(dest_buff));
-        i++;
-    }
-    close(fd);
-    return 0;
-}
+#endif
