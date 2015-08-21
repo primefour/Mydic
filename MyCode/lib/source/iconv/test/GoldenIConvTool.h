@@ -1,5 +1,16 @@
 #ifndef __GOLDEN_ICONV_TOOL_H__
 #define __GOLDEN_ICONV_TOOL_H__
+#include<stdio.h>
+#include<unistd.h>
+#include<fcntl.h>
+#include<sys/types.h>
+#include<string.h>
+#include<wchar.h>
+#include"iconv.h"
+#include <errno.h>
+#include <stdlib.h>
+#include <string.h>
+
 /* 
   437, 500, 500V1, 850, 851, 852, 855, 856, 857, 860, 861, 862, 863, 864, 865,
   866, 866NAV, 869, 874, 904, 1026, 1046, 1047, 8859_1, 8859_2, 8859_3, 8859_4,
@@ -172,6 +183,12 @@
   WINDOWS-1252, WINDOWS-1253, WINDOWS-1254, WINDOWS-1255, WINDOWS-1256,
   WINDOWS-1257, WINDOWS-1258, WINSAMI2, WS2, YU
   */
+
+extern const char *utf8_type ; 
+extern const char *utf16_little_type ; 
+extern const char *utf16_big_type ; 
+extern const char *utf32_little_type ;
+extern const char *utf32_big_type;
 
 class GoldenIConvTool {
     public:

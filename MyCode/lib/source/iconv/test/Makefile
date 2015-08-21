@@ -1,10 +1,14 @@
-GCC = gcc
+GCC = g++
 
 CFLAGS = -I ../include/ -L ../src/ -L../
 
-source =$(wildcard *.c)
+Csource =$(wildcard *.c)
 
-object = $(subst .c,.o,$(source))
+CPPsource =$(wildcard *.cpp)
 
-string_test:$(source)
-	$(GCC) $(CFLAGS) $+ -lhello -liconv -o $@
+object = $(subst .c,.o,$(Csource))
+
+object += $(subst .cpp,.o,$(CPPsource))
+
+string_test:$(Csource) $(CPPsource)
+	$(GCC) $(CFLAGS) $+ -liconv -o $@

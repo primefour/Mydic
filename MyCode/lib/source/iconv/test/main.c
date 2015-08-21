@@ -8,13 +8,8 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
-#include "iconv_string.h"
+#include"GoldenIConvTool.h"
 
-const char *utf8_type = "UTF-8";
-const char *utf16_little_type = "UTF-16LE";
-const char *utf16_big_type = "UTF-16BE";
-const char *utf32_little_type = "UTF-32LE";
-const char *utf32_big_type = "UTF-32BE";
 /* 
   437, 500, 500V1, 850, 851, 852, 855, 856, 857, 860, 861, 862, 863, 864, 865,
   866, 866NAV, 869, 874, 904, 1026, 1046, 1047, 8859_1, 8859_2, 8859_3, 8859_4,
@@ -228,14 +223,14 @@ int read_line(int fd,const char *encode_type,const char *to_type,char **buff,int
     }
 
     size_t input_size = tmp - read_buff;
-    printf("input_size  = %d \n",input_size );
+    printf("input_size  = %d \n",(int)input_size );
     char **utf8_buff=buff;
-    char *input_buff = read_buff;
+    char *input_buff = (char *)read_buff;
     char *dest = dest_buff;
 
     while(input_size > 0){
-        ret = iconv(cd,&input_buff,&input_size,&dest,&length);
-        printf("input_size  = %d \n",input_size );
+        ret = iconv(cd,&input_buff,&input_size,&dest,(size_t*)&length);
+        printf("input_size  = %d \n",(int)input_size );
         if(ret == -1){
             if(errno == EINVAL){
                 printf("EINVAL \n");
@@ -247,7 +242,7 @@ int read_line(int fd,const char *encode_type,const char *to_type,char **buff,int
         }
     }
 
-    ret = iconv(cd,NULL,NULL,buff,&length);
+    ret = iconv(cd,NULL,NULL,buff,(size_t*)&length);
     if (ret == (-1)) {
         if(errno == EINVAL){
             printf("EINVAL \n");
@@ -269,19 +264,52 @@ int read_line(int fd,const char *encode_type,const char *to_type,char **buff,int
 const char *file_path = "/home/crazyhorse/test/golden_dic/AdvancedLearnersDictionary.dsl" ;
 
 int main(int argc,char **argv){
-    int fd = open(file_path,O_RDONLY);
-    if(fd < 0){
-        printf("open file fail %s \n",file_path);
-        return 0;
-    }
 
-    unsigned char buff[4];
-
-    int ret = read(fd,buff,sizeof(buff));
-    if(ret != sizeof(buff)){
+    {
+        int fd = open(file_path,O_RDONLY);
+        if(fd < 0){
+            printf("open file fail %s \n",file_path);
+            return 0;
+        }
+        printf("type  %s \n",GoldenIConvTool::GetFileEncoding(fd));
         close(fd);
-        return 0;
     }
+    {
+        int fd = open(file_path,O_RDONLY);
+        if(fd < 0){
+            printf("open file fail %s \n",file_path);
+            return 0;
+        }
+        unsigned char buff[4];
+        int ret = read(fd,buff,sizeof(buff));
+        if(ret != sizeof(buff)){
+            close(fd);
+            return 0;
+        }
+        printf("type  %s \n",GoldenIConvTool::GetFileEncoding(buff));
+        const char *type = GoldenIConvTool::GetFileEncoding(buff);
+        close(fd);
+    }
+
+    {
+        int fd = open(file_path,O_RDONLY);
+        if(fd < 0){
+            printf("open file fail %s \n",file_path);
+            return 0;
+        }
+        char dest_buff[4096]={0};
+        const char *type = GoldenIConvTool::GetFileEncoding(fd);
+        int i = 0;
+        while(i < 100){
+            GoldenIConvTool::ReadLine16(fd,type,utf8_type,dest_buff,sizeof(dest_buff));
+            i++;
+        }
+    }
+
+
+
+
+/*
     const char *encode_type = GetFileEncoding(buff);
 
     char dest_buff[4096]={0};
@@ -292,5 +320,6 @@ int main(int argc,char **argv){
         i++;
     }
     close(fd);
+    */
     return 0;
 }
