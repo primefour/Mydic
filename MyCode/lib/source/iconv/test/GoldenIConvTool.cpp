@@ -10,11 +10,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-const char *utf8_type = "UTF-8";
-const char *utf16_little_type = "UTF-16LE";
-const char *utf16_big_type = "UTF-16BE";
-const char *utf32_little_type = "UTF-32LE";
-const char *utf32_big_type = "UTF-32BE";
+const char *GoldenIConvTool::utf8_type = "UTF-8";
+const char *GoldenIConvTool::utf16_little_type = "UTF-16LE";
+const char *GoldenIConvTool::utf16_big_type = "UTF-16BE";
+const char *GoldenIConvTool::utf32_little_type = "UTF-32LE";
+const char *GoldenIConvTool::utf32_big_type = "UTF-32BE";
 
 const char *GoldenIConvTool::GetFileEncoding(int fd){
     unsigned char buff[4] ={0};
@@ -27,17 +27,17 @@ const char *GoldenIConvTool::GetFileEncoding(int fd){
 
 const char *GoldenIConvTool::GetFileEncoding(unsigned char *buff){
     if(buff[0] == 0xEF && buff[1] == 0xBB && buff[2] == 0xBF){
-        return utf8_type;
+        return GoldenIConvTool::utf8_type;
     }else if(buff[0] == 0xff && buff[1] == 0xfe &&  buff[2] == 0x00 && buff[3] == 0x00){
-        return utf32_big_type;
+        return GoldenIConvTool::utf32_big_type;
     }else if(buff[3] == 0xff && buff[2] == 0xfe &&  buff[1] == 0x00 && buff[0] == 0x00){
-        return utf32_little_type; 
+        return GoldenIConvTool::utf32_little_type; 
     }else if(buff[0] == 0xFE && buff[1] == 0xFF){
-        return utf16_big_type;
+        return GoldenIConvTool::utf16_big_type;
     }else if(buff[0] == 0xFF && buff[1] == 0xFE){
-        return utf16_little_type;
+        return GoldenIConvTool::utf16_little_type;
     }else{
-        return utf8_type;
+        return GoldenIConvTool::utf8_type;
     }
 }
 
@@ -96,7 +96,7 @@ int GoldenIConvTool::ReadLine16(int fd,const char *encode_type,const char *to_ty
                                                                     char *buff,int length){
     int ret = -1;
     printf("encode-type = %s \n",encode_type);
-    unsigned short read_buff[1024]={0};
+    unsigned short read_buff[10240]={0};
     unsigned short new_line = L'\n';
     unsigned short *tmp = read_buff;
     while(read(fd,tmp,sizeof(unsigned short)) && (*tmp != new_line)){
@@ -105,6 +105,7 @@ int GoldenIConvTool::ReadLine16(int fd,const char *encode_type,const char *to_ty
     //int input_len = sizeof(read_buff)*sizeof(unsigned short);
 
     int input_len = (tmp - read_buff) * sizeof(unsigned short); 
+    printf("input_len  = %d ++++ \n",input_len);
     char *data = (char *)read_buff;
 
     ret = IConvString(encode_type,to_type,&data,input_len,buff,length);

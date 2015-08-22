@@ -197,6 +197,12 @@ class GoldenIConvTool {
         static int IConvString(const char *encode_type,const char *to_type,char **input_buff,int ilength,char *output_buff,int olength);
         static int ReadLine16(int fd,const char *encode_type,const char *to_type,char *buff,int length);
         static int ReadLine32(int fd,const char *encode_type,const char *to_type,char *buff,int length);
+
+        static const char *utf8_type ; 
+        static const char *utf16_little_type;
+        static const char *utf16_big_type;
+        static const char *utf32_little_type ;
+        static const char *utf32_big_type;
 };
 
 #endif

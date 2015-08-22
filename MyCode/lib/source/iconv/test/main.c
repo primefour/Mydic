@@ -186,17 +186,17 @@
 
 const char *GetFileEncoding(unsigned char *buff){
     if(buff[0] == 0xEF && buff[1] == 0xBB && buff[2] == 0xBF){
-        return utf8_type;
+        return GoldenIConvTool::utf8_type;
     }else if(buff[0] == 0xff && buff[1] == 0xfe &&  buff[2] == 0x00 && buff[3] == 0x00){
-        return utf32_big_type;
+        return GoldenIConvTool::utf32_big_type;
     }else if(buff[3] == 0xff && buff[2] == 0xfe &&  buff[1] == 0x00 && buff[0] == 0x00){
-        return utf32_little_type; 
+        return GoldenIConvTool::utf32_little_type; 
     }else if(buff[0] == 0xFE && buff[1] == 0xFF){
-        return utf16_big_type;
+        return GoldenIConvTool::utf16_big_type;
     }else if(buff[0] == 0xFF && buff[1] == 0xFE){
-        return utf16_little_type;
+        return GoldenIConvTool::utf16_little_type;
     }else{
-        return utf8_type;
+        return GoldenIConvTool::utf8_type;
     }
 }
 
@@ -259,9 +259,9 @@ int read_line(int fd,const char *encode_type,const char *to_type,char **buff,int
     return ret;
 }
 
-//const char *file_path = "/home/crazyhorse/MyProject/Advanced_Learners_Dictionary.dsl";
+const char *file_path = "/home/crazyhorse/MyProject/Advanced_Learners_Dictionary.dsl";
 
-const char *file_path = "/home/crazyhorse/test/golden_dic/AdvancedLearnersDictionary.dsl" ;
+//const char *file_path = "/home/crazyhorse/test/golden_dic/AdvancedLearnersDictionary.dsl" ;
 
 int main(int argc,char **argv){
 
@@ -297,11 +297,11 @@ int main(int argc,char **argv){
             printf("open file fail %s \n",file_path);
             return 0;
         }
-        char dest_buff[4096]={0};
+        char dest_buff[10240]={0};
         const char *type = GoldenIConvTool::GetFileEncoding(fd);
         int i = 0;
         while(i < 100){
-            GoldenIConvTool::ReadLine16(fd,type,utf8_type,dest_buff,sizeof(dest_buff));
+            GoldenIConvTool::ReadLine16(fd,type,GoldenIConvTool::utf8_type,dest_buff,sizeof(dest_buff));
             i++;
         }
     }

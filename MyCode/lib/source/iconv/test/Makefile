@@ -1,6 +1,6 @@
 GCC = g++
 
-CFLAGS = -I ../include/ -L ../src/ -L../
+CFLAGS = -g -I ../include/ -L ../src/ -L../
 
 Csource =$(wildcard *.c)
 
