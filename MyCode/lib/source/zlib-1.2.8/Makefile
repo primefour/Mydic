@@ -16,29 +16,29 @@
 # To install in $HOME instead of /usr/local, use:
 #    make install prefix=$HOME
 
-CC=gcc
+CC=arm-linux-androideabi-gcc --sysroot=/home/crazyhorse/AndroidDevEn/android-ndk-r9b/platforms/android-19/arch-arm/
 
-CFLAGS=-O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+CFLAGS=-O3  -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void -DHAVE_HIDDEN
 #CFLAGS=-O -DMAX_WBITS=14 -DMAX_MEM_LEVEL=7
 #CFLAGS=-g -DDEBUG
 #CFLAGS=-O3 -Wall -Wwrite-strings -Wpointer-arith -Wconversion \
 #           -Wstrict-prototypes -Wmissing-prototypes
 
-SFLAGS=-O3  -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
+SFLAGS=-O3  -fPIC -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void -DHAVE_HIDDEN
 LDFLAGS= 
 TEST_LDFLAGS=-L. libz.a
-LDSHARED=gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map
-CPP=gcc -E
+LDSHARED=arm-linux-androideabi-gcc
+CPP=arm-linux-androideabi-gcc -E
 
 STATICLIB=libz.a
-SHAREDLIB=libz.so
-SHAREDLIBV=libz.so.1.2.8
-SHAREDLIBM=libz.so.1
+SHAREDLIB=
+SHAREDLIBV=
+SHAREDLIBM=
 LIBS=$(STATICLIB) $(SHAREDLIBV)
 
-AR=ar
+AR=arm-linux-androideabi-ar
 ARFLAGS=rc
-RANLIB=ranlib
+RANLIB=arm-linux-androideabi-ranlib
 LDCONFIG=ldconfig
 LDSHAREDLIBC=-lc
 TAR=tar
@@ -70,7 +70,7 @@ OBJS = $(OBJC) $(OBJA)
 
 PIC_OBJS = $(PIC_OBJC) $(PIC_OBJA)
 
-all: static shared all64
+all: static
 
 static: example$(EXE) minigzip$(EXE)
 
@@ -80,7 +80,7 @@ all64: example64$(EXE) minigzip64$(EXE)
 
 check: test
 
-test: all teststatic testshared test64
+test: all teststatic
 
 teststatic: static
 	@TMPST=tmpst_$$; \

@@ -56,7 +56,27 @@
 #include <stdlib.h>
 #include <string.h>
 #include "zlib.h"
-#include "zran.h"
+
+#define local static
+
+#define SPAN 1048576L       /* desired distance between access points */
+#define WINSIZE 32768U      /* sliding window size */
+#define CHUNK 16384         /* file input buffer size */
+
+/* access point entry */
+struct point {
+    off_t out;          /* corresponding offset in uncompressed data */
+    off_t in;           /* offset in input file of first full byte */
+    int bits;           /* number of bits (1-7) from byte at in - 1, or 0 */
+    unsigned char window[WINSIZE];  /* preceding 32K of uncompressed data */
+};
+
+/* access point list */
+struct access {
+    int have;           /* number of list entries filled in */
+    int size;           /* number of list entries allocated */
+    struct point *list; /* allocated list */
+};
 
 /* Deallocate an index built by build_index() */
 local void free_index(struct access *index)
@@ -75,7 +95,6 @@ local struct access *addpoint(struct access *index, int bits,
     struct point *next;
 
     /* if list is empty, create it (start with eight points) */
-    printf("in = %ld ,out = %ld left = %d \n",in,out,left);
     if (index == NULL) {
         index = malloc(sizeof(struct access));
         if (index == NULL) return NULL;
@@ -194,7 +213,6 @@ local int build_index(FILE *in, off_t span, struct access **built)
              */
             if ((strm.data_type & 128) && !(strm.data_type & 64) &&
                 (totout == 0 || totout - last > span)) {
-                printf("totin = %d , totout = %d \n",totin,totout); 
                 index = addpoint(index, strm.data_type & 7, totin,
                                  totout, strm.avail_out, window);
                 if (index == NULL) {
@@ -244,12 +262,8 @@ local int extract(FILE *in, struct access *index, off_t offset,
     /* find where in stream to start */
     here = index->list;
     ret = index->have;
-
-    printf("##out = %d \n",here[1].out);
-    while (--ret && here[1].out <= offset){
-        printf("out = %d \n",here[1].out);
+    while (--ret && here[1].out <= offset)
         here++;
-    }
 
     /* initialize file and inflate state to start there */
     strm.zalloc = Z_NULL;
@@ -260,7 +274,6 @@ local int extract(FILE *in, struct access *index, off_t offset,
     ret = inflateInit2(&strm, -15);         /* raw inflate */
     if (ret != Z_OK)
         return ret;
-    printf("here->in = %d \n",here->in);
     ret = fseeko(in, here->in - (here->bits ? 1 : 0), SEEK_SET);
     if (ret == -1)
         goto extract_ret;
@@ -275,7 +288,6 @@ local int extract(FILE *in, struct access *index, off_t offset,
     (void)inflateSetDictionary(&strm, here->window, WINSIZE);
 
     /* skip uncompressed bytes until offset reached, then satisfy request */
-    printf("here->out = %d \n",here->out);
     offset -= here->out;
     strm.avail_in = 0;
     skip = 1;                               /* while skipping to offset */
@@ -336,64 +348,6 @@ local int extract(FILE *in, struct access *index, off_t offset,
     return ret;
 }
 
-#ifdef Z_RANDOM_ACCESS_LIB
-int zran_build_access_file(const char *file_name,struct access **ppindex){
-    int len = 0;
-    FILE *in;
-    if(file_name == NULL){
-        fprintf(stderr,"file name is null %s %d ",__FILE__,__LINE__);
-        return -1;
-    }
-
-    in = fopen(file_name, "rb");
-    /* open input file */
-    if (in == NULL) {
-        fprintf(stderr, "usage: zran %s not exist\n",file_name);
-        return -1;
-    }
-    len = build_index(in, SPAN,ppindex);
-    fclose(in);
-    if (len < 0) {
-        switch (len) {
-        case Z_MEM_ERROR:
-            fprintf(stderr, "zran: out of memory\n");
-            break;
-        case Z_DATA_ERROR:
-            fprintf(stderr, "zran: compressed data error in %s\n",file_name);
-            break;
-        case Z_ERRNO:
-            fprintf(stderr, "zran: read error on %s\n",file_name);
-            break;
-        default:
-            fprintf(stderr, "zran: error %d while building index\n", len);
-        }
-        return -1;
-    }
-    fprintf(stderr, "zran: built index with %d access points\n", len);
-    return len;
-}
-
-int zran_extract_file(FILE *file,struct access *index,int offset,unsigned char *buff,int buff_size){
-    int len = 0;
-    len = extract(file, index, offset, buff,buff_size);
-    if (len < 0){
-        fprintf(stderr, "zran: extraction failed: %s error\n",
-                len == Z_MEM_ERROR ? "out of memory" : "input corrupted");
-    } else {
-        fwrite(buff, 1, len, stdout);
-        fprintf(stderr, "zran: extracted %d bytes at %llu\n", len, offset);
-    }
-    return len;
-}
-
-void zran_free_access(struct access *index){
-    if (index != NULL) {
-        free(index->list);
-        free(index);
-    }
-}
-
-#else
 /* Demonstrate the use of build_index() and extract() by processing the file
    provided on the command line, and the extracting 16K from about 2/3rds of
    the way through the uncompressed output, and writing that to stdout. */
@@ -438,8 +392,7 @@ int main(int argc, char **argv)
     fprintf(stderr, "zran: built index with %d access points\n", len);
 
     /* use index by reading some bytes from an arbitrary offset */
-    offset = 0;//(index->list[index->have - 1].out << 1) / 3;
-    printf("offset = %d \n",offset);
+    offset = (index->list[index->have - 1].out << 1) / 3;
     len = extract(in, index, offset, buf, CHUNK);
     if (len < 0)
         fprintf(stderr, "zran: extraction failed: %s error\n",
@@ -454,4 +407,3 @@ int main(int argc, char **argv)
     fclose(in);
     return 0;
 }
-#endif

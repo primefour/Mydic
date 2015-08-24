@@ -1,525 +1,109 @@
 --------------------
-./configure --prefix=/home/crazyhorse/test/golden_dic/MyDict/lib/libSource/
-2014年 06月 25日 星期三 16:21:37 CST
-Checking for gcc...
-=== ztest15281.c ===
-extern int getchar();
-int hello() {return getchar();}
-===
-gcc -c ztest15281.c
-... using gcc
-
-Checking for obsessive-compulsive compiler options...
-=== ztest15281.c ===
-int foo() { return 0; }
-===
-gcc -c -O3 ztest15281.c
-
-Checking for shared library support...
-=== ztest15281.c ===
-extern int getchar();
-int hello() {return getchar();}
-===
-gcc -w -c -O3 -fPIC ztest15281.c
-gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map -O3 -fPIC -o ztest15281.so ztest15281.o
-Building shared library libz.so.1.2.8 with gcc.
-
-=== ztest15281.c ===
-#include <sys/types.h>
-off64_t dummy = 0;
-===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest15281.c
-Checking for off64_t... Yes.
-Checking for fseeko... Yes.
-
-=== ztest15281.c ===
-#include <string.h>
-#include <errno.h>
-int main() { return strlen(strerror(errno)); }
-===
-gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest15281 ztest15281.c
-Checking for strerror... Yes.
-
-=== ztest15281.c ===
-#include <unistd.h>
-int main() { return 0; }
-===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest15281.c
-Checking for unistd.h... Yes.
-
-=== ztest15281.c ===
-#include <stdarg.h>
-int main() { return 0; }
-===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest15281.c
-Checking for stdarg.h... Yes.
-
-=== ztest15281.c ===
-#include <stdio.h>
-#include <stdarg.h>
-#include "zconf.h"
-int main()
-{
-#ifndef STDC
-  choke me
-#endif
-  return 0;
-}
-===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest15281.c
-Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
-
-=== ztest15281.c ===
-#include <stdio.h>
-#include <stdarg.h>
-int mytest(const char *fmt, ...)
-{
-  char buf[20];
-  va_list ap;
-  va_start(ap, fmt);
-  vsnprintf(buf, sizeof(buf), fmt, ap);
-  va_end(ap);
-  return 0;
-}
-int main()
-{
-  return (mytest("Hello%d\n", 1));
-}
-===
-gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest15281 ztest15281.c
-Checking for vsnprintf() in stdio.h... Yes.
-
-=== ztest15281.c ===
-#include <stdio.h>
-#include <stdarg.h>
-int mytest(const char *fmt, ...)
-{
-  int n;
-  char buf[20];
-  va_list ap;
-  va_start(ap, fmt);
-  n = vsnprintf(buf, sizeof(buf), fmt, ap);
-  va_end(ap);
-  return n;
-}
-int main()
-{
-  return (mytest("Hello%d\n", 1));
-}
-===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest15281.c
-Checking for return value of vsnprintf()... Yes.
-
-=== ztest15281.c ===
-#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
-int ZLIB_INTERNAL foo;
-int main()
-{
-  return 0;
-}
-===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest15281.c
-Checking for attribute(visibility) support... Yes.
-
-ALL = static shared all64
-AR = ar
-ARFLAGS = rc
-CC = gcc
-CFLAGS = -O3 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
-CPP = gcc -E
-EXE =
-LDCONFIG = ldconfig
-LDFLAGS =
-LDSHARED = gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map
-LDSHAREDLIBC = -lc
-OBJC = $(OBJZ) $(OBJG)
-PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
-RANLIB = ranlib
-SFLAGS = -O3 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
-SHAREDLIB = libz.so
-SHAREDLIBM = libz.so.1
-SHAREDLIBV = libz.so.1.2.8
-STATICLIB = libz.a
-TEST = all teststatic testshared test64
-VER = 1.2.8
-Z_U4 =
-exec_prefix = ${prefix}
-includedir = ${prefix}/include
-libdir = ${exec_prefix}/lib
-mandir = ${prefix}/share/man
-prefix = /home/crazyhorse/test/golden_dic/MyDict/lib/libSource/
-sharedlibdir = ${libdir}
-uname = Linux
---------------------
-
-
---------------------
-./configure --prefix=/home/crazyhorse/MyProject/GoldenDict/GitDict/lib/
-2014年 07月 02日 星期三 16:33:10 CST
-Checking for gcc...
-=== ztest25285.c ===
-extern int getchar();
-int hello() {return getchar();}
-===
-gcc -c ztest25285.c
-... using gcc
-
-Checking for obsessive-compulsive compiler options...
-=== ztest25285.c ===
-int foo() { return 0; }
-===
-gcc -c -O3 ztest25285.c
-
-Checking for shared library support...
-=== ztest25285.c ===
-extern int getchar();
-int hello() {return getchar();}
-===
-gcc -w -c -O3 -fPIC ztest25285.c
-gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map -O3 -fPIC -o ztest25285.so ztest25285.o
-Building shared library libz.so.1.2.8 with gcc.
-
-=== ztest25285.c ===
-#include <sys/types.h>
-off64_t dummy = 0;
-===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest25285.c
-Checking for off64_t... Yes.
-Checking for fseeko... Yes.
-
-=== ztest25285.c ===
-#include <string.h>
-#include <errno.h>
-int main() { return strlen(strerror(errno)); }
-===
-gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest25285 ztest25285.c
-Checking for strerror... Yes.
-
-=== ztest25285.c ===
-#include <unistd.h>
-int main() { return 0; }
-===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest25285.c
-Checking for unistd.h... Yes.
-
-=== ztest25285.c ===
-#include <stdarg.h>
-int main() { return 0; }
-===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest25285.c
-Checking for stdarg.h... Yes.
-
-=== ztest25285.c ===
-#include <stdio.h>
-#include <stdarg.h>
-#include "zconf.h"
-int main()
-{
-#ifndef STDC
-  choke me
-#endif
-  return 0;
-}
-===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest25285.c
-Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
-
-=== ztest25285.c ===
-#include <stdio.h>
-#include <stdarg.h>
-int mytest(const char *fmt, ...)
-{
-  char buf[20];
-  va_list ap;
-  va_start(ap, fmt);
-  vsnprintf(buf, sizeof(buf), fmt, ap);
-  va_end(ap);
-  return 0;
-}
-int main()
-{
-  return (mytest("Hello%d\n", 1));
-}
-===
-gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest25285 ztest25285.c
-Checking for vsnprintf() in stdio.h... Yes.
-
-=== ztest25285.c ===
-#include <stdio.h>
-#include <stdarg.h>
-int mytest(const char *fmt, ...)
-{
-  int n;
-  char buf[20];
-  va_list ap;
-  va_start(ap, fmt);
-  n = vsnprintf(buf, sizeof(buf), fmt, ap);
-  va_end(ap);
-  return n;
-}
-int main()
-{
-  return (mytest("Hello%d\n", 1));
-}
-===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest25285.c
-Checking for return value of vsnprintf()... Yes.
-
-=== ztest25285.c ===
-#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
-int ZLIB_INTERNAL foo;
-int main()
-{
-  return 0;
-}
-===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest25285.c
-Checking for attribute(visibility) support... Yes.
-
-ALL = static shared all64
-AR = ar
-ARFLAGS = rc
-CC = gcc
-CFLAGS = -O3 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
-CPP = gcc -E
-EXE =
-LDCONFIG = ldconfig
-LDFLAGS =
-LDSHARED = gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map
-LDSHAREDLIBC = -lc
-OBJC = $(OBJZ) $(OBJG)
-PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
-RANLIB = ranlib
-SFLAGS = -O3 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
-SHAREDLIB = libz.so
-SHAREDLIBM = libz.so.1
-SHAREDLIBV = libz.so.1.2.8
-STATICLIB = libz.a
-TEST = all teststatic testshared test64
-VER = 1.2.8
-Z_U4 =
-exec_prefix = ${prefix}
-includedir = ${prefix}/include
-libdir = ${exec_prefix}/lib
-mandir = ${prefix}/share/man
-prefix = /home/crazyhorse/MyProject/GoldenDict/GitDict/lib/
-sharedlibdir = ${libdir}
-uname = Linux
---------------------
-
-
---------------------
-./configure --prefix=~/test/golden_dic/MyDict/MyCode/lib/
-2015年 01月 07日 星期三 14:52:42 CST
-Checking for gcc...
-=== ztest32598.c ===
-extern int getchar();
-int hello() {return getchar();}
-===
-gcc -c ztest32598.c
-... using gcc
-
-Checking for obsessive-compulsive compiler options...
-=== ztest32598.c ===
-int foo() { return 0; }
-===
-gcc -c -O3 ztest32598.c
-
-Checking for shared library support...
-=== ztest32598.c ===
-extern int getchar();
-int hello() {return getchar();}
-===
-gcc -w -c -O3 -fPIC ztest32598.c
-gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map -O3 -fPIC -o ztest32598.so ztest32598.o
-Building shared library libz.so.1.2.8 with gcc.
-
-=== ztest32598.c ===
-#include <sys/types.h>
-off64_t dummy = 0;
-===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest32598.c
-Checking for off64_t... Yes.
-Checking for fseeko... Yes.
-
-=== ztest32598.c ===
-#include <string.h>
-#include <errno.h>
-int main() { return strlen(strerror(errno)); }
-===
-gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest32598 ztest32598.c
-Checking for strerror... Yes.
-
-=== ztest32598.c ===
-#include <unistd.h>
-int main() { return 0; }
-===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest32598.c
-Checking for unistd.h... Yes.
-
-=== ztest32598.c ===
-#include <stdarg.h>
-int main() { return 0; }
-===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest32598.c
-Checking for stdarg.h... Yes.
-
-=== ztest32598.c ===
-#include <stdio.h>
-#include <stdarg.h>
-#include "zconf.h"
-int main()
-{
-#ifndef STDC
-  choke me
-#endif
-  return 0;
-}
-===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest32598.c
-Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
-
-=== ztest32598.c ===
-#include <stdio.h>
-#include <stdarg.h>
-int mytest(const char *fmt, ...)
-{
-  char buf[20];
-  va_list ap;
-  va_start(ap, fmt);
-  vsnprintf(buf, sizeof(buf), fmt, ap);
-  va_end(ap);
-  return 0;
-}
-int main()
-{
-  return (mytest("Hello%d\n", 1));
-}
-===
-gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest32598 ztest32598.c
-Checking for vsnprintf() in stdio.h... Yes.
-
-=== ztest32598.c ===
-#include <stdio.h>
-#include <stdarg.h>
-int mytest(const char *fmt, ...)
-{
-  int n;
-  char buf[20];
-  va_list ap;
-  va_start(ap, fmt);
-  n = vsnprintf(buf, sizeof(buf), fmt, ap);
-  va_end(ap);
-  return n;
-}
-int main()
-{
-  return (mytest("Hello%d\n", 1));
-}
-===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest32598.c
-Checking for return value of vsnprintf()... Yes.
-
-=== ztest32598.c ===
-#define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
-int ZLIB_INTERNAL foo;
-int main()
-{
-  return 0;
-}
-===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest32598.c
-Checking for attribute(visibility) support... Yes.
-
-ALL = static shared all64
-AR = ar
-ARFLAGS = rc
-CC = gcc
-CFLAGS = -O3 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
-CPP = gcc -E
-EXE =
-LDCONFIG = ldconfig
-LDFLAGS =
-LDSHARED = gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map
-LDSHAREDLIBC = -lc
-OBJC = $(OBJZ) $(OBJG)
-PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
-RANLIB = ranlib
-SFLAGS = -O3 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
-SHAREDLIB = libz.so
-SHAREDLIBM = libz.so.1
-SHAREDLIBV = libz.so.1.2.8
-STATICLIB = libz.a
-TEST = all teststatic testshared test64
-VER = 1.2.8
-Z_U4 =
-exec_prefix = ${prefix}
-includedir = ${prefix}/include
-libdir = ${exec_prefix}/lib
-mandir = ${prefix}/share/man
-prefix = ~/test/golden_dic/MyDict/MyCode/lib/
-sharedlibdir = ${libdir}
-uname = Linux
+./configure CROSS_PREFIX=arm-linux-androideabi-
+2015年 08月 24日 星期一 12:04:33 CST
+unknown option: CROSS_PREFIX=arm-linux-androideabi-
+./configure --help for help
+** ./configure aborting.
 --------------------
 
 
 --------------------
 ./configure
-2015年 04月 18日 星期六 18:39:58 CST
-Checking for gcc...
-=== ztest3901.c ===
+2015年 08月 24日 星期一 12:05:17 CST
+Using arm-linux-androideabi-ar
+Using arm-linux-androideabi-ranlib
+Using arm-linux-androideabi-nm
+Checking for arm-linux-androideabi-gcc...
+=== ztest28638.c ===
 extern int getchar();
 int hello() {return getchar();}
 ===
-gcc -c ztest3901.c
+arm-linux-androideabi-gcc -c ztest28638.c
 ... using gcc
 
 Checking for obsessive-compulsive compiler options...
-=== ztest3901.c ===
+=== ztest28638.c ===
 int foo() { return 0; }
 ===
-gcc -c -O3 ztest3901.c
+arm-linux-androideabi-gcc -c -O3 ztest28638.c
 
 Checking for shared library support...
-=== ztest3901.c ===
+=== ztest28638.c ===
 extern int getchar();
 int hello() {return getchar();}
 ===
-gcc -w -c -O3 -fPIC ztest3901.c
-gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map -O3 -fPIC -o ztest3901.so ztest3901.o
-Building shared library libz.so.1.2.8 with gcc.
+arm-linux-androideabi-gcc -w -c -O3 -fPIC ztest28638.c
+arm-linux-androideabi-gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map -O3 -fPIC -o ztest28638.so ztest28638.o
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86_64/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot open crtbegin_so.o: 没有那个文件或目录
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86_64/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot open crtend_so.o: 没有那个文件或目录
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86_64/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot find -lc
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86_64/bin/../lib/gcc/arm-linux-androideabi/4.8/../../../../arm-linux-androideabi/bin/ld: error: cannot find -ldl
+collect2: error: ld returned 1 exit status
+(exit code 1)
+No shared library support.
+Building static library libz.a version 1.2.8 with arm-linux-androideabi-gcc.
 
-=== ztest3901.c ===
+=== ztest28638.c ===
 #include <sys/types.h>
 off64_t dummy = 0;
 ===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest3901.c
-Checking for off64_t... Yes.
-Checking for fseeko... Yes.
+arm-linux-androideabi-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest28638.c
+ztest28638.c:1:23: fatal error: sys/types.h: No such file or directory
+ #include <sys/types.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for off64_t... No.
 
-=== ztest3901.c ===
+=== ztest28638.c ===
+#include <stdio.h>
+int main(void) {
+  fseeko(NULL, 0, 0);
+  return 0;
+}
+===
+arm-linux-androideabi-gcc -O3 -o ztest28638 ztest28638.c
+In file included from ztest28638.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86_64/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for fseeko... No.
+
+=== ztest28638.c ===
 #include <string.h>
 #include <errno.h>
 int main() { return strlen(strerror(errno)); }
 ===
-gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest3901 ztest3901.c
-Checking for strerror... Yes.
+arm-linux-androideabi-gcc -O3 -DNO_FSEEKO -o ztest28638 ztest28638.c
+ztest28638.c:1:20: fatal error: string.h: No such file or directory
+ #include <string.h>
+                    ^
+compilation terminated.
+(exit code 1)
+Checking for strerror... No.
 
-=== ztest3901.c ===
+=== ztest28638.c ===
 #include <unistd.h>
 int main() { return 0; }
 ===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest3901.c
-Checking for unistd.h... Yes.
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest28638.c
+ztest28638.c:1:20: fatal error: unistd.h: No such file or directory
+ #include <unistd.h>
+                    ^
+compilation terminated.
+(exit code 1)
+Checking for unistd.h... No.
 
-=== ztest3901.c ===
+=== ztest28638.c ===
 #include <stdarg.h>
 int main() { return 0; }
 ===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest3901.c
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest28638.c
 Checking for stdarg.h... Yes.
 
-=== ztest3901.c ===
+=== ztest28638.c ===
 #include <stdio.h>
 #include <stdarg.h>
 #include "zconf.h"
@@ -531,51 +115,65 @@ int main()
   return 0;
 }
 ===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest3901.c
-Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR ztest28638.c
+In file included from ztest28638.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86_64/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking whether to use vs[n]printf() or s[n]printf()... using s[n]printf().
 
-=== ztest3901.c ===
+=== ztest28638.c ===
 #include <stdio.h>
-#include <stdarg.h>
-int mytest(const char *fmt, ...)
+int mytest()
 {
   char buf[20];
-  va_list ap;
-  va_start(ap, fmt);
-  vsnprintf(buf, sizeof(buf), fmt, ap);
-  va_end(ap);
+  snprintf(buf, sizeof(buf), "%s", "foo");
   return 0;
 }
 int main()
 {
-  return (mytest("Hello%d\n", 1));
+  return (mytest());
 }
 ===
-gcc -O3 -D_LARGEFILE64_SOURCE=1 -o ztest3901 ztest3901.c
-Checking for vsnprintf() in stdio.h... Yes.
+arm-linux-androideabi-gcc -O3 -DNO_FSEEKO -DNO_STRERROR -o ztest28638 ztest28638.c
+In file included from ztest28638.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86_64/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for snprintf() in stdio.h... No.
+  WARNING: snprintf() not found, falling back to sprintf(). zlib
+  can build but will be open to possible buffer-overflow security
+  vulnerabilities.
 
-=== ztest3901.c ===
+=== ztest28638.c ===
 #include <stdio.h>
-#include <stdarg.h>
-int mytest(const char *fmt, ...)
+int mytest()
 {
-  int n;
   char buf[20];
-  va_list ap;
-  va_start(ap, fmt);
-  n = vsnprintf(buf, sizeof(buf), fmt, ap);
-  va_end(ap);
-  return n;
+  return sprintf(buf, "%s", "foo");
 }
 int main()
 {
-  return (mytest("Hello%d\n", 1));
+  return (mytest());
 }
 ===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest3901.c
-Checking for return value of vsnprintf()... Yes.
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf ztest28638.c
+In file included from ztest28638.c:1:0:
+/home/crazyhorse/AndroidDevEn/android-ndk-r9b/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86_64/lib/gcc/arm-linux-androideabi/4.8/include-fixed/stdio.h:50:23: fatal error: sys/cdefs.h: No such file or directory
+ #include <sys/cdefs.h>
+                       ^
+compilation terminated.
+(exit code 1)
+Checking for return value of sprintf()... No.
+  WARNING: apparently sprintf() does not return a value. zlib
+  can build but will be open to possible string-format security
+  vulnerabilities.
 
-=== ztest3901.c ===
+=== ztest28638.c ===
 #define ZLIB_INTERNAL __attribute__((visibility ("hidden")))
 int ZLIB_INTERNAL foo;
 int main()
@@ -583,29 +181,29 @@ int main()
   return 0;
 }
 ===
-gcc -c -O3 -D_LARGEFILE64_SOURCE=1 ztest3901.c
+arm-linux-androideabi-gcc -c -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void ztest28638.c
 Checking for attribute(visibility) support... Yes.
 
-ALL = static shared all64
-AR = ar
+ALL = static
+AR = arm-linux-androideabi-ar
 ARFLAGS = rc
-CC = gcc
-CFLAGS = -O3 -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
-CPP = gcc -E
+CC = arm-linux-androideabi-gcc
+CFLAGS = -O3 -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void -DHAVE_HIDDEN
+CPP = arm-linux-androideabi-gcc -E
 EXE =
 LDCONFIG = ldconfig
 LDFLAGS =
-LDSHARED = gcc -shared -Wl,-soname,libz.so.1,--version-script,zlib.map
+LDSHARED = arm-linux-androideabi-gcc
 LDSHAREDLIBC = -lc
 OBJC = $(OBJZ) $(OBJG)
 PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
-RANLIB = ranlib
-SFLAGS = -O3 -fPIC -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN
-SHAREDLIB = libz.so
-SHAREDLIBM = libz.so.1
-SHAREDLIBV = libz.so.1.2.8
+RANLIB = arm-linux-androideabi-ranlib
+SFLAGS = -O3 -fPIC -DNO_FSEEKO -DNO_STRERROR -DNO_snprintf -DHAS_sprintf_void -DHAVE_HIDDEN
+SHAREDLIB =
+SHAREDLIBM =
+SHAREDLIBV =
 STATICLIB = libz.a
-TEST = all teststatic testshared test64
+TEST = all teststatic
 VER = 1.2.8
 Z_U4 =
 exec_prefix = ${prefix}
