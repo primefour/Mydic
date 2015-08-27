@@ -1,8 +1,31 @@
 #include "GoldenZipTool.h"
 #include<stdexcept>
 
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#ifdef HAVE_STRINGS_H
+#include <strings.h>
+#endif
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+#include <zlib.h>
 
-GoldenZipTool::GoldenZipTool(const char *file){
+#ifndef HAVE_GETOPT
+#include "getopt.h"
+#endif
+
+/* include zipint.h for Windows compatibility */
+#include "zipint.h"
+#include "zip.h"
+#include "compat.h"
+
+
+
+
+GoldenZipTool::GoldenZipTool(const char *file):mPtrEntries(NULL),mPtrEntryHash(NULL){
     struct zip_stat st;
     char errstr[1024];
     int err;
@@ -41,20 +64,65 @@ bool GoldenZipTool::IsExist(const char *infile){
 }
 
 
-int GoldenZipTool::OpenInFile(const char *infile){
-    if(IsExist(infile)){
+int GoldenZipTool::GetInFile(const char *infile,char *buff,int len){
+    if(buff != NULL && IsExist(infile)){
         SObject<ZipEntry> tmp = new ZipEntry();
         tmp->mName = infile;
         const SObject<ZipEntry>&target = mPtrEntryHash->DictHashGet(tmp);
+        struct zip_file *ZipInfile;
+        if ((ZipInfile =zip_fopen(mzip,infile,0)) == NULL) {
+            printf("%s: cannot open file in archive: %s\n",infile,zip_strerror(mzip));
+            return -1;
+        }else{
+            return 0;
+        }
 
+        int n = 0;
+        int temp = buff;
+        while (len > 0 && (n=zip_fread(ZipInfile,temp,len)) > 0) {
+            temp += n;
+            len -= n;
+        }
+        zip_fclose(ZipInfile);
+    }
+    return temp - buff;
+}
+
+int GoldenZipTool::GetInFile(const char *infile,const char *outputFile){
+
+    if(IsExist(infile)){
+        SimpleFile wfile(outputFile);
+        int fSize = 0;
+
+        const int buff_len = 1024;
+        char *buff = new char[buff_len];
+        if(buff == NULL){
+            printf("No memory for buffer \n");
+            return -1;
+        }
+
+        SObject<ZipEntry> tmp = new ZipEntry();
+        tmp->mName = infile;
+        const SObject<ZipEntry>&target = mPtrEntryHash->DictHashGet(tmp);
+        struct zip_file *ZipInfile;
+
+        if ((ZipInfile =zip_fopen(mzip,infile,0)) == NULL) {
+            delete[] buff ;
+            printf("%s: cannot open file in archive: %s\n",infile,zip_strerror(mzip));
+            return -1;
+        }else{
+            return 0;
+        }
+
+        int n = 0;
+        while ((n=zip_fread(ZipInfile,buff,buff_len)) > 0) {
+            wfile.Write(buff,n);
+            fSize += n;
+        }
+        zip_fclose(ZipInfile);
+        delete[] buff;
     }
 }
-
-
-int GoldenZipTool::ReadInFile(const char *infile,char *buff,int lenght){
-
-}
-
 
 
 
@@ -94,4 +162,18 @@ int GoldenZipTool::CheckZipFile(int idx, zip_int64_t size, unsigned int crc){
     }
 
     return 0;
+}
+
+
+GoldenZipTool::~GoldenZipTool(){
+    if(mZip != NULL){
+        zip_close(mZip);
+    }
+    if(mPtrEntries != NULL){
+        delete[] mPtrEntries;
+    }
+    if(mPtrEntryHash  != NULL){
+        delete mPtrEntryHash ;
+    }
+
 }
