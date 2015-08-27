@@ -9,7 +9,7 @@
 class StardictDict;
 
 class TextMetaData :public Ref{
-    friend StardictDict;
+    friend class StardictDict;
     public:
         TextMetaData(); 
         TextMetaData(const TextMetaData & inst); 

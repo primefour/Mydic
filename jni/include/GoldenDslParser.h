@@ -4,7 +4,7 @@
 #include<list>
 #include<map>
 #include<vector>
-#include"StardictMain.h"
+#include"GoldenWordIndexItem.h"
 #include"StardictDict.h"
 
 using namespace std;
@@ -42,13 +42,14 @@ class DslDocumentParser{
 };
 
 
-class DslDictionary:public DictInterface{
+class DslDictionary:public GoldenDictInterface{
     public:
-        DslDictionary(String8 path);
+        virtual const String8& GetDictonaryName() ;
+        virtual int GoldenDictQuery(const char *word,char *buff) ;
+        virtual DslDictionary(String8 path);
         virtual ~DslDictionary();
-        virtual void DictQuery(const char *queryWord,TextMetaData*tmd);
     private:
-        DslDocumentParser mParser;
+        DslDocumentParser *mDslParser;
 };
 
 

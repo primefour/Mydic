@@ -3,7 +3,6 @@ include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := src/com_Dict_DictApp2_DictSearchEngine.cpp \
 	src/GoldenDictManager.cpp \
-	src/GoldenDslParser.cpp \
 	src/GoldenGzipHeaderParser.cpp \
 	src/GoldenGzipinflate.cpp \
 	src/GoldenStandardIO.cpp \
@@ -34,7 +33,7 @@ LOCAL_MODULE := searchEngine
 
 LOCAL_C_INCLUDES += ./include/
 LOCAL_LDLIBS := -llog
-LOCAL_CFLAGS += -g -DANDROID_PLATFORM
+LOCAL_CFLAGS += -g -DANDROID_PLATFORM -fexceptions
 
 
 include $(BUILD_SHARED_LIBRARY)
