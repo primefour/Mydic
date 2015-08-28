@@ -2,6 +2,7 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := src/com_Dict_DictApp2_DictSearchEngine.cpp \
+	src/GoldenZipTool.cpp \
 	src/GoldenIConvTool.cpp \
 	src/GoldenDictManager.cpp \
 	src/GoldenGzipHeaderParser.cpp \
@@ -34,9 +35,10 @@ LOCAL_MODULE := searchEngine
 
 LOCAL_C_INCLUDES += ./include/
 
-LOCAL_STATIC_LIBRARIES += libiconv.a 
+LOCAL_STATIC_LIBRARIES += libiconv.a
+LOCAL_STATIC_LIBRARIES += libzip.a
 
-LOCAL_LDLIBS := -L./lib/ -llog -liconv
+LOCAL_LDLIBS := -L./lib/ -llog -liconv -lzip
 
 LOCAL_CFLAGS += -g -DANDROID_PLATFORM -fexceptions 
 

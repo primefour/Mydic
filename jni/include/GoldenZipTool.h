@@ -15,20 +15,22 @@
 #ifndef HAVE_GETOPT
 #include "getopt.h"
 #endif
-
-/* include zipint.h for Windows compatibility */
-#include "zipint.h"
 #include "zip.h"
-#include "compat.h"
+#include "GoldenRef.h"
+#include "String8.h"
+#include "GoldenHashSet.h"
 
 
-class ZipEntry:public Ref{
-    String8 mName;
-    unsigned int mSize;
-    unsigned int mCrc;
-    const char *string()const {
-        return mName.string();
-    }
+struct ZipEntry:public Ref{
+        String8 mName;
+        unsigned int mSize;
+        unsigned int mCrc;
+        bool operator==(const ZipEntry &obj){
+            return !strcmp(mName,obj.mName);
+        }
+        const char *string()const {
+            return mName.string();
+        }
 
 };
 
@@ -40,11 +42,9 @@ class GoldenZipTool{
         bool IsExist(const char *infile);
         int GetInFile(const char *infile,char *buff,int len);
         int GetInFile(const char *infile,const char *outputFile);
-        int CheckZipFile(int idx, zip_int64_t size, unsigned int crc);
-
     private:
         int CheckZipFile(int idx, zip_int64_t size, unsigned int crc);
-        struct zip*  mZip
+        struct zip*  mZip;
         ZipEntry *mPtrEntries;
         zip_uint64_t mEntryCount;
         DictHashSet<SObject<ZipEntry> > *mPtrEntryHash;

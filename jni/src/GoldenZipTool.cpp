@@ -1,6 +1,6 @@
 #include "GoldenZipTool.h"
-#include<stdexcept>
 
+#include<stdexcept>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,11 +16,8 @@
 #ifndef HAVE_GETOPT
 #include "getopt.h"
 #endif
-
-/* include zipint.h for Windows compatibility */
-#include "zipint.h"
 #include "zip.h"
-#include "compat.h"
+#include "GoldenStandardIO.h"
 
 
 
@@ -29,7 +26,7 @@ GoldenZipTool::GoldenZipTool(const char *file):mPtrEntries(NULL),mPtrEntryHash(N
     struct zip_stat st;
     char errstr[1024];
     int err;
-	if ((mZip =zip_open(file,ZIP_RDONLY|ZIP_CHECKCONS, &err)) == NULL) {
+	if ((mZip =zip_open(file,ZIP_CHECKCONS, &err)) == NULL) {
 	    zip_error_to_str(errstr, sizeof(errstr), err, errno);
 	    fprintf(stderr, "%s: cannot open zip archive : %s\n",file,errstr);
         throw exception();//"file open error");
@@ -49,7 +46,8 @@ GoldenZipTool::GoldenZipTool(const char *file):mPtrEntries(NULL),mPtrEntryHash(N
         (mPtrEntries +j)->mName = st.name;
         (mPtrEntries +j)->mSize = st.size;
         (mPtrEntries +j)->mCrc= st.crc;
-        mPtrEntryHash->DictHashInsert(SObject(mPtrEntries +j));
+        SObject<ZipEntry> obj(mPtrEntries +j);
+        mPtrEntryHash->DictHashInsert(obj);
     }
 }
 
@@ -59,7 +57,7 @@ bool GoldenZipTool::IsExist(const char *infile){
     }else{
         SObject<ZipEntry> tmp = new ZipEntry();
         tmp->mName = infile;
-        return mPtrEntryHash->DictHashfind(tmp)
+        return mPtrEntryHash->DictHashfind(tmp);
     }
 }
 
@@ -70,30 +68,32 @@ int GoldenZipTool::GetInFile(const char *infile,char *buff,int len){
         tmp->mName = infile;
         const SObject<ZipEntry>&target = mPtrEntryHash->DictHashGet(tmp);
         struct zip_file *ZipInfile;
-        if ((ZipInfile =zip_fopen(mzip,infile,0)) == NULL) {
-            printf("%s: cannot open file in archive: %s\n",infile,zip_strerror(mzip));
+        if ((ZipInfile =zip_fopen(mZip,infile,0)) == NULL) {
+            printf("%s: cannot open file in archive: %s\n",infile,zip_strerror(mZip));
             return -1;
         }else{
             return 0;
         }
 
         int n = 0;
-        int temp = buff;
+        char *temp = buff;
         while (len > 0 && (n=zip_fread(ZipInfile,temp,len)) > 0) {
             temp += n;
             len -= n;
         }
         zip_fclose(ZipInfile);
+        return temp - buff;
+    }else{
+        return -1;
     }
-    return temp - buff;
 }
 
 int GoldenZipTool::GetInFile(const char *infile,const char *outputFile){
 
     if(IsExist(infile)){
         SimpleFile wfile(outputFile);
-        int fSize = 0;
 
+        int fSize = 0;
         const int buff_len = 1024;
         char *buff = new char[buff_len];
         if(buff == NULL){
@@ -106,9 +106,9 @@ int GoldenZipTool::GetInFile(const char *infile,const char *outputFile){
         const SObject<ZipEntry>&target = mPtrEntryHash->DictHashGet(tmp);
         struct zip_file *ZipInfile;
 
-        if ((ZipInfile =zip_fopen(mzip,infile,0)) == NULL) {
+        if ((ZipInfile =zip_fopen(mZip,infile,0)) == NULL) {
             delete[] buff ;
-            printf("%s: cannot open file in archive: %s\n",infile,zip_strerror(mzip));
+            printf("%s: cannot open file in archive: %s\n",infile,zip_strerror(mZip));
             return -1;
         }else{
             return 0;
@@ -116,11 +116,13 @@ int GoldenZipTool::GetInFile(const char *infile,const char *outputFile){
 
         int n = 0;
         while ((n=zip_fread(ZipInfile,buff,buff_len)) > 0) {
-            wfile.Write(buff,n);
+            wfile.Write((unsigned char *)buff,n);
             fSize += n;
         }
         zip_fclose(ZipInfile);
         delete[] buff;
+    }else{
+        return -1;
     }
 }
 
@@ -133,7 +135,7 @@ int GoldenZipTool::CheckZipFile(int idx, zip_int64_t size, unsigned int crc){
     zip_uint32_t ncrc;
 
     if ((zf=zip_fopen_index(mZip, idx, 0)) == NULL) {
-        fprintf(stderr, "cannot open file %d in archive: %s\n", idx, zip_strerror(za));
+        printf("cannot open file %d in archive: %s\n", idx, zip_strerror(mZip));
         return -1;
     }
     ncrc = (zip_uint32_t)crc32(0, NULL, 0);
@@ -145,7 +147,7 @@ int GoldenZipTool::CheckZipFile(int idx, zip_int64_t size, unsigned int crc){
     }
 
     if (n < 0) {
-        fprintf(stderr, "error reading file %d in archive: %s\n",idx, zip_file_strerror(zf));
+        printf("error reading file %d in archive: %s\n",idx, zip_file_strerror(zf));
         zip_fclose(zf);
         return -1;
     }
@@ -153,11 +155,11 @@ int GoldenZipTool::CheckZipFile(int idx, zip_int64_t size, unsigned int crc){
     zip_fclose(zf);
 
     if (nsize != size) {
-        fprintf(stderr, "file %d: unexpected length %" PRId64 " (should be %" PRId64 ")\n",idx, nsize, size);
+        printf("file %d: unexpected length %lld (should be %lld)\n",idx, nsize, size);
         return -2;
     }
     if (ncrc != crc) {
-        fprintf(stderr, "file %d: unexpected length %x (should be %x)\n",idx, ncrc, crc);
+        printf("file %d: unexpected length %x (should be %x)\n",idx, ncrc, crc);
         return -2;
     }
 
