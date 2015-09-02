@@ -56,18 +56,21 @@ StardictInstance::StardictInstance(String8 path):mStarInfo(NULL),mStarIdx(NULL),
 
 
 int StardictInstance::GoldenDictQuery(const char *word,char *buff){
-    SObject<WordIdxItem> tmp = new WordIdxItem(word,0,0);
-    if(word && buff && mWordList->DictHashfind(tmp)){
-        TextMetaData targetHTML(word);
-        const SObject<WordIdxItem>&target = mWordList->DictHashGet(tmp);
-        mDict->read_word_data(target->data_offset,target->data_size,&targetHTML);
-        String8 HTML;
-        targetHTML.generateHTML(HTML);
-        strcpy(buff,HTML.string());
-        return 0;
-    }else{
-        return -1;
+    if(word != NULL && strlen(word) != 0){
+        SObject<WordIdxItem> tmp = new WordIdxItem(word,0,0);
+        if(buff && mWordList->DictHashfind(tmp)){
+            TextMetaData targetHTML(word);
+            const SObject<WordIdxItem>&target = mWordList->DictHashGet(tmp);
+            mDict->read_word_data(target->data_offset,target->data_size,&targetHTML);
+            String8 HTML;
+            targetHTML.generateHTML(HTML);
+            strcpy(buff,HTML.string());
+            return 0;
+        }else{
+            return -1;
+        }
     }
+    return -1;
 }
 
 

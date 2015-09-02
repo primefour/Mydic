@@ -43,7 +43,7 @@ StardictInfo::StardictInfo(const char *file_path):file_name(file_path){
         if(n <= 0){
             break;
         }
-        buff[10239]='\0';
+        buff[buff_len]='\0';
         int i = 0;
         char *ret = NULL;
         while(infoFileList[i] != NULL){

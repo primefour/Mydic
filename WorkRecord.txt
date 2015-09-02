@@ -824,3 +824,27 @@ sed -i "s/10.33.8.6/shh1.aosp.git.htc.com/g" $(find ./ -name "FETCH_HEAD")
 
 
 tcpdump -vv -s 0 -w /sdcard/hello.cap
+
+
+
+
+
+
+adb shell am start
+Sends an intent to the package manager component to be started. The intent may
+start an activity (application) or may just deliver the intent to an existing activity if
+it is already running.
+adb shell am instrument
+Starts an instrumentation. Typically, this target <COMPONENT> is in the form
+<TEST_PACKAGE>/<RUNNER_CLASS>.
+adb shell dumpsys <?>
+Dumps all available data about a given parameter. For example, you can get more
+information about the battery by typing the following command: adb shell dump
+sys battery. To get the list of services in Android from the command line, you
+can run adb shell dumpsys | grep DUMP. Once you get the result, you can then
+run each command individually.
+adb shell "am start -a android.intent.action.MAIN -n <packagename>/
+<classname with packagename>"
+Launches the activity from command line. For example, you can try adb shell "am
+start -a android.intent.action.MAIN -n com.example.package/com.exam
+ple.package.ExampleActivity".

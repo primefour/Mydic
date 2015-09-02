@@ -102,9 +102,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 "</html>\n" ;
         //webView.loadData(wordMeaning, "text/html; charset=UTF-8", null);
         //webView.loadDataWithBaseURL("file:///mnt/sdcard/",wordMeaning, "text/html","charset=UTF-8", null);
-        webView.loadDataWithBaseURL("file:///mnt/sdcard/",wordMeaning, "text/html","charset=UTF-8", null);
+        //webView.loadDataWithBaseURL("file:///mnt/sdcard/",wordMeaning, "text/html","charset=UTF-8", null);
         //webView.loadData(wordMeaning,WEB_MIME_TYPE,WEB_ENCODE_FORMAT) ;
-        //webView.loadUrl("http://news.sina.com.cn/");
+        webView.loadUrl("file:///android_asset/index.html");
     }
 
     public interface Callbacks {
@@ -145,7 +145,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         WebView webView = ((WebView) mRootView.findViewById(R.id.MeaningWebView));
         webView.getSettings().setDefaultTextEncodingName(WEB_ENCODE_FORMAT);
         //webView.loadData(searchResult,WEB_MIME_TYPE,WEB_ENCODE_FORMAT) ;
-        webView.loadUrl("http://news.sina.com.cn/");
+        //webView.loadUrl("http://news.sina.com.cn/");
     }
 
 
