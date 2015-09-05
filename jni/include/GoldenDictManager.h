@@ -9,6 +9,11 @@ class GoldenDictInterface:public virtual Ref{
         GoldenDictInterface(){
             mIsEnable = true;
         }
+        ~GoldenDictInterface(){
+
+        }
+        static const char *getPhoneticPath();
+        static const char *getImgPath();
         virtual const String8& GetDictonaryName() = 0;
         virtual int GoldenDictQuery(const char *word,char *buff) = 0;
         virtual void SetEnable(bool enable){
@@ -38,5 +43,4 @@ class GoldenDictManager :public Ref{
        map<String8,SObject<GoldenDictInterface> > mDictionaryMap;
        map<String8,int> mDictionaryType;
 };
-
 #endif

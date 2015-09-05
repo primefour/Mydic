@@ -9,6 +9,17 @@
 
 using namespace std;
 
+const char *PhoneticPath = "/sdcard/GoldenDict/Phonetic/";
+const char *ImgPath = "/sdcard/GoldenDict/Img/";
+
+const char* GoldenDictInterface::getPhoneticPath(){
+    return PhoneticPath;
+}
+
+const char* GoldenDictInterface::getImgPath(){
+    return ImgPath;
+}
+
 GoldenDictManager::GoldenDictManager(){
     mDictionaryType[String8("ifo")]=STAR_DICT_TYPE;
     mDictionaryType[String8("idx")]=STAR_DICT_TYPE;
