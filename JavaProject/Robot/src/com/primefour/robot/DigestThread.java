@@ -141,7 +141,7 @@ public class DigestThread extends Thread {
 			System.out.println(ia2);
 			InetAddress host = InetAddress.getByAddress(address);
 			System.out.println(host);
-			NetworkInterface ni = NetworkInterface.getByName("eth0");
+			NetworkInterface ni = NetworkInterface.getByName("wlan0");
 			Enumeration<InetAddress> ei = ni.getInetAddresses();
 			
 			while(ei.hasMoreElements()){
