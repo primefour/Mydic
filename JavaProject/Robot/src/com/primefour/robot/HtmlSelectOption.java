@@ -7,24 +7,36 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class HtmlSelectOption {
-	private String mBaseUrl ;
-	private String mTitle;
-	private String mId; 
-	private Map<String,Boolean> mOptionList;
+	protected String mTitle;
+	protected String mName;
+	protected String mId; 
+	protected class ItemValue{
+		public String mValue;
+		public String mSelected;
+		public ItemValue(String value,String sel){
+			mValue = value;
+			mSelected = sel;
+		}
+	};
+	protected Map<String,ItemValue> mOptionList;
 	
-	public HtmlSelectOption(String baseUrl,String title,String id){
-		mTitle = title;
-		mId = id;
-		mBaseUrl = baseUrl;
-		mOptionList = new HashMap<String,Boolean>();
+	public ItemValue getItemValue(String value,String sel){
+		return new ItemValue(value,sel);
 	}
 	
-	public void HtmlAddSelectItem(String ItemName,boolean selected){
+	public HtmlSelectOption(String title,String name,String id){
+		mTitle = title;
+		mName = name;
+		mId = id;
+		mOptionList = new HashMap<String,ItemValue>();
+	}
+	
+	public void HtmlAddSelectItem(String ItemName,ItemValue value){
 		//update as new values
 		if(mOptionList.containsKey(ItemName)){
 			mOptionList.remove(ItemName);
 		}
-		mOptionList.put(ItemName,selected);
+		mOptionList.put(ItemName,value);
 	}
 	
 	public ArrayList<String> getEnableItems(){
@@ -33,9 +45,7 @@ public class HtmlSelectOption {
 		ArrayList<String> list = new ArrayList<String>();
 		for(;it.hasNext();){
 			String key = it.next();
-			if(mOptionList.get(key)){
-				list.add(key);
-			}
+			list.add(key);
 		}
 		return list; 
 	}
@@ -45,15 +55,18 @@ public class HtmlSelectOption {
 		Iterator<String> it = keySet.iterator(); 
 		for(;it.hasNext();){
 			String key = it.next();
-			if(mOptionList.get(key)){
-				return key;
-			}
+			return key;
 		}
-		return null; 
+		return null;
 	}
 	
-	public String getBaseUrl(){
-		return mBaseUrl;
+	public String getName(){
+		return mName;
+	}
+	
+	//generate commit string
+	public String getCommitString(){
+		return null;
 	}
 	
 	public String getTitle(){

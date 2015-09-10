@@ -141,7 +141,9 @@ public class DigestThread extends Thread {
 			System.out.println(ia2);
 			InetAddress host = InetAddress.getByAddress(address);
 			System.out.println(host);
-			NetworkInterface ni = NetworkInterface.getByName("wlan0");
+			//NetworkInterface ni = NetworkInterface.getByName("wlan0");
+			
+			NetworkInterface ni = NetworkInterface.getByName("eth0");
 			Enumeration<InetAddress> ei = ni.getInetAddresses();
 			
 			while(ei.hasMoreElements()){
@@ -243,6 +245,11 @@ public class DigestThread extends Thread {
 			System.out.println("");
 			System.out.println(tcount + "###end:w");
 			
+			FileInputStream sm = new FileInputStream("Simple.html");
+			HTMLParser hp = new HTMLParser(sm);
+			advance(hp,"form",3);
+			System.out.println("kkkkkk:");
+			
 		} catch (FileNotFoundException | NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -250,6 +257,23 @@ public class DigestThread extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	private boolean advance(HTMLParser parse, String tag, int count) throws IOException {
+		int ch;
+		while ((ch = parse.read()) != -1) {
+			if (ch == 0) {
+				HTMLTag ht = parse.getTag();
+				String name = ht.getName();
+				System.out.println("Parser tag " + name +"##" + ht);
+				if (name.equalsIgnoreCase(tag)) {
+					count--;
+					if (count <= 0)
+						return true;
+				}
+			}
+		}
+		return false;
 	}
 
 }
