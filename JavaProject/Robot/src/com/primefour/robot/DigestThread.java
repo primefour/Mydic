@@ -271,6 +271,7 @@ public class DigestThread extends Thread {
 					result.setLength(0);
 				}
 				System.out.println("##" + ht);
+				
 				ht = (HTMLTag) parse.getTag().clone();
 				String name = ht.getName();
 				if (name.equalsIgnoreCase(tag)) {

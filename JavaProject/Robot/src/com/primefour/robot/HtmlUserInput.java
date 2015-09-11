@@ -25,6 +25,12 @@ public class HtmlUserInput {
 		mId = id;
 	}
 	
+	public HtmlUserInput(HTMLTag tag){
+		mTitle = tag.getAttributeValue("title");
+		mName = tag.getAttributeValue("name");
+		mId = tag.getAttributeValue("id");
+	}
+	
 	public String getInputId(){
 		return mId;
 	}

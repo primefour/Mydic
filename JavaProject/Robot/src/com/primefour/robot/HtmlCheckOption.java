@@ -9,30 +9,24 @@ public class HtmlCheckOption extends HtmlSelectOption {
 		super(title,name,id);
 	}
 	
-	public void SetItemEnable(String key){
-		if(mOptionList.containsKey(key)){
-			ItemValue vi =  mOptionList.get(key);
-			vi.mSelected = "true";
-			mOptionList.put(key,vi);
-		}
+	public  HtmlCheckOption(String name){
+		super(null,name,null);
 	}
-	
 	//generate commit string
 	public String getCommitString(){
-		Collection<String> keySet = mOptionList.keySet();
-		Iterator<String> it = keySet.iterator(); 
+		Iterator<ItemValue> it = mOptionList.iterator(); 
 		StringBuilder sb = new StringBuilder();
 		for(;it.hasNext();){
-			String key = it.next();
-			ItemValue iv = mOptionList.get(key);
-			if("true".equals(iv.mSelected.toLowerCase())){
+			ItemValue item = it.next();
+			if("true".equals(item.mSelected.toLowerCase())){
 				sb.append(mName);
 				sb.append("=");
-				sb.append(iv.mValue);
+				sb.append(item.mValueName);
 				sb.append("&");
 			}
 		}
-		sb.setCharAt(sb.length(),'\0');
+		sb.setLength(sb.length() -1);
 		return sb.toString();
 	}
+	
 }

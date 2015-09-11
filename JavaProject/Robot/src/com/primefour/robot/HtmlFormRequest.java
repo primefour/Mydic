@@ -23,6 +23,15 @@ public class HtmlFormRequest {
 		mUserInputList = new ArrayList<HtmlUserInput>();
 	}
 	
+	public HtmlFormRequest(HTMLTag tag){
+		mName = tag.getAttributeValue("name");
+		mId = tag.getAttributeValue("id");
+		mReqMethod = tag.getAttributeValue("method");
+		mBaseUri = tag.getAttributeValue("action");
+		mSelectOptionList = new ArrayList<HtmlSelectOption>();
+		mUserInputList = new ArrayList<HtmlUserInput>();
+	}
+	
 	
 	public void insertSelectInput(HtmlSelectOption so){
 		mSelectOptionList.add(so);

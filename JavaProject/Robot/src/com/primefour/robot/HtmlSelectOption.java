@@ -11,57 +11,61 @@ public class HtmlSelectOption {
 	protected String mName;
 	protected String mId; 
 	protected class ItemValue{
-		public String mValue;
+		public String mValueName;
 		public String mSelected;
-		public ItemValue(String value,String sel){
-			mValue = value;
+		public ItemValue(String name,String sel){
+			mValueName = name;
 			mSelected = sel;
 		}
+		public ItemValue(HTMLTag tag){
+			mValueName = tag.getAttributeValue("value");
+			mSelected = "false";
+		}
 	};
-	protected Map<String,ItemValue> mOptionList;
 	
-	public ItemValue getItemValue(String value,String sel){
-		return new ItemValue(value,sel);
+	protected ArrayList<ItemValue> mOptionList;
+	
+	public ItemValue getItemValue(String Name,String sel){
+		return new ItemValue(Name,sel);
+	}
+	
+	public ItemValue getItemValue(HTMLTag tag){
+		return new ItemValue(tag);
 	}
 	
 	public HtmlSelectOption(String title,String name,String id){
 		mTitle = title;
 		mName = name;
 		mId = id;
-		mOptionList = new HashMap<String,ItemValue>();
+		mOptionList = new ArrayList<ItemValue>();
 	}
 	
-	public void HtmlAddSelectItem(String ItemName,ItemValue value){
+	public void SetItemEnable(String key){
+		Iterator<ItemValue> it = mOptionList.iterator(); 
+		for(;it.hasNext();){
+			ItemValue item = it.next();
+			if(item.mValueName.equalsIgnoreCase(key)){
+				item.mSelected = "true";
+			}
+		}
+	}
+	
+	public void addSelectItem(ItemValue item){
 		//update as new values
-		if(mOptionList.containsKey(ItemName)){
-			mOptionList.remove(ItemName);
-		}
-		mOptionList.put(ItemName,value);
+		mOptionList.add(item);
 	}
 	
-	public ArrayList<String> getEnableItems(){
-		Collection<String> keySet = mOptionList.keySet();
-		Iterator<String> it = keySet.iterator(); 
-		ArrayList<String> list = new ArrayList<String>();
-		for(;it.hasNext();){
-			String key = it.next();
-			list.add(key);
-		}
-		return list; 
-	}
-	
-	public String getEnableItem(){
-		Collection<String> keySet = mOptionList.keySet();
-		Iterator<String> it = keySet.iterator(); 
-		for(;it.hasNext();){
-			String key = it.next();
-			return key;
-		}
-		return null;
+	public void addSelectItem(HTMLTag tag){
+		//update as new values
+		mOptionList.add(new ItemValue(tag));
 	}
 	
 	public String getName(){
 		return mName;
+	}
+	
+	public void setName(String name){
+		mName = name;
 	}
 	
 	//generate commit string
