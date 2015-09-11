@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class HtmlPage {
 	private URL mURL;
@@ -22,6 +23,7 @@ public class HtmlPage {
 			conn.setReadTimeout(1000);
 			conn.setConnectTimeout(1000);
 			mIS = conn.getInputStream();
+			parserAllElements();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -30,6 +32,12 @@ public class HtmlPage {
 	
 	public HtmlPage(InputStream in){
 		mIS = in;
+		try {
+			parserAllElements();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	private void doAction(HTMLParser parse) throws IOException {
@@ -110,7 +118,6 @@ public class HtmlPage {
 								formInst.insertSelectInput(multSelOpt);
 							}
 						}
-
 					}else{
 						if(ht.getName().equalsIgnoreCase("a")){
 							if(ht.getAttributeValue("href").indexOf("http") != -1){
@@ -134,6 +141,30 @@ public class HtmlPage {
 	private void parserAllElements() throws IOException{
 			HTMLParser parser = new HTMLParser(mIS);
 			doAction(parser);
+	}
+	
+	public String toString(){
+		StringBuilder sb = new StringBuilder();
+		Iterator<HtmlHRef> it = mHRef.iterator(); 
+		sb.append("link list is :\n");
+		for(;it.hasNext();){
+			HtmlHRef item = it.next();	
+			System.out.println(item.getBaseUrl());
+			sb.append(item.getBaseUrl());
+			sb.append("\n");
+		}
+		
+		sb.append("input list is :\n");
+		
+		Iterator<HtmlFormRequest> ii = mInputList.iterator(); 
+		for(;it.hasNext();){
+			HtmlFormRequest item = ii.next();	
+			System.out.println(item.getHtmlReqStr());
+			sb.append(item.getHtmlReqStr());
+			sb.append("\n");
+		}
+		
+		return sb.toString(); 
 	}
 	
 	
