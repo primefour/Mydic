@@ -98,7 +98,7 @@ public class HtmlPage {
 						}else if(tagName.equalsIgnoreCase("textarea")){
 							formInst.insertUserInput(new HtmlUserInput(ht));
 						}else if(tagName.equalsIgnoreCase("select")){
-							if(ht.getAttributeValue("multiple").equalsIgnoreCase("multiple")){
+							if(ht.getAttributeValue("multiple") != null && ht.getAttributeValue("multiple").equalsIgnoreCase("multiple")){
 								multSelOpt 	= new HtmlCheckOption(ht.getAttributeValue("name"));
 							}else{
 								singleSelOpt = new HtmlRadioOption(ht.getAttributeValue("name"));
@@ -123,7 +123,11 @@ public class HtmlPage {
 							if(ht.getAttributeValue("href").indexOf("http") != -1){
 								mHRef.add(new HtmlHRef(ht));
 							}else{
-								mHRef.add(new HtmlHRef(mURL.toString(),ht));
+								if(mURL == null){
+									mHRef.add(new HtmlHRef(null,ht));
+								}else{
+									mHRef.add(new HtmlHRef(mURL.toString(),ht));
+								}
 							}
 						}else if(ht.getName().equalsIgnoreCase("form")){
 							formBegin = true;
