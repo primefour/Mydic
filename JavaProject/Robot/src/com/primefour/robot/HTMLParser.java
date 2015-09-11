@@ -96,7 +96,7 @@ public class HTMLParser {
 		} else if (this.source.peek() == '&') {
 			return parseSpecialCharacter();
 		} else {
-			return (this.source.read());
+			return this.source.read();
 		}
 	}
 

@@ -2,11 +2,12 @@ package com.primefour.robot;
 
 import java.util.*;
 
-public class HTMLTag {
+public class HTMLTag implements Cloneable {
 	/*
 	 * The attributes
 	 */
 	private Map<String, String> attributes = new HashMap<String, String>();
+	private String des; 
 	/**
 	 * The tag name.
 	 */
@@ -32,6 +33,14 @@ public class HTMLTag {
 	public String getAttributeValue(String name) {
 		return this.attributes.get(name.toLowerCase());
 	}
+	
+	/**
+	 * return content of direction
+	 */
+	public String getContent(){
+		return des;
+	}
+	
 
 	/**
 	 * Get the tag name.
@@ -57,6 +66,13 @@ public class HTMLTag {
 	 */
 	public void setAttribute(String name, String value) {
 		this.attributes.put(name.toLowerCase(), value);
+	}
+	
+	/**
+	 * record content of direction
+	 */
+	public void setContent(String a){
+		des = a;
 	}
 
 	/**
@@ -110,6 +126,24 @@ public class HTMLTag {
 		}
 		
 		buffer.append(">");
+		if(des != null){
+			buffer.append(des);
+		}
 		return buffer.toString();
+	}
+	@Override
+	public Object clone(){
+		HTMLTag tmp = null; 
+		try {  
+			tmp = (HTMLTag) super.clone();  
+			tmp.attributes = new HashMap<String, String>();
+			Set<String> keys = attributes.keySet();
+			for (String string : keys) {
+				tmp.attributes.put(string,attributes.get(string));
+			}
+		} catch (CloneNotSupportedException e) {  
+			e.printStackTrace();  
+		}  
+		return tmp;
 	}
 }

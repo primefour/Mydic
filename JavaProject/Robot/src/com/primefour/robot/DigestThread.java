@@ -247,7 +247,7 @@ public class DigestThread extends Thread {
 			
 			FileInputStream sm = new FileInputStream("Simple.html");
 			HTMLParser hp = new HTMLParser(sm);
-			advance(hp,"form",3);
+			advance(hp,"form",20);
 			System.out.println("kkkkkk:");
 			
 		} catch (FileNotFoundException | NoSuchAlgorithmException e) {
@@ -261,16 +261,25 @@ public class DigestThread extends Thread {
 	
 	private boolean advance(HTMLParser parse, String tag, int count) throws IOException {
 		int ch;
+		
+		StringBuilder result = new StringBuilder();
+		HTMLTag ht = null;
 		while ((ch = parse.read()) != -1) {
 			if (ch == 0) {
-				HTMLTag ht = parse.getTag();
+				if(ht != null && result.length() != 0){
+					ht.setContent(result.toString());
+					result.setLength(0);
+				}
+				System.out.println("##" + ht);
+				ht = (HTMLTag) parse.getTag().clone();
 				String name = ht.getName();
-				System.out.println("Parser tag " + name +"##" + ht);
 				if (name.equalsIgnoreCase(tag)) {
 					count--;
 					if (count <= 0)
 						return true;
 				}
+			}else if(ch != -1){
+				result.append((char)ch);
 			}
 		}
 		return false;
