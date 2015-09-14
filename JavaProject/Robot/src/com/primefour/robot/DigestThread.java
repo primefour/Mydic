@@ -250,6 +250,7 @@ public class DigestThread extends Thread {
 			advance(hp,"form",20);
 			System.out.println("kkkkkk:");
 			*/
+			
 			/*
 			FileInputStream ism = new FileInputStream("Simple.html");
 			HtmlPage ihp = new HtmlPage(ism);
@@ -261,7 +262,6 @@ public class DigestThread extends Thread {
 			System.out.println(ihp.toString());
 			FileOutputStream aa = new FileOutputStream("parser.txt");
 			aa.write(ihp.toString().getBytes());
-			
 		} catch (FileNotFoundException | NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
