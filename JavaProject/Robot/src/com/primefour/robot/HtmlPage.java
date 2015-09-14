@@ -8,15 +8,18 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Set;
 
 public class HtmlPage {
 	private URL mURL;
 	private InputStream mIS;
 	private String mTextContent;
+	private String mScriptContent;
 	
 	private ArrayList<HtmlFormRequest> mInputList = new ArrayList<HtmlFormRequest>();
-	private ArrayList<HtmlHRef> mHRef = new ArrayList<HtmlHRef>();
+	private HashMap<String,HtmlHRef> mHRef = new HashMap<String,HtmlHRef>();
 	
 	public HtmlPage(String url) throws MalformedURLException{
 		mURL = new URL(url);
@@ -46,6 +49,7 @@ public class HtmlPage {
 		int ch;
 		//StringBuilder result = new StringBuilder();
 		StringBuilder fullText = new StringBuilder();
+		StringBuilder fullScript = new StringBuilder();
 		HTMLTag ht = null;
 		boolean formBegin = false;
 		boolean hasSelect = false;
@@ -64,8 +68,12 @@ public class HtmlPage {
 					byte data[] = new byte[idx];
 					System.arraycopy(textBuff,0,data,0,idx);
 					String result = new String(data,"utf8");
+					if(ht.getName().equalsIgnoreCase("script")){
+						fullScript.append(result);
+					}else{
+						fullText.append(result);
+					}
 					ht.setContent(result);
-					fullText.append(result);
 					idx = 0;
 				}
 				if(ht != null){
@@ -147,16 +155,16 @@ public class HtmlPage {
 						if(ht.getAttributeValue("href") == null){
 							
 						} else if(ht.getAttributeValue("href").indexOf("http") != -1){
-							mHRef.add(new HtmlHRef(ht));
+							mHRef.put(ht.getAttributeValue("href"),new HtmlHRef(ht));
 						}else if(ht.getAttributeValue("href").indexOf("mailto") != -1){
 							System.out.println("new ##mail to" + ht.getAttributeValue("href"));
 							System.out.println("new ##mail to" + ht.getAttributeValue("href").substring(
 										ht.getAttributeValue("href").indexOf(":") + ":".length(),ht.getAttributeValue("href").length()));
 						}else{
 							if(mURL == null){
-								mHRef.add(new HtmlHRef(null,ht));
+								mHRef.put(null,new HtmlHRef(null,ht));
 							}else{
-								mHRef.add(new HtmlHRef(mURL.getHost(),ht));
+								mHRef.put("http://" + mURL.getHost() + "/",new HtmlHRef("http://" + mURL.getHost() + "/",ht));
 							}
 						}
 					}else if(ht.getName().equalsIgnoreCase("form")){
@@ -168,10 +176,10 @@ public class HtmlPage {
 				ht = (HTMLTag) parse.getTag().clone();
 			}else if(ch != -1){
 				textBuff[idx ++] = (byte)ch ;
-				//result.append((char)ch);
 			}
 		}
 		mTextContent = fullText.toString();
+		mScriptContent = fullScript.toString();
 	}
 	
 	private void parserAllElements() throws IOException{
@@ -181,11 +189,11 @@ public class HtmlPage {
 	
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
-		Iterator<HtmlHRef> it = mHRef.iterator(); 
+		Set<String> it = mHRef.keySet();
 		sb.append("######link list is :\n");
-		for(;it.hasNext();){
-			HtmlHRef item = it.next();	
-			System.out.println(item.getBaseUrl());
+		for(String em :it){
+			HtmlHRef item = mHRef.get(em);
+			System.out.println(item);
 			sb.append(item.getBaseUrl());
 			sb.append("\n");
 		}
@@ -202,6 +210,9 @@ public class HtmlPage {
 		
 		sb.append("full text :\n");
 		sb.append(mTextContent);
+		
+		sb.append("full script :\n");
+		sb.append(mScriptContent);
 		return sb.toString(); 
 	}
 	

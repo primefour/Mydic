@@ -35,4 +35,8 @@ public class HtmlHRef {
 	public String getContent(){
 		return mContent;
 	}
+	
+	public String toString(){
+		return mBaseURL + "==>" + mContent;
+	}
 }
