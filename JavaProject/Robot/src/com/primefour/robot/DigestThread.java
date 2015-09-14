@@ -257,7 +257,7 @@ public class DigestThread extends Thread {
 			System.out.println(ihp.toString());
 			*/
 			
-			URL ssm = new URL("http://www.manchestereveningnews.co.uk/");//http://news.sina.com.cn");
+			URL ssm = new URL("http://www.baidu.com");//"http://www.manchestereveningnews.co.uk/");//http://news.sina.com.cn");
 			HtmlPage ihp = new HtmlPage(ssm.openStream());
 			System.out.println(ihp.toString());
 			FileOutputStream aa = new FileOutputStream("parser.txt");

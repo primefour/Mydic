@@ -18,6 +18,7 @@ public class HtmlPage {
 	private InputStream mIS;
 	private String mTextContent;
 	private String mScriptContent;
+	private String mStyleContent;
 	
 	private ArrayList<HtmlFormRequest> mInputList = new ArrayList<HtmlFormRequest>();
 	private HashMap<String,HtmlHRef> mHRef = new HashMap<String,HtmlHRef>();
@@ -51,6 +52,7 @@ public class HtmlPage {
 		//StringBuilder result = new StringBuilder();
 		StringBuilder fullText = new StringBuilder();
 		StringBuilder fullScript = new StringBuilder();
+		StringBuilder fullStyle = new StringBuilder();
 		HTMLTag ht = null;
 		boolean formBegin = false;
 		boolean hasSelect = false;
@@ -60,7 +62,7 @@ public class HtmlPage {
 		HtmlRadioOption singleSelOpt = null;
 		HtmlCheckOption multSelOpt = null;
 		
-		byte textBuff[] = new byte[40960];
+		byte textBuff[] = new byte[409600];
 		int idx = 0;
 		while ((ch = parse.read()) != -1) {
 			if (ch == 0) {
@@ -71,6 +73,8 @@ public class HtmlPage {
 					String result = new String(data,"utf8");
 					if(ht.getName().equalsIgnoreCase("script")){
 						fullScript.append(result);
+					}else if(ht.getName().equalsIgnoreCase("style")){
+						fullStyle.append(result);
 					}else{
 						fullText.append(result);
 					}
@@ -96,7 +100,7 @@ public class HtmlPage {
 							formInst = null;
 						}else if(tagName.equalsIgnoreCase("input")){
 							String tagType = ht.getAttributeValue("type");
-							if(tagType.equalsIgnoreCase("password") ||
+							if(tagType == null || tagType.equalsIgnoreCase("password") ||
 									tagType.equalsIgnoreCase("text")){								
 								System.out.println("new ##text input " + ht.getName());
 								formInst.insertUserInput(new HtmlUserInput(ht));
@@ -181,6 +185,7 @@ public class HtmlPage {
 		}
 		mTextContent = fullText.toString();
 		mScriptContent = fullScript.toString();
+		mStyleContent = fullStyle.toString();
 	}
 	
 	private void parserAllElements() throws IOException{
@@ -238,6 +243,9 @@ public class HtmlPage {
 		
 		sb.append("full script :\n");
 		sb.append(mScriptContent);
+		
+		sb.append("full style :\n");
+		sb.append(mStyleContent);
 		return sb.toString(); 
 	}
 	
