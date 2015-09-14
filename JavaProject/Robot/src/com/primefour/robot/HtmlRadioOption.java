@@ -34,6 +34,10 @@ public class HtmlRadioOption extends HtmlSelectOption {
 				return mName + "=" + item.mValueName;
 			}
 		}
-		return null;
+		if(!mOptionList.isEmpty()){
+			return mName + "=" + mOptionList.get(0).mValueName;
+		}else{
+			return null;
+		}
 	}
 }

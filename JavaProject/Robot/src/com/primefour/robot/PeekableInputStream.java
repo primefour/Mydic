@@ -7,7 +7,7 @@ public class PeekableInputStream extends InputStream {
 	
 	private InputStream mStream;
 	private byte  mPeekBuff[];
-	private int  mPeekBuffLength = 100;
+	private int  mPeekBuffLength = 4096;
 	private int  mReadOffset = 0;
 	private int  mBufferedLength =0; 
 	

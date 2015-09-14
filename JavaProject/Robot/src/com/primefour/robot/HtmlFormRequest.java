@@ -30,15 +30,18 @@ public class HtmlFormRequest {
 		mBaseUri = tag.getAttributeValue("action");
 		mSelectOptionList = new ArrayList<HtmlSelectOption>();
 		mUserInputList = new ArrayList<HtmlUserInput>();
+		System.out.println(mName);
 	}
 	
 	
 	public void insertSelectInput(HtmlSelectOption so){
 		mSelectOptionList.add(so);
+		System.out.println("####select " + so.getName());
 	}
 	
 	public void insertUserInput(HtmlUserInput si){
 		mUserInputList.add(si);
+		System.out.println("Input ####"+si.getInputName());
 	}
 	
 	public String getBaseUri(){
@@ -69,7 +72,7 @@ public class HtmlFormRequest {
 	
 	public String getHtmlReqStr(){
 		StringBuilder sb = new StringBuilder();
-		if("get".equals(mReqMethod.toLowerCase())){
+		if((mReqMethod == null) || ("get".equals(mReqMethod.toLowerCase()))){
 			sb.append(mBaseUri);
 			sb.append("?");
 			Iterator<HtmlSelectOption> hi = mSelectOptionList.iterator();
@@ -85,10 +88,11 @@ public class HtmlFormRequest {
 				sb.append(hui.getCommitString());
 				sb.append('&');
 			}
-			sb.setCharAt(sb.length(), '\0');
+			if(sb.length() != 0){
+				sb.setLength(sb.length() -1);
+			}
 			return sb.toString();
 		}else{
-			sb.append("?");
 			Iterator<HtmlSelectOption> hi = mSelectOptionList.iterator();
 			while(hi.hasNext()){
 				HtmlSelectOption hso = hi.next();
@@ -102,7 +106,9 @@ public class HtmlFormRequest {
 				sb.append(hui.getCommitString());
 				sb.append('&');
 			}
-			sb.setCharAt(sb.length(), '\0');
+			if(sb.length() != 0){
+				sb.setLength(sb.length() -1);
+			}
 			return sb.toString();
 		}
 	}
