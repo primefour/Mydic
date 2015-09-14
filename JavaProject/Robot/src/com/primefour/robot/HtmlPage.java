@@ -3,6 +3,7 @@ package com.primefour.robot;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -185,6 +186,30 @@ public class HtmlPage {
 	private void parserAllElements() throws IOException{
 			HTMLParser parser = new HTMLParser(mIS);
 			doAction(parser);
+	}
+	
+	public void writeHref(OutputStream op) throws IOException{
+		StringBuilder sb = new StringBuilder();
+		Set<String> it = mHRef.keySet();
+		for(String em :it){
+			HtmlHRef item = mHRef.get(em);
+			op.write(item.toString().getBytes());
+		}
+	}
+	
+	public String getContent(){
+		return mTextContent;
+	}
+	
+	public void writeInput(OutputStream op) throws IOException{
+		StringBuilder sb = new StringBuilder();
+		Iterator<HtmlFormRequest> ii = mInputList.iterator(); 
+		for(;ii.hasNext();){
+			HtmlFormRequest item = ii.next();	
+			sb.append(item.getHtmlReqStr());
+			sb.append("\n");
+		}
+		op.write(sb.toString().getBytes());
 	}
 	
 	public String toString(){

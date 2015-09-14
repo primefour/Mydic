@@ -35,5 +35,4 @@ public class HtmlCheckOption extends HtmlSelectOption {
 		}
 		return sb.toString();
 	}
-	
 }
