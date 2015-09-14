@@ -14,6 +14,7 @@ public class HtmlPage {
 	private URL mURL;
 	private InputStream mIS;
 	private String mTextContent;
+	private String mScriptContent;
 	
 	private ArrayList<HtmlFormRequest> mInputList = new ArrayList<HtmlFormRequest>();
 	private ArrayList<HtmlHRef> mHRef = new ArrayList<HtmlHRef>();
@@ -46,6 +47,7 @@ public class HtmlPage {
 		int ch;
 		//StringBuilder result = new StringBuilder();
 		StringBuilder fullText = new StringBuilder();
+		StringBuilder fullScript = new StringBuilder();
 		HTMLTag ht = null;
 		boolean formBegin = false;
 		boolean hasSelect = false;
@@ -64,8 +66,10 @@ public class HtmlPage {
 					byte data[] = new byte[idx];
 					System.arraycopy(textBuff,0,data,0,idx);
 					String result = new String(data,"utf8");
+					if(!ht.getName().equalsIgnoreCase("script")){
+						fullScript.append(result);
+					}
 					ht.setContent(result);
-					fullText.append(result);
 					idx = 0;
 				}
 				if(ht != null){
@@ -168,10 +172,10 @@ public class HtmlPage {
 				ht = (HTMLTag) parse.getTag().clone();
 			}else if(ch != -1){
 				textBuff[idx ++] = (byte)ch ;
-				//result.append((char)ch);
 			}
 		}
 		mTextContent = fullText.toString();
+		mScriptContent = fullScript.toString();
 	}
 	
 	private void parserAllElements() throws IOException{
@@ -202,6 +206,9 @@ public class HtmlPage {
 		
 		sb.append("full text :\n");
 		sb.append(mTextContent);
+		
+		sb.append("full script :\n");
+		sb.append(mScriptContent);
 		return sb.toString(); 
 	}
 	
