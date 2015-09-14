@@ -16,6 +16,11 @@ public class HtmlCheckOption extends HtmlSelectOption {
 	public String getCommitString(){
 		Iterator<ItemValue> it = mOptionList.iterator(); 
 		StringBuilder sb = new StringBuilder();
+		if(!mOptionList.isEmpty()){
+			mOptionList.get(0).mSelected = "true";
+		}else{
+			return null;
+		}
 		for(;it.hasNext();){
 			ItemValue item = it.next();
 			if("true".equals(item.mSelected.toLowerCase())){
@@ -25,7 +30,9 @@ public class HtmlCheckOption extends HtmlSelectOption {
 				sb.append("&");
 			}
 		}
-		sb.setLength(sb.length() -1);
+		if(sb.length() != 0){
+			sb.setLength(sb.length() -1);
+		}
 		return sb.toString();
 	}
 	

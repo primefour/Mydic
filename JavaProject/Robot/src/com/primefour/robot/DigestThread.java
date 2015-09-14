@@ -244,16 +244,17 @@ public class DigestThread extends Thread {
 			ftt.close();
 			System.out.println("");
 			System.out.println(tcount + "###end:w");
-			
+			/*
 			FileInputStream sm = new FileInputStream("Simple.html");
 			HTMLParser hp = new HTMLParser(sm);
 			advance(hp,"form",20);
 			System.out.println("kkkkkk:");
+			*/
 			
 			FileInputStream ism = new FileInputStream("Simple.html");
 			
 			HtmlPage ihp = new HtmlPage(ism);
-			ihp.toString();
+			System.out.println(ihp.toString());
 			
 		} catch (FileNotFoundException | NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block

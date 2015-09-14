@@ -15,7 +15,11 @@ public class HtmlHRef {
 	}
 	
 	public HtmlHRef(String baseUrl,HTMLTag tag){
-		mBaseURL = baseUrl + tag.getAttributeValue("href");
+		if(baseUrl == null){
+			mBaseURL = tag.getAttributeValue("href");
+		}else{
+			mBaseURL = baseUrl + tag.getAttributeValue("href");
+		}
 		mContent = tag.getContent();
 	}
 	

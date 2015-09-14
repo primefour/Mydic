@@ -51,7 +51,9 @@ public class HtmlUserInput {
 			StringBuilder sb = new StringBuilder();
 			sb.append(mName);
 			sb.append("=");
-			sb.append(mUserInput);
-			return URLEncoder.encode(sb.toString());
+			if(mUserInput != null){
+				sb.append(URLEncoder.encode(mUserInput));
+			}
+			return sb.toString();
 	}
 }

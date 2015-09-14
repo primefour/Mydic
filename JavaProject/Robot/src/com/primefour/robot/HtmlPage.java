@@ -58,10 +58,10 @@ public class HtmlPage {
 					result.setLength(0);
 				}
 				if(ht != null){
-					System.out.println("##" + ht);
 					if(formBegin){
 						String tagName = ht.getName();
 						if(tagName.equalsIgnoreCase("/form")){	
+							System.out.println("end ##form" + ht.getName());
 							formBegin = false ;
 							if(radioOpt != null){
 								formInst.insertSelectInput(radioOpt);
@@ -71,16 +71,17 @@ public class HtmlPage {
 								formInst.insertSelectInput(checkOpt);
 								checkOpt = null;
 							}
+							System.out.println("xxxxxxxxxx form request " + formInst.getBaseUri());
 							mInputList.add(formInst);
 							formInst = null;
 						}else if(tagName.equalsIgnoreCase("input")){
 							String tagType = ht.getAttributeValue("type");
 							if(tagType.equalsIgnoreCase("password") ||
-									tagType.equalsIgnoreCase("text") ||
-									tagType.equalsIgnoreCase("submit") ||
-									tagType.equalsIgnoreCase("image")){								
+									tagType.equalsIgnoreCase("text")){								
+								System.out.println("new ##text input " + ht.getName());
 								formInst.insertUserInput(new HtmlUserInput(ht));
 							}else if(tagType.equalsIgnoreCase("radio")){
+								System.out.println("new ##radio input " + ht.getName());
 								if(radioOpt == null){
 									radioOpt = new HtmlRadioOption(ht.getAttributeValue("name"));
 									radioOpt.addSelectItem(ht);
@@ -88,16 +89,24 @@ public class HtmlPage {
 									radioOpt.addSelectItem(ht);
 								}
 							}else if(tagType.equalsIgnoreCase("checkbox")){
+								System.out.println("new ##checkbox input " + ht.getName());
 								if(checkOpt == null){
 									checkOpt = new HtmlCheckOption(ht.getAttributeValue("name"));
 									checkOpt.addSelectItem(ht);
 								}else{
 									checkOpt.addSelectItem(ht);
 								}
+							}else if(tagType.equalsIgnoreCase("file")){
+								
+							}else if(tagType.equalsIgnoreCase("submit") || 
+										tagType.equalsIgnoreCase("image")){
+								
 							}
 						}else if(tagName.equalsIgnoreCase("textarea")){
+							System.out.println("new ##textarea input " + ht.getName());
 							formInst.insertUserInput(new HtmlUserInput(ht));
 						}else if(tagName.equalsIgnoreCase("select")){
+							System.out.println("new ##select input " + ht.getName());
 							if(ht.getAttributeValue("multiple") != null && ht.getAttributeValue("multiple").equalsIgnoreCase("multiple")){
 								multSelOpt 	= new HtmlCheckOption(ht.getAttributeValue("name"));
 							}else{
@@ -105,34 +114,42 @@ public class HtmlPage {
 							}
 							hasSelect = true;
 						}else if(tagName.equalsIgnoreCase("option") && hasSelect){
+							System.out.println("get ##select option" + ht.getName());
 							if(singleSelOpt != null ){
 								singleSelOpt.addSelectItem(ht);
 							}else{
 								multSelOpt.addSelectItem(ht);
 							}
 						}else if(tagName.equalsIgnoreCase("/select") && hasSelect){
+							System.out.println("end ##select input " + ht.getName());
 							hasSelect = false;
 							if(singleSelOpt != null ){
 								formInst.insertSelectInput(singleSelOpt);
+								singleSelOpt = null;
 							}else{
 								formInst.insertSelectInput(multSelOpt);
+								multSelOpt = null;
 							}
 						}
-					}else{
-						if(ht.getName().equalsIgnoreCase("a")){
-							if(ht.getAttributeValue("href").indexOf("http") != -1){
-								mHRef.add(new HtmlHRef(ht));
+					}else if(ht.getName().equalsIgnoreCase("a")){
+						System.out.println("new ##link" + ht.getAttributeValue("href"));
+						if(ht.getAttributeValue("href").indexOf("http") != -1){
+							mHRef.add(new HtmlHRef(ht));
+						}else if(ht.getAttributeValue("href").indexOf("mailto") != -1){
+							System.out.println("new ##mail to" + ht.getAttributeValue("href"));
+							System.out.println("new ##mail to" + ht.getAttributeValue("href").substring(
+										ht.getAttributeValue("href").indexOf(":") + ":".length(),ht.getAttributeValue("href").length()));
+						}else{
+							if(mURL == null){
+								mHRef.add(new HtmlHRef(null,ht));
 							}else{
-								if(mURL == null){
-									mHRef.add(new HtmlHRef(null,ht));
-								}else{
-									mHRef.add(new HtmlHRef(mURL.toString(),ht));
-								}
+								mHRef.add(new HtmlHRef(mURL.getHost(),ht));
 							}
-						}else if(ht.getName().equalsIgnoreCase("form")){
-							formBegin = true;
-							formInst = new HtmlFormRequest(ht);
 						}
+					}else if(ht.getName().equalsIgnoreCase("form")){
+						formBegin = true;
+						formInst = new HtmlFormRequest(ht);
+						System.out.println("new ##form" + ht.getName());
 					}
 				}
 				ht = (HTMLTag) parse.getTag().clone();
@@ -150,7 +167,7 @@ public class HtmlPage {
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
 		Iterator<HtmlHRef> it = mHRef.iterator(); 
-		sb.append("link list is :\n");
+		sb.append("######link list is :\n");
 		for(;it.hasNext();){
 			HtmlHRef item = it.next();	
 			System.out.println(item.getBaseUrl());
@@ -158,10 +175,10 @@ public class HtmlPage {
 			sb.append("\n");
 		}
 		
-		sb.append("input list is :\n");
+		sb.append("######input list is :\n");
 		
 		Iterator<HtmlFormRequest> ii = mInputList.iterator(); 
-		for(;it.hasNext();){
+		for(;ii.hasNext();){
 			HtmlFormRequest item = ii.next();	
 			System.out.println(item.getHtmlReqStr());
 			sb.append(item.getHtmlReqStr());
