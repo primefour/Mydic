@@ -261,7 +261,6 @@ public class DigestThread extends Thread {
 			System.out.println(ihp.toString());
 			FileOutputStream aa = new FileOutputStream("parser.txt");
 			aa.write(ihp.toString().getBytes());
-			
 		} catch (FileNotFoundException | NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
