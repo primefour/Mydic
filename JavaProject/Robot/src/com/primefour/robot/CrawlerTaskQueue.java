@@ -12,15 +12,24 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+class ReqInfo{
+	String mTitle;
+	CookieUtility mCookie;
+	String mSession;
+};
+
 public class CrawlerTaskQueue {
 	private static final int THREAD_COUNT = 10;
 	private static ArrayList<String> mUrlList = new ArrayList<String>();
-	private static HashMap<String,String>mUrlSet = new HashMap<String,String>();
+	private static HashMap<String,ReqInfo>mUrlSet = new HashMap<String,ReqInfo>();
 	private static ReadWriteLock mlock = new ReentrantReadWriteLock(false);  
 	private static Condition mCond = mlock.writeLock().newCondition();
 	private static ThreadPool mPool = new ThreadPool("WriteTaskQueue",THREAD_COUNT);
+	private static CookieUtility mCookieSet = new CookieUtility();
+	private String mBaseUrl; 
 	
-	CrawlerTaskQueue(){
+	CrawlerTaskQueue(String baseUrl){
+		mBaseUrl = baseUrl;
 		int count = THREAD_COUNT;
 		while(count-- > 0){
 			mPool.commitTask(new CrawlerTask());
@@ -51,6 +60,8 @@ public class CrawlerTaskQueue {
 				try {
 					URL request = new URL(url);
 					HttpURLConnection conn = (HttpURLConnection) request.openConnection();
+					mCookieSet.loadCookies(conn); 
+					mCookieSet.loadCookies(conn); 
 					conn.setConnectTimeout(1000);
 					conn.setReadTimeout(1000);
 					InputStream is = conn.getInputStream();
@@ -66,7 +77,7 @@ public class CrawlerTaskQueue {
 	};
 	
 	public static String getFileTitle(String url){
-		return mUrlSet.get(url);
+		return mUrlSet.get(url).mTitle;
 	}
 	
 	public static void enqTask(String url,String title){
@@ -78,7 +89,9 @@ public class CrawlerTaskQueue {
 		mlock.readLock().unlock(); 
 		
 		mlock.writeLock().lock();
-		mUrlSet.put(url,title);
+		ReqInfo obj = new ReqInfo();
+		obj.mTitle = title;
+		mUrlSet.put(url,obj);
 		mUrlList.add(url);
 		mCond.signalAll(); 
 		mlock.writeLock().unlock();

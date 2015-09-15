@@ -7,7 +7,7 @@ public class SimpleWebServer {
 		/*DigestThread dt = new DigestThread("Hello.txt");
 		dt.start();
 		*/
-		CrawlerTaskQueue crawler = new CrawlerTaskQueue();
+		CrawlerTaskQueue crawler = new CrawlerTaskQueue("http://news.sina.com.cn/");
 		
 		System.out.println("World start 1");
 		ParserTaskQueue parser = new ParserTaskQueue();
@@ -16,8 +16,7 @@ public class SimpleWebServer {
 		WriteTaskQueue writer = new WriteTaskQueue();
 		
 		System.out.println("World start 3");
-		//crawler.enqTask("http://news.sina.com.cn/","news.sina");
-		crawler.enqTask("http://news.163.com/","jD");
+		crawler.enqTask("http://news.sina.com.cn/","news.sina");
 		System.out.println("World start 4");
 		
 		try {
