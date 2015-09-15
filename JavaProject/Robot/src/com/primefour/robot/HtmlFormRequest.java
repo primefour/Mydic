@@ -30,18 +30,18 @@ public class HtmlFormRequest {
 		mBaseUri = tag.getAttributeValue("action");
 		mSelectOptionList = new ArrayList<HtmlSelectOption>();
 		mUserInputList = new ArrayList<HtmlUserInput>();
-		System.out.println(mName);
+		//System.out.println(mName);
 	}
 	
 	
 	public void insertSelectInput(HtmlSelectOption so){
 		mSelectOptionList.add(so);
-		System.out.println("####select " + so.getName());
+//		System.out.println("####select " + so.getName());
 	}
 	
 	public void insertUserInput(HtmlUserInput si){
 		mUserInputList.add(si);
-		System.out.println("Input ####"+si.getInputName());
+//		System.out.println("Input ####"+si.getInputName());
 	}
 	
 	public String getBaseUri(){

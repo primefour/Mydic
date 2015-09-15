@@ -47,6 +47,17 @@ public class HtmlPage {
 		}
 	}
 	
+	public HtmlPage(InputStream in,String url){
+		mIS = in;
+		try {
+			mURL = new URL(url);
+			parserAllElements();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	private void doAction(HTMLParser parse) throws IOException {
 		int ch;
 		//StringBuilder result = new StringBuilder();
@@ -85,7 +96,7 @@ public class HtmlPage {
 					if(formBegin){
 						String tagName = ht.getName();
 						if(tagName.equalsIgnoreCase("/form")){	
-							System.out.println("end ##form" + ht.getName());
+							//System.out.println("end ##form" + ht.getName());
 							formBegin = false ;
 							if(radioOpt != null){
 								formInst.insertSelectInput(radioOpt);
@@ -95,17 +106,17 @@ public class HtmlPage {
 								formInst.insertSelectInput(checkOpt);
 								checkOpt = null;
 							}
-							System.out.println("xxxxxxxxxx form request " + formInst.getBaseUri());
+							//System.out.println("xxxxxxxxxx form request " + formInst.getBaseUri());
 							mInputList.add(formInst);
 							formInst = null;
 						}else if(tagName.equalsIgnoreCase("input")){
 							String tagType = ht.getAttributeValue("type");
 							if(tagType == null || tagType.equalsIgnoreCase("password") ||
 									tagType.equalsIgnoreCase("text")){								
-								System.out.println("new ##text input " + ht.getName());
+								//System.out.println("new ##text input " + ht.getName());
 								formInst.insertUserInput(new HtmlUserInput(ht));
 							}else if(tagType.equalsIgnoreCase("radio")){
-								System.out.println("new ##radio input " + ht.getName());
+								//System.out.println("new ##radio input " + ht.getName());
 								if(radioOpt == null){
 									radioOpt = new HtmlRadioOption(ht.getAttributeValue("name"));
 									radioOpt.addSelectItem(ht);
@@ -113,7 +124,7 @@ public class HtmlPage {
 									radioOpt.addSelectItem(ht);
 								}
 							}else if(tagType.equalsIgnoreCase("checkbox")){
-								System.out.println("new ##checkbox input " + ht.getName());
+								//System.out.println("new ##checkbox input " + ht.getName());
 								if(checkOpt == null){
 									checkOpt = new HtmlCheckOption(ht.getAttributeValue("name"));
 									checkOpt.addSelectItem(ht);
@@ -127,10 +138,10 @@ public class HtmlPage {
 								
 							}
 						}else if(tagName.equalsIgnoreCase("textarea")){
-							System.out.println("new ##textarea input " + ht.getName());
+							//System.out.println("new ##textarea input " + ht.getName());
 							formInst.insertUserInput(new HtmlUserInput(ht));
 						}else if(tagName.equalsIgnoreCase("select")){
-							System.out.println("new ##select input " + ht.getName());
+							//System.out.println("new ##select input " + ht.getName());
 							if(ht.getAttributeValue("multiple") != null && ht.getAttributeValue("multiple").equalsIgnoreCase("multiple")){
 								multSelOpt 	= new HtmlCheckOption(ht.getAttributeValue("name"));
 							}else{
@@ -138,14 +149,14 @@ public class HtmlPage {
 							}
 							hasSelect = true;
 						}else if(tagName.equalsIgnoreCase("option") && hasSelect){
-							System.out.println("get ##select option" + ht.getName());
+							//System.out.println("get ##select option" + ht.getName());
 							if(singleSelOpt != null ){
 								singleSelOpt.addSelectItem(ht);
 							}else{
 								multSelOpt.addSelectItem(ht);
 							}
 						}else if(tagName.equalsIgnoreCase("/select") && hasSelect){
-							System.out.println("end ##select input " + ht.getName());
+							//System.out.println("end ##select input " + ht.getName());
 							hasSelect = false;
 							if(singleSelOpt != null ){
 								formInst.insertSelectInput(singleSelOpt);
@@ -156,15 +167,15 @@ public class HtmlPage {
 							}
 						}
 					}else if(ht.getName().equalsIgnoreCase("a")){
-						System.out.println("new ##link" + ht.getAttributeValue("href"));
+						//System.out.println("new ##link" + ht.getAttributeValue("href"));
 						if(ht.getAttributeValue("href") == null){
 							
 						} else if(ht.getAttributeValue("href").indexOf("http") != -1){
 							mHRef.put(ht.getAttributeValue("href"),new HtmlHRef(ht));
 						}else if(ht.getAttributeValue("href").indexOf("mailto") != -1){
-							System.out.println("new ##mail to" + ht.getAttributeValue("href"));
-							System.out.println("new ##mail to" + ht.getAttributeValue("href").substring(
-										ht.getAttributeValue("href").indexOf(":") + ":".length(),ht.getAttributeValue("href").length()));
+							//System.out.println("new ##mail to" + ht.getAttributeValue("href"));
+							//System.out.println("new ##mail to" + ht.getAttributeValue("href").substring(
+										//ht.getAttributeValue("href").indexOf(":") + ":".length(),ht.getAttributeValue("href").length()));
 						}else{
 							if(mURL == null){
 								mHRef.put(null,new HtmlHRef(null,ht));
@@ -175,7 +186,7 @@ public class HtmlPage {
 					}else if(ht.getName().equalsIgnoreCase("form")){
 						formBegin = true;
 						formInst = new HtmlFormRequest(ht);
-						System.out.println("new ##form" + ht.getName());
+						//System.out.println("new ##form" + ht.getName());
 					}
 				}
 				ht = (HTMLTag) parse.getTag().clone();
@@ -193,12 +204,23 @@ public class HtmlPage {
 			doAction(parser);
 	}
 	
+	
 	public void writeHref(OutputStream op) throws IOException{
 		StringBuilder sb = new StringBuilder();
 		Set<String> it = mHRef.keySet();
 		for(String em :it){
 			HtmlHRef item = mHRef.get(em);
 			op.write(item.toString().getBytes());
+		}
+	}
+	public HashMap<String,HtmlHRef> getHRef(){
+		return mHRef;
+	}
+	public String getBaseUrl(){
+		if(mURL != null){
+			return mURL.toString();
+		}else{
+			return null;
 		}
 	}
 	
@@ -223,8 +245,7 @@ public class HtmlPage {
 		sb.append("######link list is :\n");
 		for(String em :it){
 			HtmlHRef item = mHRef.get(em);
-			System.out.println(item);
-			sb.append(item.getBaseUrl());
+			sb.append(item);
 			sb.append("\n");
 		}
 		
@@ -233,7 +254,6 @@ public class HtmlPage {
 		Iterator<HtmlFormRequest> ii = mInputList.iterator(); 
 		for(;ii.hasNext();){
 			HtmlFormRequest item = ii.next();	
-			System.out.println(item.getHtmlReqStr());
 			sb.append(item.getHtmlReqStr());
 			sb.append("\n");
 		}

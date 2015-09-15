@@ -60,7 +60,7 @@ public class PeekableInputStream extends InputStream {
 			}
 		}else{
 			if(mReadOffset + pos >= mPeekBuffLength){
-				System.out.println("#############" + (mReadOffset + pos));
+				//System.out.println("#############" + (mReadOffset + pos));
 				return -1;
 			}
 			if(mBufferedLength == 0){
