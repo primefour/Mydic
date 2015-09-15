@@ -19,6 +19,7 @@ public class HtmlPage {
 	private String mTextContent;
 	private String mScriptContent;
 	private String mStyleContent;
+	private String mCharSet = "utf8";
 	
 	private ArrayList<HtmlFormRequest> mInputList = new ArrayList<HtmlFormRequest>();
 	private HashMap<String,HtmlHRef> mHRef = new HashMap<String,HtmlHRef>();
@@ -81,7 +82,7 @@ public class HtmlPage {
 				if(ht != null && idx != 0){
 					byte data[] = new byte[idx];
 					System.arraycopy(textBuff,0,data,0,idx);
-					String result = new String(data,"utf8");
+					String result = new String(data,mCharSet);
 					if(ht.getName().equalsIgnoreCase("script")){
 						fullScript.append(result);
 					}else if(ht.getName().equalsIgnoreCase("style")){
@@ -187,6 +188,24 @@ public class HtmlPage {
 						formBegin = true;
 						formInst = new HtmlFormRequest(ht);
 						//System.out.println("new ##form" + ht.getName());
+					}else if(ht.getName().equalsIgnoreCase("meta")){
+						if(ht.getAttributeValue("charset") != null){
+							mCharSet = ht.getAttributeValue("charset");
+							System.out.println("charset " + mCharSet);
+						}else if(ht.getAttributeValue("content").toLowerCase().indexOf("charset") != -1){
+							String tmp = ht.getAttributeValue("content").toLowerCase().trim();
+							System.out.println(tmp);
+							String tmp2 = tmp.substring(tmp.indexOf("charset=") + "charset=".length(),tmp.length());
+							System.out.println(tmp2);
+							if(tmp2.indexOf(';') != -1){
+								mCharSet = tmp2.substring(0,tmp2.indexOf(';') -1);
+							}else if(tmp2.indexOf(' ') != -1){
+								mCharSet = tmp2.substring(0,tmp2.indexOf(' ') -1);
+							}else{
+								mCharSet = tmp2.substring(0,tmp2.length());
+							}
+							System.out.println("#####charset " + mCharSet);
+						}
 					}
 				}
 				ht = (HTMLTag) parse.getTag().clone();

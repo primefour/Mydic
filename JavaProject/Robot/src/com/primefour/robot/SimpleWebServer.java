@@ -17,7 +17,7 @@ public class SimpleWebServer {
 		
 		System.out.println("World start 3");
 		//crawler.enqTask("http://news.sina.com.cn/","news.sina");
-		crawler.enqTask("http://www.jd.com/","jD");
+		crawler.enqTask("http://news.163.com/","jD");
 		System.out.println("World start 4");
 		
 		try {
