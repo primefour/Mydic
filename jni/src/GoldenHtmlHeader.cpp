@@ -1,6 +1,10 @@
 #include"GoldenHtmlHeader.h"
+#include<map>
 #include"String8.h"
 #include"GoldenDictManager.h"
+#include"GoldenDictLog.h"
+
+using namespace std;
 
 
 const char *HtmlHeader= "<html>\n <head> \n <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0,maximum-scale=1.0\"> \n \
@@ -34,13 +38,36 @@ void GoldenHtmlHeader::HTMLAddWord(String8 &word){
 }
 
 void GoldenHtmlHeader::HtmlAddPhonetic(String8 &Phonetic,String8 &FileName){
-    mHtml += "<a href=\"";
-    mHtml += GoldenDictInterface::getPhoneticPath();
-    mHtml += FileName;
-    mHtml += "\">";
-    mHtml += Phonetic;
-    mHtml += "</a>\n" ;
+    if(!FileName.isEmpty()){
+        mHtml += "<a href=\"";
+        mHtml += GoldenDictInterface::getPhoneticPath();
+        mHtml += FileName;
+        mHtml += "\">";
+        mHtml += Phonetic;
+        mHtml += "</a>\n" ;
+    }
 }
+
+String8& GoldenHtmlHeader::EncodeString(String8 &str){
+    const char *data = str.string();
+    const int BUFF_SIZE = 40960;
+    char *buff  = new char[BUFF_SIZE];
+    memset(buff,0,BUFF_SIZE);
+    golden_printfe("%s  %d ",__FILE__,__LINE__);
+    while(*data != '\0'){
+        if(mHtmlSpecialChar[*data]){
+            strcat(buff,mHtmlSpecialChar[*data]);
+            buff += strlen(mHtmlSpecialChar[*data]);
+        }else{
+            *(buff++) = *(data++);
+        }
+    }
+    golden_printfe("%s  %d ",__FILE__,__LINE__);
+    str.setTo(buff);
+    return str;
+}
+
+
 
 
 void GoldenHtmlHeader::HtmlAddOnlyMeaning(String8 &Meaning){
@@ -75,4 +102,11 @@ void GoldenHtmlHeader::HtmlAddImg(String8 &Name,String8 &Meaning){
 
 GoldenHtmlHeader::GoldenHtmlHeader():mHtml(HtmlHeader){
     mPicPos = 0;
+    mHtmlSpecialChar[' '] = "nbsp";
+    mHtmlSpecialChar['<'] = "lt";
+    mHtmlSpecialChar['>'] = "gt";
+    mHtmlSpecialChar['&'] = "amp";
+    mHtmlSpecialChar['\"'] = "quot";
+    mHtmlSpecialChar[(char)149] = "bull";
+    mHtmlSpecialChar[(char)129] = "trade";
 }

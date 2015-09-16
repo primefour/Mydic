@@ -1,6 +1,8 @@
 #ifndef __GOLDEN_HTML_HEADER__
 #define __GOLDEN_HTML_HEADER__
+#include<map>
 #include"String8.h"
+using namespace std;
 
 class GoldenHtmlHeader {
     public:
@@ -14,7 +16,12 @@ class GoldenHtmlHeader {
         void HtmlAddMeaningBegin();
         void HtmlAddImg(String8 &Name,String8 &Meaning);
         void HtmlAddMeaningEnd();
+        String8& EncodeString(String8 &str);
+        const char *getResult(){
+            return mHtml.string();
+        }
     private:
+        map<char,String8> mHtmlSpecialChar ;
         String8 mHtml;
         int mPicPos ;
 };

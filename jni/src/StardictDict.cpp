@@ -12,6 +12,7 @@
 #include"GoldenDictLog.h"
 #include"StardictDict.h"
 #include"String8.h"
+#include"GoldenHtmlHeader.h"
 using namespace std;
 
 TextMetaData:: TextMetaData(){
@@ -44,54 +45,20 @@ TextMetaData::TextMetaData(const TextMetaData &tmp){
 }
 
 void TextMetaData::generateHTML(String8 &result){
-    const int buff_len = 10240;
-    char *buff = new char[buff_len] ;
-    memset(buff,0,buff_len);
-    char *tmp = buff;
-    int n = buff_len;
-    int len = 0;
-    const char *meta_data = "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /> \n <hr/> \n";
-    snprintf(tmp,n,"<HTML> \n<H4>%s</H4>\n<body>\n%s\n",mWord.string(),meta_data);
-    len = strlen(tmp);
-    tmp += len;
-    n -= len;
-
+    GoldenHtmlHeader *html = new GoldenHtmlHeader();
+    String8 name("MiGuo");
+    html->HTMLAddExpBegin();
+    html->HTMLAddDictionaryName(name);
+    html->HTMLAddWord(html->EncodeString(mWord));
     if(!mTextPhonetic.isEmpty()){
-        snprintf(tmp,n,"%s <p>",mTextPhonetic.string());
-        len = strlen(tmp);
-        tmp += len;
-        n -= len;
+        html->HtmlAddPhonetic(html->EncodeString(mTextPhonetic),mSoundPath);
     }
-
-    const char *ptr_m = mTextMeaning.string();
-    const char * html_p = " <p>\n";
-    const int html_p_len = strlen(html_p);
-    while(*ptr_m){
-        if(*ptr_m == '\n'){
-            strcat(tmp," <p>\n");
-            tmp += html_p_len;
-        }else{
-            *tmp = *ptr_m;
-            tmp ++;
-        }
-        ptr_m ++;
+    if(!mTextMeaning.isEmpty()){
+        html->HtmlAddOnlyMeaning(html->EncodeString(mTextMeaning));
     }
-    n = buff_len - strlen(buff);
-
-    const char *audio = "<p> </p> \n<a href hello.wav > audio </a> <p></p> " ;
-
-    snprintf(tmp,n,"%s",audio);
-    len = strlen(tmp);
-    tmp += len;
-    n -= len;
-
-    snprintf(tmp,n,"%s","</body> \n </HTML>");
-    len = strlen(tmp);
-    tmp += len;
-    n -= len;
-
-    result.setTo(buff);
-    delete[] buff;
+    html->HTMLAddExpEnd();
+    result.setTo(html->getResult());
+    delete html;
 }
 
 void TextMetaData::dumpInfo(){
