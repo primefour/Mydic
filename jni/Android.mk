@@ -39,7 +39,7 @@ LOCAL_C_INCLUDES += ./include/
 LOCAL_STATIC_LIBRARIES += libiconv.a
 LOCAL_STATIC_LIBRARIES += libzip.a
 
-LOCAL_LDLIBS := -L./lib/ -llog -liconv -lzip
+LOCAL_LDLIBS := -L./lib/arm -llog -liconv -lzip
 
 LOCAL_CFLAGS += -g -DANDROID_PLATFORM -fexceptions 
 

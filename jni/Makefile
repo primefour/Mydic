@@ -1,11 +1,16 @@
 GCC=g++
 CFLAGS= -g -I ./include/ -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -DZ_RANDOM_ACCESS_LIB
-LDFLAGS= -L ./lib/ 
+LDFLAGS= -L ./lib/i386
 TEST_PATH= ./test/
 BIN_PATH= ./bin
 SRC_PATH= ./src
+#LDLIBS := -L./lib/ -llog -liconv -lzip
+
 
 SRC_FILE_LIST:= $(SRC_PATH)/GoldenDictManager.cpp \
+	$(SRC_PATH)/GoldenHtmlHeader.cpp \
+	$(SRC_PATH)/GoldenZipTool.cpp \
+	$(SRC_PATH)/GoldenIConvTool.cpp \
 	$(SRC_PATH)/GoldenGzipHeaderParser.cpp \
 	$(SRC_PATH)/GoldenGzipinflate.cpp \
 	$(SRC_PATH)/GoldenStandardIO.cpp \
@@ -42,15 +47,15 @@ test:GoldenDictTest
 
 
 list_test:
-	$(GCC) $(CFLAGS) $(LDFLAGS) $(TEST_PATH)/list_test.cpp -o $(BIN_PATH)/list_test -lz
+	$(GCC) $(CFLAGS) $(LDFLAGS) $(TEST_PATH)/list_test.cpp -o $(BIN_PATH)/list_test -lz -liconv -lzip
 ref_test:
-	$(GCC) $(CFLAGS) $(LDFLAGS) $(TEST_PATH)/ref_test.cpp -o $(BIN_PATH)/ref_test -lz
+	$(GCC) $(CFLAGS) $(LDFLAGS) $(TEST_PATH)/ref_test.cpp -o $(BIN_PATH)/ref_test -lz -liconv -lzip
 avl_test:
-	$(GCC) $(CFLAGS) $(LDFLAGS) $(TEST_PATH)/AVLTest.cpp $(SRC_PATH)/StandardIO.cpp $(SRC_PATH)/Unicode.cpp $(SRC_PATH)/String8.cpp -o $(BIN_PATH)/avl_test -lz
+	$(GCC) $(CFLAGS) $(LDFLAGS) $(TEST_PATH)/AVLTest.cpp $(SRC_PATH)/StandardIO.cpp $(SRC_PATH)/Unicode.cpp $(SRC_PATH)/String8.cpp -o $(BIN_PATH)/avl_test -lz -liconv -lzip
 GoldenDictTest:
-	$(GCC) $(CFLAGS) $(LDFLAGS)  $(SRC_FILE_LIST) $(TEST_PATH)/StardictTest.cpp -o $(BIN_PATH)/GoldenDictTest -lz
+	$(GCC) $(CFLAGS) $(LDFLAGS)  $(SRC_FILE_LIST) $(TEST_PATH)/StardictTest.cpp -o $(BIN_PATH)/GoldenDictTest -lz -liconv -lzip
 memfile:
-	$(GCC) $(CFLAGS) $(LDFLAGS)  $(SRC_FILE_LIST) $(TEST_PATH)/test.c -o $(BIN_PATH)/memfile -lz
+	$(GCC) $(CFLAGS) $(LDFLAGS)  $(SRC_FILE_LIST) $(TEST_PATH)/test.c -o $(BIN_PATH)/memfile -lz -liconv -lzip
 
 OBJZ = adler32.o crc32.o deflate.o infback.o inffast.o inflate.o inftrees.o trees.o \
 	zutil.o compress.o uncompr.o gzclose.o gzlib.o gzread.o gzwrite.o
