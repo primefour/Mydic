@@ -7,7 +7,7 @@
 using namespace std;
 
 
-const char *HtmlHeader= "<html>\n <head> \n <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0,maximum-scale=1.0\"> \n \
+const char *HtmlHeader= "<html>\n <head> \n <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0,maximum-scale=1.0\",charset=utf8> \n \
     <title>Mi Guo Dictionary</title> \n </head> \n <style type=\"text/css\"> \n body { \n background-position: center top; \n color: #665544; \n background-color: #d4d0c6; \n \
     } \n p { \n background-image: url(\"img2.jpg\");} \n .title { \n font-family:Helvetica, Arial, sans-serif; \n background-image: url(\"img3.jpg\"); \n font-size:100%; \n color: #055550; \n \
     margin: 10px 0px 5px 0px; \n padding: 0px; \n } \n .title1 { \n font-family:Helvetica, Arial, sans-serif; \n font-size:130%; \n color: #077770; \n margin: 10px 0px 5px 0px; \n padding: 0px;\n\
@@ -59,7 +59,7 @@ String8& GoldenHtmlHeader::EncodeString(String8 &str){
     memset(buff,0,BUFF_SIZE);
     while(*data != '\0'){
         if(mHtmlSpecialChar[*data]){
-            strcat(buff,mHtmlSpecialChar[*data]);
+            strcat(tmp,mHtmlSpecialChar[*data]);
             tmp += strlen(mHtmlSpecialChar[*data]);
             data++;
         }else{
@@ -74,9 +74,33 @@ String8& GoldenHtmlHeader::EncodeString(String8 &str){
 
 
 void GoldenHtmlHeader::HtmlAddOnlyMeaning(String8 &Meaning){
+    if(Meaning.isEmpty()){
+        return;
+    }
+    const char *data = Meaning.string();
+    const int BUFF_SIZE = 40960;
+    char *buff  = new char[BUFF_SIZE];
+    char *tmp = buff;
+    memset(buff,0,BUFF_SIZE);
+    int graph_end = 0;
     mHtml += "<hr/>\n<p class=\"meaning\">";
-    mHtml +=Meaning ;
-    mHtml +="<p>\n";
+    while(*data != '\0'){
+        if(*data == '\n'){
+            strcat(tmp,"</p>\n");
+            tmp += strlen("</p>\n");
+            data ++;
+            graph_end = 1;
+        }else{
+            if(graph_end){
+                strcat(tmp,"<p>");
+                tmp += strlen("<p>");
+                graph_end = 0;
+            }
+            *(tmp ++) = *(data++);
+        }
+    }
+    Meaning.setTo(buff);
+    mHtml += Meaning;
 }
 
 void GoldenHtmlHeader::HtmlAddMeaningBegin(){
@@ -110,7 +134,7 @@ GoldenHtmlHeader::GoldenHtmlHeader():mHtml(HtmlHeader){
     mHtmlSpecialChar['>'] = "&gt";
     mHtmlSpecialChar['&'] = "&amp";
     mHtmlSpecialChar['\"'] = "&quot";
-    mHtmlSpecialChar['\''] = "&squot";
-    mHtmlSpecialChar[(char)149] = "&bull";
-    mHtmlSpecialChar[(char)129] = "&trade";
+    //mHtmlSpecialChar['\''] = "&squot";
+    //mHtmlSpecialChar[(char)149] = "&bull";
+    //mHtmlSpecialChar[(char)129] = "&trade";
 }
