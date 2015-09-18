@@ -49,20 +49,23 @@ void GoldenHtmlHeader::HtmlAddPhonetic(String8 &Phonetic,String8 &FileName){
 }
 
 String8& GoldenHtmlHeader::EncodeString(String8 &str){
+    if(str.isEmpty()){
+        return str;
+    }
     const char *data = str.string();
     const int BUFF_SIZE = 40960;
     char *buff  = new char[BUFF_SIZE];
+    char *tmp = buff;
     memset(buff,0,BUFF_SIZE);
-    golden_printfe("%s  %d ",__FILE__,__LINE__);
     while(*data != '\0'){
         if(mHtmlSpecialChar[*data]){
             strcat(buff,mHtmlSpecialChar[*data]);
-            buff += strlen(mHtmlSpecialChar[*data]);
+            tmp += strlen(mHtmlSpecialChar[*data]);
+            data++;
         }else{
-            *(buff++) = *(data++);
+            *(tmp ++) = *(data++);
         }
     }
-    golden_printfe("%s  %d ",__FILE__,__LINE__);
     str.setTo(buff);
     return str;
 }
@@ -102,11 +105,12 @@ void GoldenHtmlHeader::HtmlAddImg(String8 &Name,String8 &Meaning){
 
 GoldenHtmlHeader::GoldenHtmlHeader():mHtml(HtmlHeader){
     mPicPos = 0;
-    mHtmlSpecialChar[' '] = "nbsp";
-    mHtmlSpecialChar['<'] = "lt";
-    mHtmlSpecialChar['>'] = "gt";
-    mHtmlSpecialChar['&'] = "amp";
-    mHtmlSpecialChar['\"'] = "quot";
-    mHtmlSpecialChar[(char)149] = "bull";
-    mHtmlSpecialChar[(char)129] = "trade";
+    mHtmlSpecialChar[' '] = "&nbsp";
+    mHtmlSpecialChar['<'] = "&lt";
+    mHtmlSpecialChar['>'] = "&gt";
+    mHtmlSpecialChar['&'] = "&amp";
+    mHtmlSpecialChar['\"'] = "&quot";
+    mHtmlSpecialChar['\''] = "&squot";
+    mHtmlSpecialChar[(char)149] = "&bull";
+    mHtmlSpecialChar[(char)129] = "&trade";
 }
