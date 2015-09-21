@@ -54,6 +54,5 @@ class GoldenDictManager :public Ref,GoldenPathFilter{
        map<String8,int> mDictionaryType;
        DictHashSet<SObject<String8> > mIgnoreFileExtend;
        DictHashSet<SObject<String8> > mIgnorePath;
-       DictHashSet<SObject<String8> > mFileExtend;
 };
 #endif

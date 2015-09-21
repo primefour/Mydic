@@ -42,6 +42,7 @@ void GoldenDictManager::doWithFiles(const char *file){
         try{
             //get the type of dictionary by the extend of file
             GoldenDictInterface *tmp =  new StardictInstance(tmp_path.getBasePath());
+            golden_printfe("dictionary name = %s \n",tmp->GetDictonaryName().string());
             mDictionaryMap[String8(tmp_path.getBasePath())] = tmp; 
         }catch(exception &ex){
             golden_printfe("add dict fail %s %s  \n",tmp_path.string(),ex.what());
