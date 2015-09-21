@@ -8,6 +8,7 @@ SRC_PATH= ./src
 
 
 SRC_FILE_LIST:= $(SRC_PATH)/GoldenDictManager.cpp \
+	$(SRC_PATH)/GoldenPathScanner.cpp \
 	$(SRC_PATH)/GoldenHtmlHeader.cpp \
 	$(SRC_PATH)/GoldenZipTool.cpp \
 	$(SRC_PATH)/GoldenIConvTool.cpp \

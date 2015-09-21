@@ -23,7 +23,7 @@ const char *ce_dict_path = "./bin/langdao-ce-gb.dict.dz";
 
 int main(){
     static GoldenDictManager goldenDict;
-    goldenDict.GoldenDictAdd(ifo_path);
+    goldenDict.GoldenDictAdd("./bin");
 
     char buff[1024]={0};
     char queryResult[4096]={0};

@@ -2,8 +2,11 @@
 #define __GOLDEN_DICT_MANAGER_H__
 #include"String8.h"
 #include"GoldenRef.h"
-#include<map>
+#include"GoldenPathScanner.h"
+#include"GoldenHashSet.h"
+
 using namespace std;
+
 class GoldenDictInterface:public virtual Ref{
     public:
         GoldenDictInterface(){
@@ -27,20 +30,30 @@ class GoldenDictInterface:public virtual Ref{
 };
 
 enum{
-    STAR_DICT_TYPE,
+    STAR_DICT_TYPE = 1,
     DSL_DICT_TYPE,
     DICT_TYPE,MAX,
 };
 
 
-class GoldenDictManager :public Ref{
+class GoldenDictManager :public Ref,GoldenPathFilter{
     public:
-       GoldenDictManager(); 
-       void GoldenDictAdd(const char *path);
-       void GoldenDictDelete(const char *path);
-       int GoldenDictQuery(const char *word,char *buff);
+        GoldenDictManager(); 
+        virtual bool FilterFiles(const char *fileName){
+            return true;
+        }
+        virtual bool IgnorePath(const char *dirPath){
+            return false;
+        }
+        virtual void doWithFiles(const char *file);
+        void GoldenDictAdd(const char *path);
+        void GoldenDictDelete(const char *path);
+        int GoldenDictQuery(const char *word,char *buff);
     private:
        map<String8,SObject<GoldenDictInterface> > mDictionaryMap;
        map<String8,int> mDictionaryType;
+       DictHashSet<SObject<String8> > mIgnoreFileExtend;
+       DictHashSet<SObject<String8> > mIgnorePath;
+       DictHashSet<SObject<String8> > mFileExtend;
 };
 #endif
