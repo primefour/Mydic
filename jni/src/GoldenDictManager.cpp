@@ -105,6 +105,7 @@ int GoldenDictManager::GoldenDictQuery(const char *word,char *buff){
 #endif
 
         }
+        fileName.setTo(word);
         begin ++;
     }
     return 0;
