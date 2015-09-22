@@ -156,16 +156,14 @@ int GoldenDictManager::GoldenDictQuery(const char *word,char *buff){
 
     GoldenHtmlHeader *html = new GoldenHtmlHeader();
     html->HTMLAddExpBegin();
-    char *tmpBuff = buff;
-    TextMetaData Meta;
     while(begin != end){
+        TextMetaData Meta;
         if(begin->second->IsEnable()){
             if(begin->second->GoldenDictQuery(word,&Meta) == 0){
                 html->HTMLAddDictionaryName(begin->second->GetDictonaryName());
                 if(!Meta.mOther.isEmpty()){
                     golden_printfe("getSameTypeSeq is html \n");
-                    strcpy(tmpBuff,Meta.mOther.string());
-                    tmpBuff += strlen(tmpBuff);
+                    html->AddHtmlPiece(Meta.mOther.string());
                 }else{
                     html->HTMLAddWord(html->EncodeString(Meta.mWord));
                     if(!Meta.mTextPhonetic.isEmpty()){
@@ -180,7 +178,7 @@ int GoldenDictManager::GoldenDictQuery(const char *word,char *buff){
         begin ++;
     }
     html->HTMLAddExpEnd();
-
+    strcpy(buff,html->getResult());
 #ifdef WRITE_FILE_FOR_DEBUG
     fileName +=".html";
     int fd = open(fileName.string(),O_CREAT|O_TRUNC|O_WRONLY,0664);

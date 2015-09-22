@@ -16,6 +16,7 @@ class GoldenHtmlHeader {
         void HtmlAddMeaningBegin();
         void HtmlAddImg(String8 &Name,String8 &Meaning);
         void HtmlAddMeaningEnd();
+        void AddHtmlPiece(const char *htmlCode);
         String8& EncodeString(String8 &str);
         const char *getResult(){
             return mHtml.string();

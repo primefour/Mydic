@@ -70,8 +70,9 @@ String8& GoldenHtmlHeader::EncodeString(String8 &str){
     return str;
 }
 
-
-
+void GoldenHtmlHeader::AddHtmlPiece(const char *htmlCode){
+    mHtml += htmlCode;
+}
 
 void GoldenHtmlHeader::HtmlAddOnlyMeaning(String8 &Meaning){
     if(Meaning.isEmpty()){
