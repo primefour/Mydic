@@ -365,10 +365,11 @@ void String8::toLower(size_t start, size_t length)
     if (start+length > len) {
         length = len-start;
     }
-    char* buf = new char[len];
+    char* buf = new char[length +1];
     if(buf != NULL){
+        memset(buf,0,length +1);
         if(mString != NULL){
-            memcpy(buf,mString,len);
+            memcpy(buf,mString,length);
             delete[] mString ;
         }
         mString  = buf;
@@ -395,10 +396,11 @@ void String8::toUpper(size_t start, size_t length)
     if (start+length > len) {
         length = len-start;
     }
-    char* buf = new char[len];
+    char* buf = new char[length +1];
     if(buf != NULL){
+        memset(buf,0,length +1);
         if(mString != NULL){
-            memcpy(buf,mString,len);
+            memcpy(buf,mString,length);
             delete[] mString ;
         }
         mString  = buf;

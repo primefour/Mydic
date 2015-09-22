@@ -36,9 +36,7 @@ void GoldenDictManager::doWithFiles(const char *file){
         try{
             //get the type of dictionary by the extend of file
             GoldenDictInterface *tmp =  new StardictInstance(tmp_path.getBasePath());
-
             golden_printfe("dictionary name = %s \n",tmp->GetDictonaryName().string());
-
             SObject<GoldenDictInterface> obj = mDictionaryMap[tmp->GetDictonaryName()];
             if(obj.GetPoint() != NULL ){
                 golden_printfd("mDictionaryMap is not NULL \n");
