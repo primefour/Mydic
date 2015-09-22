@@ -40,7 +40,7 @@ public class DictMainActivity extends FragmentActivity implements SlotListFragme
             public void run() {
                 Log.d("%s","xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxDict");
                 mSE.initEng();
-                mSE.addDictionary("/sdcard/langdao-ec-gb.ifo");
+                mSE.addDictionary("/sdcard/");
                 Log.d("%s","xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxDictxxx");
             }
         };
