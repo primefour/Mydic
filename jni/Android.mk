@@ -2,6 +2,7 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES := src/com_Dict_DictApp2_DictSearchEngine.cpp \
+	src/GoldenPathScanner.cpp \
 	src/GoldenHtmlHeader.cpp \
 	src/GoldenZipTool.cpp \
 	src/GoldenIConvTool.cpp \
