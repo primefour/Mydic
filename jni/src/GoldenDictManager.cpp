@@ -16,10 +16,10 @@ void GoldenDictManager::doWithFiles(const char *file){
     golden_printfe("file = %s \n",file);
     String8 tmp_path(file);
     //golden_printfd("getFullExtension %s \n",tmp_path.getFullExtension().string());
-    if(tmp_path.getFullExtension().string() == NULL){
+    if(tmp_path.getPathExtension().string() == NULL){
         return ;
     }
-    String8 Ext(tmp_path.getFullExtension());
+    String8 Ext(tmp_path.getPathExtension());
     //golden_printfd("##%s \n",Ext.string());
     Ext.toLower();
     //golden_printfd("%s \n",Ext.string());
@@ -66,9 +66,9 @@ const char* GoldenDictInterface::getImgPath(){
 
 GoldenDictManager::GoldenDictManager():mIgnoreFileExtend(10),mIgnorePath(10){
     //mDictionaryType[String8("ifo")]=STAR_DICT_TYPE;
-    mDictionaryType[String8("idx")]=STAR_DICT_TYPE;
+    mDictionaryType[String8(".idx")]=STAR_DICT_TYPE;
     //mDictionaryType[String8("dict.dz")]=STAR_DICT_TYPE;
-    mDictionaryType[String8("dsl")]=DSL_DICT_TYPE;
+    mDictionaryType[String8(".dsl")]=DSL_DICT_TYPE;
     //mDictionaryType[String8("files.zip")]=DSL_DICT_TYPE;
 }
 

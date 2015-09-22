@@ -91,9 +91,17 @@ TextMetaData::~TextMetaData(){
 /********************************************stardict dictionary**********************************************/
 
 StardictDict::StardictDict(const char*file_name,const char *same_type_seq):mSeq(same_type_seq),file_path(file_name){
-    SObject<GzipInflate> file_obj = NULL;
+    SObject<IOInterface> file_obj = NULL;
     try{
-        file_obj = new GzipInflate(file_path,O_RDONLY);
+        String8 path(file_name);
+        String8 ext(".dz");
+        String8 fileext = path.getPathExtension();
+        fileext.toLower();
+        if(fileext == ext ){
+            file_obj = new GzipInflate(file_path,O_RDONLY);
+        }else{
+            file_obj = new SimpleFile(file_path,O_RDONLY);
+        }
     }catch(exception &e){
         throw exception();//"Gzip file error %s ",e.what());
     }
@@ -106,9 +114,18 @@ StardictDict::~StardictDict(){
 
 void StardictDict::read_word_data(int offset,int length,TextMetaData* tmd){
     golden_printfi("%s offset = %d length = %d \n",__func__,offset,length);
-    SObject<GzipInflate> file_obj = NULL;
+    SObject<IOInterface> file_obj = NULL;
+
     try{
-        file_obj = new GzipInflate(file_path,O_RDONLY);
+        String8 path(file_path);
+        String8 ext(".dz");
+        String8 fileext = path.getPathExtension();
+        fileext.toLower();
+        if(fileext == ext ){
+            file_obj = new GzipInflate(file_path,O_RDONLY);
+        }else{
+            file_obj = new SimpleFile(file_path,O_RDONLY);
+        }
     }catch(exception &e){
         golden_printfe("gzip file error %s ",e.what()); 
         throw exception();//"get word fail");

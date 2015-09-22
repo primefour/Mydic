@@ -46,7 +46,16 @@ StardictInstance::StardictInstance(String8 path):mStarInfo(NULL),mStarIdx(NULL),
     }
 
     try{
-        mDict = new StardictDict(path + ".dict.dz",mStarInfo->getSameTypeSeq());
+        String8 dict_path = path + ".dict.dz";
+        if (access(dict_path, F_OK) != 0) {
+            dict_path = path + ".dict";
+            if (access(dict_path , F_OK) != 0) {
+                golden_printfe("no dict file \n");
+                throw exception();
+            }
+        }
+        mDict = new StardictDict(dict_path,mStarInfo->getSameTypeSeq());
+
     }catch(exception &e){
         golden_printfe("star dict file check fail xxxx \n");
         throw exception();//"dict file error");
@@ -62,9 +71,16 @@ int StardictInstance::GoldenDictQuery(const char *word,char *buff){
             TextMetaData targetHTML(word);
             const SObject<WordIdxItem>&target = mWordList->DictHashGet(tmp);
             mDict->read_word_data(target->data_offset,target->data_size,&targetHTML);
-            String8 HTML;
-            targetHTML.generateHTML(HTML);
-            strcpy(buff,HTML.string());
+
+            golden_printfe("getSameTypeSeq is html %s \n",mStarInfo->getSameTypeSeq().string());
+            if(mStarInfo->getSameTypeSeq().contains("h")){
+                golden_printfe("getSameTypeSeq is html \n");
+                strcpy(buff,targetHTML.mOther.string());
+            }else{
+                String8 HTML;
+                targetHTML.generateHTML(HTML);
+                strcpy(buff,HTML.string());
+            }
             return 0;
         }else{
             return -1;

@@ -25,7 +25,7 @@ class TextMetaData :public Ref{
         }
         void dumpInfo();
         ~TextMetaData();
-    private:
+    //private:
         //text meaning
         String8 mWord;
         String8 mTextMeaning;//m l g
