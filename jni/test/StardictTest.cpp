@@ -26,7 +26,7 @@ int main(){
     goldenDict.GoldenDictAdd("./bin");//"/home/crazyhorse/test/golden_dic/MyDict/jni/bin/CollinsCOBUILD-BL");//"./bin");
 
     char buff[1024]={0};
-    char queryResult[4096]={0};
+    char queryResult[40960]={0};
     while(1){
         scanf("%s",buff);
         golden_printfd("####query word is %s \n",buff);

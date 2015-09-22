@@ -18,7 +18,7 @@ JNIEXPORT jobject JNICALL  Java_com_Dict_DictApp2_DictSearchEngine_engQueryWord 
     jboolean isCopy;
     const char* str = pEnv->GetStringUTFChars(pString, &isCopy);
     golden_printfi("print UTF-8 string: %s, %d", str, isCopy);
-    char queryResult[4096]={0};
+    char queryResult[40960]={0};
     GoldenDict->GoldenDictQuery(str,queryResult);
     pEnv->ReleaseStringUTFChars(pString, str);
 
