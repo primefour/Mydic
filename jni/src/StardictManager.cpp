@@ -64,23 +64,17 @@ StardictInstance::StardictInstance(String8 path):mStarInfo(NULL),mStarIdx(NULL),
 }
 
 
-int StardictInstance::GoldenDictQuery(const char *word,char *buff){
+int StardictInstance::GoldenDictQuery(const char *word,TextMetaData *ptrMeta){
     if(word != NULL && strlen(word) != 0){
-        SObject<WordIdxItem> tmp = new WordIdxItem(word,0,0);
-        if(buff && mWordList->DictHashfind(tmp)){
-            TextMetaData targetHTML(word);
+        SObject<WordIdxItem> tmp = new WordIdxItem(word,-1,-1);
+        if(mWordList->DictHashfind(tmp)){
+            ptrMeta->setWord(word);
             const SObject<WordIdxItem>&target = mWordList->DictHashGet(tmp);
-            mDict->read_word_data(target->data_offset,target->data_size,&targetHTML);
-
-            golden_printfe("getSameTypeSeq is html %s \n",mStarInfo->getSameTypeSeq().string());
-            if(mStarInfo->getSameTypeSeq().contains("h")){
-                golden_printfe("getSameTypeSeq is html \n");
-                strcpy(buff,targetHTML.mOther.string());
-            }else{
-                String8 HTML;
-                targetHTML.generateHTML(HTML);
-                strcpy(buff,HTML.string());
+            if(target->data_offset == -1){
+                golden_printfe("Don't find this word \n");
+                return -1;
             }
+            mDict->read_word_data(target->data_offset,target->data_size,ptrMeta);
             return 0;
         }else{
             return -1;

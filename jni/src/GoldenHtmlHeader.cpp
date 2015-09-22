@@ -24,7 +24,7 @@ void GoldenHtmlHeader::HTMLAddExpEnd(){
     mHtml += "</body>\n </html>\n";
 }
 
-void GoldenHtmlHeader::HTMLAddDictionaryName(String8 &DictName){
+void GoldenHtmlHeader::HTMLAddDictionaryName(const String8 &DictName){
     mHtml += "<h5 class=title>";
     mHtml += DictName ;
     mHtml += "</h5>\n<hr/>\n";

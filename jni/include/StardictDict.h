@@ -5,41 +5,7 @@
 #include"GoldenDictLog.h"
 #include"GoldenRef.h"
 #include"String8.h"
-
-class StardictDict;
-
-class TextMetaData :public Ref{
-    friend class StardictDict;
-    public:
-        TextMetaData(); 
-        TextMetaData(const TextMetaData & inst); 
-        TextMetaData(const char *word):mWord(word){
-            mWavDataLength = 0;
-            mPicDataLength = 0;
-            mWav = NULL;
-            mPic = NULL;
-        }
-        void generateHTML(String8 &result);
-        void setWord(const char *word){
-            mWord.setTo(word);
-        }
-        void dumpInfo();
-        ~TextMetaData();
-    //private:
-        //text meaning
-        String8 mWord;
-        String8 mTextMeaning;//m l g
-        String8 mTextPhonetic;
-        String8 mImagePath;
-        String8 mVideoPath;
-        String8 mSoundPath;
-        String8 mOther;
-        int mWavDataLength;
-        int mPicDataLength;
-        unsigned char *mWav;
-        unsigned char *mPic;
-};
-
+#include"GoldenDictManager.h"
 
 class StardictDict:public Ref{
     public:

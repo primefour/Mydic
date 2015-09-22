@@ -1,16 +1,77 @@
 #include"GoldenDictManager.h"
 #include"StardictManager.h"
+#include"GoldenHtmlHeader.h"
 #include<unistd.h>
 #include<fcntl.h>
 #include<sys/types.h>
 #include<stdexcept>
 #include<map>
 
-
 using namespace std;
 
 const char *PhoneticPath = "/sdcard/GoldenDict/Phonetic/";
 const char *ImgPath = "/sdcard/GoldenDict/Img/";
+
+
+TextMetaData:: TextMetaData(){
+    golden_printfd("TextMetaData copy construct function \n");
+    mWavDataLength = 0;
+    mPicDataLength = 0;
+    mWav = NULL;
+    mPic = NULL;
+}
+
+TextMetaData::TextMetaData(const TextMetaData &tmp){
+    golden_printfd("TextMetaData copy construct function \n");
+    mWavDataLength = tmp.mWavDataLength;
+    if(mWavDataLength != 0){
+        mWav = new unsigned char[mWavDataLength];
+        memcpy(mPic,tmp.mPic,mWavDataLength);
+    }
+
+    if(mPicDataLength != 0){
+        mPic = new unsigned char[mPicDataLength];
+        memcpy(mPic,tmp.mPic,mPicDataLength);
+
+    }
+    mTextMeaning = tmp.mTextMeaning;
+    mTextPhonetic = tmp.mTextPhonetic;
+    mImagePath = tmp.mImagePath;
+    mVideoPath = tmp.mVideoPath;
+    mSoundPath = tmp.mSoundPath;
+    mOther = tmp.mOther;
+}
+
+
+void TextMetaData::dumpInfo(){
+    golden_printfd("Text Mean: %s \n",mTextMeaning.string());
+    golden_printfd("Text Phonetic: %s \n",mTextPhonetic.string());
+    golden_printfd("Image Path : %s \n",mImagePath.string());
+    golden_printfd("Video path : %s \n",mVideoPath.string());
+    golden_printfd("Sound Path: %s \n",mSoundPath.string());
+    golden_printfd("Other : %s \n",mOther.string());
+    if(mWav != NULL){
+        golden_printfd("there is wav data \n");
+    }
+    if(mPic != NULL){
+        golden_printfd("there is pic data \n");
+    }
+}
+
+TextMetaData::~TextMetaData(){
+    if(mWav != NULL){
+        delete mWav;
+    }
+    mWav = NULL;
+    if(mPic != NULL){
+        delete mPic;
+    }
+    mPic = NULL;
+}
+
+/*********************************************************************************
+ *GoldenDictManager
+ *********************************************************************************/
 
 void GoldenDictManager::doWithFiles(const char *file){
     golden_printfe("file = %s \n",file);
@@ -82,6 +143,7 @@ void GoldenDictManager::GoldenDictDelete(const char *path){
     mDictionaryMap[String8(path).getBasePath()] = NULL;  
 }
 
+
 #define WRITE_FILE_FOR_DEBUG
 
 int GoldenDictManager::GoldenDictQuery(const char *word,char *buff){
@@ -91,25 +153,45 @@ int GoldenDictManager::GoldenDictQuery(const char *word,char *buff){
 #ifdef WRITE_FILE_FOR_DEBUG
     String8 fileName(word);
 #endif
+
+    GoldenHtmlHeader *html = new GoldenHtmlHeader();
+    html->HTMLAddExpBegin();
+    char *tmpBuff = buff;
+    TextMetaData Meta;
     while(begin != end){
         if(begin->second->IsEnable()){
-            begin->second->GoldenDictQuery(word,buff);
-#ifdef WRITE_FILE_FOR_DEBUG
-            fileName += begin->second->GetDictonaryName();
-            fileName +=".html";
-            int fd = open(fileName.string(),O_CREAT|O_TRUNC|O_WRONLY,0664);
-            if(fd < 0){
-                golden_printfe("create file fail %s \n",fileName.string());
-            }else{
-                write(fd,buff,strlen(buff));
-                close(fd);
-                fd = -1;
+            if(begin->second->GoldenDictQuery(word,&Meta) == 0){
+                html->HTMLAddDictionaryName(begin->second->GetDictonaryName());
+                if(!Meta.mOther.isEmpty()){
+                    golden_printfe("getSameTypeSeq is html \n");
+                    strcpy(tmpBuff,Meta.mOther.string());
+                    tmpBuff += strlen(tmpBuff);
+                }else{
+                    html->HTMLAddWord(html->EncodeString(Meta.mWord));
+                    if(!Meta.mTextPhonetic.isEmpty()){
+                        html->HtmlAddPhonetic(html->EncodeString(Meta.mTextPhonetic),Meta.mSoundPath);
+                    }
+                    if(!Meta.mTextMeaning.isEmpty()){
+                        html->HtmlAddOnlyMeaning(html->EncodeString(Meta.mTextMeaning));
+                    }
+                }
             }
-#endif
-
         }
-        fileName.setTo(word);
         begin ++;
     }
+    html->HTMLAddExpEnd();
+
+#ifdef WRITE_FILE_FOR_DEBUG
+    fileName +=".html";
+    int fd = open(fileName.string(),O_CREAT|O_TRUNC|O_WRONLY,0664);
+    if(fd < 0){
+        golden_printfe("create file fail %s \n",fileName.string());
+    }else{
+        write(fd,buff,strlen(buff));
+        close(fd);
+        fd = -1;
+    }
+#endif
+    delete html;
     return 0;
 }

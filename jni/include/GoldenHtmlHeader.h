@@ -9,7 +9,7 @@ class GoldenHtmlHeader {
         GoldenHtmlHeader();
         void HTMLAddExpBegin();
         void HTMLAddExpEnd();
-        void HTMLAddDictionaryName(String8 &DictName);
+        void HTMLAddDictionaryName(const String8 &DictName);
         void HTMLAddWord(String8 &word);
         void HtmlAddPhonetic(String8 &Phonetic,String8 &FileName);
         void HtmlAddOnlyMeaning(String8 &Meaning);

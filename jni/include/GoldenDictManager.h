@@ -7,6 +7,36 @@
 
 using namespace std;
 
+class TextMetaData:public Ref{
+    public:
+        TextMetaData(); 
+        TextMetaData(const TextMetaData & inst); 
+        TextMetaData(const char *word):mWord(word){
+            mWavDataLength = 0;
+            mPicDataLength = 0;
+            mWav = NULL;
+            mPic = NULL;
+        }
+        void setWord(const char *word){
+            mWord.setTo(word);
+        }
+        void dumpInfo();
+        ~TextMetaData();
+
+        String8 mWord;
+        String8 mTextMeaning;//m l g
+        String8 mTextPhonetic;
+        String8 mImagePath;
+        String8 mVideoPath;
+        String8 mSoundPath;
+        String8 mOther; //h
+        int mWavDataLength;
+        int mPicDataLength;
+        unsigned char *mWav;
+        unsigned char *mPic;
+};
+
+
 class GoldenDictInterface:public virtual Ref{
     public:
         GoldenDictInterface(){
@@ -18,7 +48,7 @@ class GoldenDictInterface:public virtual Ref{
         static const char *getPhoneticPath();
         static const char *getImgPath();
         virtual const String8& GetDictonaryName() = 0;
-        virtual int GoldenDictQuery(const char *word,char *buff) = 0;
+        virtual int GoldenDictQuery(const char *word,TextMetaData *ptrMeta) = 0;
         virtual void SetEnable(bool enable){
             mIsEnable = enable;
         }

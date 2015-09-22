@@ -19,9 +19,6 @@
 #include "zip.h"
 #include "GoldenStandardIO.h"
 
-
-
-
 GoldenZipTool::GoldenZipTool(const char *file):mPtrEntries(NULL),mPtrEntryHash(NULL){
     struct zip_stat st;
     char errstr[1024];
