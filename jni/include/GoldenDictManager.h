@@ -48,6 +48,7 @@ class GoldenDictInterface:public virtual Ref{
         static const char *getPhoneticPath();
         static const char *getImgPath();
         virtual const String8& GetDictonaryName() = 0;
+        virtual const String8& GetIdentifyPath() = 0;
         virtual int GoldenDictQuery(const char *word,TextMetaData *ptrMeta) = 0;
         virtual void SetEnable(bool enable){
             mIsEnable = enable;

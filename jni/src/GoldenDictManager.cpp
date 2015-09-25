@@ -11,6 +11,7 @@ using namespace std;
 
 const char *PhoneticPath = "/sdcard/GoldenDict/Phonetic/";
 const char *ImgPath = "/sdcard/GoldenDict/Img/";
+const char *GOLDEN_IDX_DICT_PATH = "./DictIdx.dat";
 
 
 TextMetaData:: TextMetaData(){
@@ -133,16 +134,54 @@ GoldenDictManager::GoldenDictManager():mIgnoreFileExtend(10),mIgnorePath(10){
     //mDictionaryType[String8("files.zip")]=DSL_DICT_TYPE;
 }
 
-void GoldenDictManager::GoldenDictAdd(const char *path){
+void GoldenDictManager::GoldenScanDisk(const char *path){
     GoldenPathScanner *scanner = new GoldenPathScanner(path,this);
     scanner->GoldenStartScan();
 }
 
-
-void GoldenDictManager::GoldenDictDelete(const char *path){
-    mDictionaryMap[String8(path).getBasePath()] = NULL;  
+//save idx files path and dictionaries' name in DictIdx file
+void GoldenDictManager::GoldenDictPersist(){
+    typename map<String8,SObject<GoldenDictInterface> >::iterator begin,end;
+    begin = mDictionaryMap.begin();
+    end = mDictionaryMap.end();
+    SObject<SimpleFile> fileObj = new SimpleFile(GOLDEN_IDX_DICT_PATH,0);
+    char buff[4096]={0};
+    while(begin != end){
+        memset(buff,0,sizeof(buff));
+        snprintf(buff,sizeof(buff),"%s ==> %s \n", begin.first.string(),
+                        begin.second.GetIdentifyPath().string());
+        fileObj->write(buff,strlen(buff));
+        golden_printfe("%s ",buff);
+        begin ++;
+    }
+}
+//read DictIdx and restore dictionaries
+void GoldenDictManager::GoldenDictReload(){
+    SObject<SimpleFile> fileObj = new SimpleFile(GOLDEN_IDX_DICT_PATH,0);
+    char buff[4096]={0};
+    int ret = fileObj->ReadLine(buff,sizeof(buff));
+    while(ret != 0){
+        sscanf
+        snprintf(buff,sizeof(buff),"%s ==> %s \n", begin.first.string(),
+                        begin.second.GetIdentifyPath().string());
+        golden_printfe("%s ",buff);
+        memset(buff,0,sizeof(buff));
+    }
+    doWithFiles();
 }
 
+//add a single file
+void GoldenDictManager::GoldenDictAddDict(const char *name){
+
+}
+
+void GoldenDictManager::GoldenDictRemoveDict(const char *name){
+    mDictionaryMap[String8(Name)] = NULL;
+}
+
+void GoldenDictManager::GoldenDictEnableDict(bool enable){
+    mDictionaryMap[String8(Name)]->SetEnable(enable);
+}
 
 #define WRITE_FILE_FOR_DEBUG
 

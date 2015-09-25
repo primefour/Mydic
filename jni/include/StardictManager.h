@@ -9,7 +9,8 @@
 class StardictInstance:public GoldenDictInterface{
     public:
         StardictInstance(String8 path);
-        virtual const String8 &GetDictonaryName();
+        virtual const String8& GetDictonaryName();
+        virtual const String8& GetIdentifyPath();
         virtual int GoldenDictQuery(const char *word,TextMetaData *ptrMeta);
         virtual ~StardictInstance();
     private:
@@ -17,6 +18,7 @@ class StardictInstance:public GoldenDictInterface{
         SObject<StardictIdx>  mStarIdx;
         SObject<StardictDict> mDict;
         String8 mStarDictName;
+        String8 mIdentifyPath;
         SObject<GoldenWordHashList> mWordList;
 };
 

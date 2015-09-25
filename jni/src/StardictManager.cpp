@@ -19,6 +19,10 @@ const String8& StardictInstance::GetDictonaryName(){
     return mStarDictName;
 }
 
+const String8& StardictInstance::GetIdentifyPath(){
+    return mIdentifyPath;
+}
+
 
 StardictInstance::StardictInstance(String8 path):mStarInfo(NULL),mStarIdx(NULL),mDict(NULL),mWordList(NULL){
     try{
@@ -61,6 +65,7 @@ StardictInstance::StardictInstance(String8 path):mStarInfo(NULL),mStarIdx(NULL),
         throw exception();//"dict file error");
     }
     mStarDictName = mStarInfo->getBookName();
+    mIdentifyPath = path;
 }
 
 
