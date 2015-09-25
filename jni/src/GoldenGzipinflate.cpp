@@ -47,11 +47,11 @@ int GzipInflate::Read(unsigned char *buf,int len){
    if(inflateInit2(&zStream, -15 ) != Z_OK){
        golden_printfe("zStream init failed  \n");
    }
-   int end = (mEnd + len)/mCheckLength;
+   int end = (mEnd + len + mCheckLength -1)/mCheckLength;
    if(end > mCheckCount -1){
        end = mCheckCount -1;
    }
-   golden_printfi("end = %d \n",end);
+   golden_printfi("mCheckLength = %d mEnd = %d  end = %d ,mCheckCount = %d len = %d \n",mCheckLength,mEnd,end,mCheckCount,len);
 
    SimpleFile file_obj(file_path.string(),O_RDONLY);
    int i = 0;
@@ -61,6 +61,7 @@ int GzipInflate::Read(unsigned char *buf,int len){
    unsigned char *ptrOut = buf;
    golden_printfi("mHeaderLength + mPos = %d mbegin = %d end = %d \n",mHeaderLength + mPos,mbegin,end);
    file_obj.Seek(SEEK_SET,mHeaderLength + mPos);
+   int total_cpy_len = 0;
    for(i = mbegin ;i <=end ;i++){
        golden_printfi("*(mChunkArray + %d) = %d \n",i,*(mChunkArray + i));
        int ret = file_obj.Read(inBuff,*(mChunkArray + i)); 
@@ -96,8 +97,9 @@ int GzipInflate::Read(unsigned char *buf,int len){
            memcpy(ptrOut,outBuff + mOffset,cpylen);
            len -= cpylen;
            ptrOut += cpylen;
+           total_cpy_len += cpylen;
        }else{
-           int cpylen = 0 ;
+           cpylen = 0 ;
            if(len > avail_content){
                cpylen = avail_content ;
            }else{
@@ -106,11 +108,12 @@ int GzipInflate::Read(unsigned char *buf,int len){
            memcpy(ptrOut,outBuff,cpylen);
            len -= cpylen;
            ptrOut += cpylen;
+           total_cpy_len += cpylen;
        }
    }
    delete outBuff;
    delete inBuff;
-   return cpylen;
+   return total_cpy_len;
 }
 
 int GzipInflate::Seek(int where,int offset){

@@ -74,7 +74,7 @@ TextMetaData::~TextMetaData(){
  *********************************************************************************/
 
 void GoldenDictManager::doWithFiles(const char *file){
-    golden_printfe("file = %s \n",file);
+    //golden_printfe("file = %s \n",file);
     String8 tmp_path(file);
     //golden_printfd("getFullExtension %s \n",tmp_path.getFullExtension().string());
     if(tmp_path.getPathExtension().string() == NULL){

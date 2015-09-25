@@ -62,7 +62,7 @@ void StardictDict::read_word_data(int offset,int length,TextMetaData* tmd){
     memset(buff,0,length +4);
     int ret = file_obj->Read(buff,length);
     if(ret != length){
-        golden_printfe("%s ret error xxxxxxxx",__func__);
+        golden_printfe("%s ret error xxxxxxxxret = %d length = %d ",__func__,ret,length);
         throw exception();//"get word fail");
     }
     parse_meta_data(tmd,buff,length);
