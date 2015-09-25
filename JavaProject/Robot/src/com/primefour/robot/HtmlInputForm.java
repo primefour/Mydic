@@ -44,4 +44,23 @@ public class HtmlInputForm {
 	public String getBaseUri(){
 		return mBaseUrl;
 	}
+	
+	public String toString(){
+		StringBuilder sb = new StringBuilder();
+		Iterator<HtmlSelectOption> ih =  mSelectList.iterator();
+		sb.append("#####################Input Form##########################\n");
+		while(ih.hasNext()){
+			HtmlSelectOption ho = ih.next();
+			sb.append(ho.toString());
+			sb.append("\n");
+		}
+		Iterator<HtmlUserInput> iui =  mInputList.iterator();
+		while(iui.hasNext()){
+			HtmlUserInput ui = iui.next();
+			sb.append(ui.toString());
+			sb.append("\n");
+		}
+		sb.append("###############################################\n");
+		return sb.toString();
+	}
 }

@@ -80,4 +80,20 @@ public class HtmlSelectOption {
 	public String getId(){
 		return mId;
 	}
+	public String toString(){
+		StringBuilder sb = new StringBuilder();
+		sb.append("*******Select Option************");
+		sb.append(mName);
+		sb.append("\n");
+		Iterator<ItemValue> it = mOptionList.iterator(); 
+		for(;it.hasNext();){
+			ItemValue item = it.next();
+			sb.append(item.mValueName);
+			sb.append("==>");
+			sb.append(item.mSelected); 
+			sb.append("\n");
+		}
+		sb.append("********************************");
+		return null;
+	}
 }

@@ -92,7 +92,9 @@ public class CookieUtility
 
       str.append(key + "=" + value);
     }
+    if(str.length() != 0){
+    	http.setRequestProperty("Cookie", str.toString());
+    }
 
-    http.setRequestProperty("Cookie", str.toString());
   }
 }

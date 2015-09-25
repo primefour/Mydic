@@ -7,6 +7,7 @@ public class SimpleWebServer {
 		/*DigestThread dt = new DigestThread("Hello.txt");
 		dt.start();
 		*/
+		/*
 		CrawlerTaskQueue crawler = new CrawlerTaskQueue("http://news.sina.com.cn/");
 		
 		System.out.println("World start 1");
@@ -26,6 +27,12 @@ public class SimpleWebServer {
 			e.printStackTrace();
 		}
 		System.out.println("World start 5");
+		*/
+		// auto commit order at amazon website
+		AmazonJPOrder order = new AmazonJPOrder();
+		//order.searchProduct("pen");
+		order.connectHttp("http://www.amazon.com");
+		order.searchProduct(null);
 	}
 
 }

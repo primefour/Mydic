@@ -56,4 +56,12 @@ public class HtmlUserInput {
 			}
 			return sb.toString();
 	}
+	
+	public String toString(){
+		StringBuilder sb = new StringBuilder();
+		sb.append("========user input==========\n");
+		sb.append("Value Name is :" + mName);
+		sb.append("============================\n");
+		return sb.toString();
+	}
 }

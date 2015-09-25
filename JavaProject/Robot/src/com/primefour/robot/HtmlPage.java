@@ -192,7 +192,7 @@ public class HtmlPage {
 						if(ht.getAttributeValue("charset") != null){
 							mCharSet = ht.getAttributeValue("charset");
 							System.out.println("charset " + mCharSet);
-						}else if(ht.getAttributeValue("content").toLowerCase().indexOf("charset") != -1){
+						}else if(ht.getAttributeValue("content") != null && ht.getAttributeValue("content").toLowerCase().indexOf("charset") != -1){
 							String tmp = ht.getAttributeValue("content").toLowerCase().trim();
 							System.out.println(tmp);
 							String tmp2 = tmp.substring(tmp.indexOf("charset=") + "charset=".length(),tmp.length());
@@ -232,6 +232,7 @@ public class HtmlPage {
 			op.write(item.toString().getBytes());
 		}
 	}
+	
 	public HashMap<String,HtmlHRef> getHRef(){
 		return mHRef;
 	}
@@ -258,6 +259,44 @@ public class HtmlPage {
 		op.write(sb.toString().getBytes());
 	}
 	
+	public void setRequestValue(String name,String value){
+		Iterator<HtmlFormRequest> ii = mInputList.iterator(); 
+		for(;ii.hasNext();){
+			HtmlFormRequest item = ii.next();	
+			if(item.getInputByName(name) != null){
+				HtmlUserInput tmp = item.getInputByName(name);
+				tmp.setUserInput(value); 
+			}else if(item.getSelectByName(name) != null){
+				HtmlSelectOption tmp = item.getSelectByName(name);
+				tmp.SetItemEnable(value);
+			}
+		}
+	}
+	
+	public String getRequstString(String formName){
+		StringBuilder sb = new StringBuilder();
+		if(formName == null){
+			Iterator<HtmlFormRequest> ii = mInputList.iterator(); 
+			for(;ii.hasNext();){
+				HtmlFormRequest item = ii.next();	
+				if(item.getBaseUri() != null && item.getBaseUri().indexOf("http") == 0){
+					sb.append(item.getBaseUri());
+				}
+				sb.append(item.getHtmlReqStr());
+				break;
+			}
+			return sb.toString();
+		}else{
+			Iterator<HtmlFormRequest> ii = mInputList.iterator(); 
+			for(;ii.hasNext();){
+				HtmlFormRequest item = ii.next();	
+				sb.append(item.getHtmlReqStr());
+				sb.append("&");
+			}
+			return sb.toString();
+		}
+	}
+	
 	public String toString(){
 		StringBuilder sb = new StringBuilder();
 		Set<String> it = mHRef.keySet();
@@ -268,11 +307,10 @@ public class HtmlPage {
 			sb.append("\n");
 		}
 		
-		sb.append("######input list is :\n");
-		
 		Iterator<HtmlFormRequest> ii = mInputList.iterator(); 
 		for(;ii.hasNext();){
 			HtmlFormRequest item = ii.next();	
+			sb.append(item.toString());
 			sb.append(item.getHtmlReqStr());
 			sb.append("\n");
 		}
