@@ -13,7 +13,7 @@ import android.widget.Button;
 /**
  * Created by crazyhorse on 15-4-5.
  */
-public class DictMainActivity extends FragmentActivity implements SlotListFragment.Callbacks,MainFragment.Callbacks,DictSearchEngine.Callbacks {
+public class DictMainActivity extends FragmentActivity implements SlotListFragment.Callbacks,MainFragment.Callbacks {
     MainPagerAdapter mPagerAdapter;
     ViewPager mViewPager;
     DictSearchEngine mSE;
@@ -35,16 +35,6 @@ public class DictMainActivity extends FragmentActivity implements SlotListFragme
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.setCurrentItem(MAIN_PAGE_IDX);
-        mSE = new DictSearchEngine();
-        mInit = new Thread() {
-            public void run() {
-                Log.d("%s","xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxDict");
-                mSE.initEng();
-                mSE.addDictionary("/sdcard/");
-                Log.d("%s","xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxDictxxx");
-            }
-        };
-        mInit.start();
     }
 
 
@@ -57,7 +47,6 @@ public class DictMainActivity extends FragmentActivity implements SlotListFragme
                 e.printStackTrace();
             }
         }
-        mSE.destroyEng();
         super.onDestroy();
     }
 
@@ -77,9 +66,7 @@ public class DictMainActivity extends FragmentActivity implements SlotListFragme
                 e.printStackTrace();
             }
         }
-
-        TextMetaData tmp = mSE.queryWord(searchWord);
-        return tmp != null ? tmp.mTextMeaning:null;
+        return null;
 
     }
 
