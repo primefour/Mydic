@@ -11,6 +11,8 @@ class StardictInstance:public GoldenDictInterface{
         StardictInstance(String8 path);
         virtual const String8& GetDictonaryName();
         virtual const String8& GetIdentifyPath();
+        virtual const String8 GetResourcePath();
+
         virtual int GoldenDictQuery(const char *word,TextMetaData *ptrMeta);
         virtual ~StardictInstance();
     private:

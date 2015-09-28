@@ -23,6 +23,16 @@ const String8& StardictInstance::GetIdentifyPath(){
     return mIdentifyPath;
 }
 
+const String8 StardictInstance::GetResourcePath(){
+    if(mIdentifyPath.getPathDir().isEmpty()){
+        return String8("/sdcard/"); 
+    }
+    golden_printfe("mIdentifyPath.getPathDir() = %s \n",mIdentifyPath.getPathDir().string());
+    return mIdentifyPath.getPathDir() + String8("res/");
+}
+
+
+
 
 StardictInstance::StardictInstance(String8 path):mStarInfo(NULL),mStarIdx(NULL),mDict(NULL),mWordList(NULL){
     try{

@@ -23,10 +23,10 @@ const char *ce_dict_path = "./bin/langdao-ce-gb.dict.dz";
 
 int main(){
     static GoldenDictManager goldenDict;
-    goldenDict.GoldenDictAdd("./bin");//"/home/crazyhorse/test/golden_dic/MyDict/jni/bin/CollinsCOBUILD-BL");//"./bin");
+    goldenDict.GoldenScanDisk("./bin");//"/home/crazyhorse/test/golden_dic/MyDict/jni/bin/CollinsCOBUILD-BL");//"./bin");
 
     char buff[1024]={0};
-    char queryResult[40960]={0};
+    char queryResult[409600]={0};
     while(1){
         scanf("%s",buff);
         golden_printfd("####query word is %s \n",buff);

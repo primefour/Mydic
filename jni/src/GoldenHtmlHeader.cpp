@@ -40,7 +40,7 @@ void GoldenHtmlHeader::HTMLAddWord(String8 &word){
 void GoldenHtmlHeader::HtmlAddPhonetic(String8 &Phonetic,String8 &FileName){
     if(!FileName.isEmpty()){
         mHtml += "<a href=\"";
-        mHtml += GoldenDictInterface::getPhoneticPath();
+        mHtml += GoldenDictManager::GoldenGetTmpPhoneticPath();
         mHtml += FileName;
         mHtml += "\">";
         mHtml += Phonetic;
@@ -114,7 +114,7 @@ void GoldenHtmlHeader::HtmlAddMeaningEnd(){
 
 void GoldenHtmlHeader::HtmlAddImg(String8 &Name,String8 &Meaning){
     mHtml += "<p><img src=\"";
-    mHtml += GoldenDictInterface::getImgPath();
+    mHtml += GoldenDictManager::GoldenGetTmpImgPath();
     mHtml += Name;
     mHtml += "\" class=\"";
     if(mPicPos == 0){

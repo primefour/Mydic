@@ -101,6 +101,7 @@ JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_initEng(JNIEnv *p
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_destroyEng(JNIEnv *pEnv, jclass pObj){
+
 }
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved){
@@ -108,21 +109,6 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved){
     if (jvm->GetEnv((void **)&env, JNI_VERSION_1_6)) {
         return -1;
     }
-/*
-    JNINativeMethod nm[2];
-    nm[0].name = "initEng";
-    nm[0].signature = "()V";
-    nm[0].fnPtr = (void *)Java_com_Dict_DictApp2_DictSearchEngine_initEng;
-
-    nm[1].name = "engQueryWord";
-    nm[1].signature = "(Ljava/lang/String;)Lcom/Dict/DictApp2/TextMetaData";
-    nm[1].fnPtr = (void *)Java_com_Dict_DictApp2_DictSearchEngine_engQueryWord;
-
-
-    jclass cls = env->FindClass("com/Dict/DictApp2/DictSearchEngine");
-    // Register methods with env->RegisterNatives.
-    env->RegisterNatives(cls, nm, 1);
-    */
     
     return JNI_VERSION_1_6;
 }

@@ -43,19 +43,14 @@ class GoldenDictInterface:public virtual Ref{
             mIsEnable = true;
         }
         ~GoldenDictInterface(){
-
         }
-        static const char *getPhoneticPath();
-        static const char *getImgPath();
         virtual const String8& GetDictonaryName() = 0;
         virtual const String8& GetIdentifyPath() = 0;
+        virtual const String8 GetResourcePath()=0;
+        virtual void SetEnable(bool enable){ mIsEnable = enable; };
+        virtual bool IsEnable(){ return mIsEnable; };
+
         virtual int GoldenDictQuery(const char *word,TextMetaData *ptrMeta) = 0;
-        virtual void SetEnable(bool enable){
-            mIsEnable = enable;
-        }
-        virtual bool IsEnable(){
-            return mIsEnable;
-        }
     private:
         bool mIsEnable;
 };
@@ -63,9 +58,8 @@ class GoldenDictInterface:public virtual Ref{
 enum{
     STAR_DICT_TYPE = 1,
     DSL_DICT_TYPE,
-    DICT_TYPE,MAX,
+    DICT_TYPE_MAX,
 };
-
 
 class GoldenDictManager :public Ref,GoldenPathFilter{
     public:
@@ -77,12 +71,26 @@ class GoldenDictManager :public Ref,GoldenPathFilter{
             return false;
         }
         virtual void doWithFiles(const char *file);
-        void GoldenDictAdd(const char *path);
-        void GoldenDictDelete(const char *path);
-        int GoldenDictQuery(const char *word,char *buff);
+        int  GoldenDictQuery(const char *word,char *buff);
+
+        void GoldenScanDisk(const char *path);
+        void GoldenDictPersist();
+        //read DictIdx and restore dictionaries
+        void GoldenDictReload();
+        //add a single file
+        void GoldenDictAddDict(const char *name);
+        void GoldenDictRemoveDict(const char *name);
+        void GoldenDictEnableDict(const char *name,bool enable);
+
+
+        static const char *GoldenGetCachePath();
+        static const char *GoldenGetTmpPhoneticPath();
+        static const char *GoldenGetTmpImgPath();
     private:
        map<String8,SObject<GoldenDictInterface> > mDictionaryMap;
        map<String8,int> mDictionaryType;
+       map<String8,String8> mDictionaryPath;
+
        DictHashSet<SObject<String8> > mIgnoreFileExtend;
        DictHashSet<SObject<String8> > mIgnorePath;
 };

@@ -5,13 +5,29 @@
 #include<fcntl.h>
 #include<sys/types.h>
 #include<stdexcept>
+#include<sys/types.h>
+#include<dirent.h>
+#include<errno.h>
+#include<sys/stat.h>
+#include<unistd.h>
 #include<map>
 
 using namespace std;
 
-const char *PhoneticPath = "/sdcard/GoldenDict/Phonetic/";
-const char *ImgPath = "/sdcard/GoldenDict/Img/";
+#ifdef ANDROID_PLATFORM
+const char *GOLDEN_TMP_PHONETIC_PATH = "/sdcard/GoldenDict/Phonetic/";
+const char *GOLDEN_TMP_IMG_PATH = "/sdcard/GoldenDict/Img/";
+const char *GOLDEN_IDX_DICT_PATH = "/sdcard/GoldenDict/DictIdx.dat";
+const char *GOLDEN_CACHE_DICT_PATH = "/sdcard/GoldenDict/Cache/";
+const char *GOLDEN_ROOT_PATH= "/sdcard/";
+
+#else
+const char *GOLDEN_TMP_PHONETIC_PATH = "./Phonetic/";
+const char *GOLDEN_TMP_IMG_PATH = "./Img/";
 const char *GOLDEN_IDX_DICT_PATH = "./DictIdx.dat";
+const char *GOLDEN_CACHE_DICT_PATH = "./Cache/";
+const char *GOLDEN_ROOT_PATH= "./";
+#endif
 
 
 TextMetaData:: TextMetaData(){
@@ -85,14 +101,11 @@ void GoldenDictManager::doWithFiles(const char *file){
     //golden_printfd("##%s \n",Ext.string());
     Ext.toLower();
     //golden_printfd("%s \n",Ext.string());
-
     int type = mDictionaryType[Ext];
-
     //golden_printfe("type %d  \n",type);
     if(type == 0){
         return ;
     }
-
 
     if(type == STAR_DICT_TYPE){
         try{
@@ -118,12 +131,16 @@ void GoldenDictManager::doWithFiles(const char *file){
 
 }
 
-const char* GoldenDictInterface::getPhoneticPath(){
-    return PhoneticPath;
+const char* GoldenDictManager::GoldenGetTmpPhoneticPath(){
+    return GOLDEN_TMP_PHONETIC_PATH;
 }
 
-const char* GoldenDictInterface::getImgPath(){
-    return ImgPath;
+const char* GoldenDictManager::GoldenGetTmpImgPath(){
+    return GOLDEN_TMP_IMG_PATH;
+}
+
+const char *GoldenDictManager::GoldenGetCachePath(){
+    return GOLDEN_CACHE_DICT_PATH ;
 }
 
 GoldenDictManager::GoldenDictManager():mIgnoreFileExtend(10),mIgnorePath(10){
@@ -135,8 +152,14 @@ GoldenDictManager::GoldenDictManager():mIgnoreFileExtend(10),mIgnorePath(10){
 }
 
 void GoldenDictManager::GoldenScanDisk(const char *path){
-    GoldenPathScanner *scanner = new GoldenPathScanner(path,this);
+    GoldenPathScanner *scanner = NULL;
+    if(path == NULL){
+         scanner = new GoldenPathScanner(GOLDEN_ROOT_PATH,this);
+    }else{
+         scanner = new GoldenPathScanner(path,this);
+    }
     scanner->GoldenStartScan();
+    delete scanner;
 }
 
 //save idx files path and dictionaries' name in DictIdx file
@@ -148,10 +171,10 @@ void GoldenDictManager::GoldenDictPersist(){
     char buff[4096]={0};
     while(begin != end){
         memset(buff,0,sizeof(buff));
-        snprintf(buff,sizeof(buff),"%s ==> %s \n", begin.first.string(),
-                        begin.second.GetIdentifyPath().string());
-        fileObj->write(buff,strlen(buff));
-        golden_printfe("%s ",buff);
+        snprintf(buff,sizeof(buff),"%s ==> %s \n", begin->first.string(),
+                        begin->second->GetIdentifyPath().string());
+        fileObj->Write((unsigned char *)buff,strlen(buff));
+        golden_printfe("%s \n",buff);
         begin ++;
     }
 }
@@ -159,28 +182,31 @@ void GoldenDictManager::GoldenDictPersist(){
 void GoldenDictManager::GoldenDictReload(){
     SObject<SimpleFile> fileObj = new SimpleFile(GOLDEN_IDX_DICT_PATH,0);
     char buff[4096]={0};
-    int ret = fileObj->ReadLine(buff,sizeof(buff));
+    int ret = fileObj->ReadLine((unsigned char *)buff,sizeof(buff));
+    char name[1024]={0};
+    char path[PATH_MAX]={0};
     while(ret != 0){
-        sscanf
-        snprintf(buff,sizeof(buff),"%s ==> %s \n", begin.first.string(),
-                        begin.second.GetIdentifyPath().string());
-        golden_printfe("%s ",buff);
+        sscanf(buff,"%s ==> %s \n",name,path);
+        golden_printfe("name %s  path = %s \n",name,path);
+        mDictionaryPath[String8(name)] = String8(path);
         memset(buff,0,sizeof(buff));
+        memset(name,0,sizeof(name));
+        memset(path,0,sizeof(path));
     }
-    doWithFiles();
+    doWithFiles(path);
 }
 
 //add a single file
 void GoldenDictManager::GoldenDictAddDict(const char *name){
-
+    doWithFiles(mDictionaryPath[String8(name)].string());
 }
 
 void GoldenDictManager::GoldenDictRemoveDict(const char *name){
-    mDictionaryMap[String8(Name)] = NULL;
+    mDictionaryMap[String8(name)] = NULL;
 }
 
-void GoldenDictManager::GoldenDictEnableDict(bool enable){
-    mDictionaryMap[String8(Name)]->SetEnable(enable);
+void GoldenDictManager::GoldenDictEnableDict(const char *name ,bool enable){
+    mDictionaryMap[String8(name)]->SetEnable(enable);
 }
 
 #define WRITE_FILE_FOR_DEBUG
