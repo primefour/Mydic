@@ -168,22 +168,34 @@ public class HtmlPage {
 							}
 						}
 					}else if(ht.getName().equalsIgnoreCase("a")){
-						//System.out.println("new ##link" + ht.getAttributeValue("href"));
+						StringBuilder sb = new StringBuilder();
+						
 						if(ht.getAttributeValue("href") == null){
 							
 						} else if(ht.getAttributeValue("href").indexOf("http") != -1){
-							mHRef.put(ht.getAttributeValue("href"),new HtmlHRef(ht));
+							sb.append(ht.getAttributeValue("href")); 
 						}else if(ht.getAttributeValue("href").indexOf("mailto") != -1){
 							//System.out.println("new ##mail to" + ht.getAttributeValue("href"));
 							//System.out.println("new ##mail to" + ht.getAttributeValue("href").substring(
-										//ht.getAttributeValue("href").indexOf(":") + ":".length(),ht.getAttributeValue("href").length()));
+							//ht.getAttributeValue("href").indexOf(":") + ":".length(),ht.getAttributeValue("href").length()));
 						}else{
-							if(mURL == null){
-								mHRef.put(null,new HtmlHRef(null,ht));
+							sb.append("http://" + mURL.getHost() + ht.getAttributeValue("href"));;
+						}
+						
+						if(mURL == null){
+							mHRef.put(null,new HtmlHRef(null,ht));
+						}else{
+							if(mHRef.get(sb.toString()) != null){
+								if(ht.getAttributeValue("title") != null){
+									System.out.println("title " + ht.getAttributeValue("title"));
+									System.out.println("******" + mHRef.get(sb.toString()).getContent());
+									mHRef.get(sb.toString()).updateContent(ht.getAttributeValue("title"));
+								}
 							}else{
-								mHRef.put("http://" + mURL.getHost() + "/",new HtmlHRef("http://" + mURL.getHost() + "/",ht));
+								mHRef.put(sb.toString(),new HtmlHRef(sb.toString(),ht));
 							}
 						}
+						
 					}else if(ht.getName().equalsIgnoreCase("form")){
 						formBegin = true;
 						formInst = new HtmlFormRequest(ht);

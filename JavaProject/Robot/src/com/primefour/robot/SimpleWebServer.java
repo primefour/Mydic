@@ -31,8 +31,9 @@ public class SimpleWebServer {
 		// auto commit order at amazon website
 		AmazonJPOrder order = new AmazonJPOrder();
 		//order.searchProduct("pen");
-		order.connectHttp("http://www.amazon.com");
-		order.searchProduct(null);
+		order.connectHttp("http://www.amazon.com","amazon.com.txt");
+		order.searchProduct("moony l");
+		
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.primefour.robot;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,9 +39,18 @@ public class AmazonJPOrder {
 			conn.setRequestProperty("Accept-Encoding","gzip, deflate");
 			conn.setInstanceFollowRedirects(false);
 			InputStream is = conn.getInputStream();
-			System.out.println(conn.getContentEncoding());  
-			InputStream gis = new GZIPInputStream(is);
+			if(conn.getContentEncoding() != null && conn.getContentEncoding().equalsIgnoreCase("gzip")){
+				is = new GZIPInputStream(is);
+			}
+			FileOutputStream fo = new FileOutputStream(fileName + ".html");
+			byte buff[] = new byte[1024];
+			int ret = 0 ;
+			while((ret = is.read(buff)) != -1){
+				fo.write(buff,0,ret);
+			}
+			fo.close();
 			
+			FileInputStream fi = new FileInputStream(fileName + ".html");
 			//BufferedReader reader = new BufferedReader(new InputStreamReader(is,"utf8"));  
 			/*
 			BufferedReader reader = new BufferedReader(new InputStreamReader(gis,"utf8"));  
@@ -58,26 +68,26 @@ public class AmazonJPOrder {
 				System.out.println(conn.getHeaderField("location"));
 				connectHttp(conn.getHeaderField("location"),fileName);
 			}else if(code < 300){
-				mHtmlPage = new HtmlPage(gis,mUrl);
+				mHtmlPage = new HtmlPage(fi,mUrl);
 				String content = mHtmlPage.toString();
 				FileOutputStream fos = new FileOutputStream(fileName);
 				fos.write(content.getBytes());
 			}
+			is.close();
+			fi.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
-			
 		}
 		
 	}
 	
 	boolean searchProduct(String name){
-		mHtmlPage.setRequestValue("field-keywords", "moony l");
+		mHtmlPage.setRequestValue("field-keywords",name);
 		String searchUrl = mUrl + mHtmlPage.getRequstString(null);
 		System.out.println(searchUrl);
 		connectHttp(searchUrl,"searchResult.txt");
-		
 		return true;
 	}
 	

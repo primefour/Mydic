@@ -21,11 +21,22 @@ public class HtmlHRef {
 			mBaseURL = baseUrl + tag.getAttributeValue("href");
 		}
 		mContent = tag.getContent();
+		
+		if(tag.getAttributeValue("title") != null){
+			mContent += tag.getAttributeValue("title");
+			System.out.println("title = " + tag.getAttributeValue("title"));
+			System.out.println("mContent = " + mContent );
+		}
 	}
 	
 	public HtmlHRef(HTMLTag tag){
 		mBaseURL = tag.getAttributeValue("href");
 		mContent = tag.getContent();
+		if(tag.getAttributeValue("title") != null){
+			mContent += tag.getAttributeValue("title");
+			System.out.println("title = " + tag.getAttributeValue("title"));
+			System.out.println("mContent = " + mContent );
+		}
 	}
 	
 	public String getBaseUrl(){
@@ -34,6 +45,20 @@ public class HtmlHRef {
 	
 	public String getContent(){
 		return mContent;
+	}
+	
+	public void updateContent(String a){
+		StringBuilder sb = new StringBuilder();
+		if(mContent != null){
+			sb.append(mContent); 
+		}
+		if(a != null){
+			sb.append(a); 
+		}
+		if(sb.length() != 0){
+			mContent = sb.toString();
+		}
+//		System.out.println("updateContent " + mContent);
 	}
 	
 	public String toString(){
