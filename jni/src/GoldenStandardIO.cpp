@@ -226,6 +226,20 @@ int MemFile::Write(const unsigned char *buf,int len){
     return 0;
 }
 
+SimpleFile::SimpleFile(const char *path,int mode,int permision):file_path(path){
+    file_des = 0;
+    int def_mode = O_RDWR;
+    if(mode != 0){
+        def_mode = mode; 
+    }
+    file_des = ::open(path,def_mode,permision);
+    if(file_des < 0){
+        golden_printfe("open file error %s \n",file_path.string());
+        throw exception();//"open file error");
+    }
+
+}
+
 
 
 

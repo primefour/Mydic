@@ -44,11 +44,16 @@ StardictInfo::StardictInfo(const char *file_path):file_name(file_path){
             break;
         }
         buff[buff_len]='\0';
+        int len = strlen(buff);
+        if(len != 0 && buff[len-1] == '\n'){
+            buff[len-1] = '0';
+        }
         int i = 0;
         char *ret = NULL;
         while(infoFileList[i] != NULL){
             ret = strstr(buff,infoFileList[i]);
             if(ret == buff){
+
                 mInfoString[i] = buff;
                 break;
             }

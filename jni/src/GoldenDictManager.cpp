@@ -116,12 +116,15 @@ void GoldenDictManager::doWithFiles(const char *file){
             if(obj.GetPoint() != NULL ){
                 golden_printfd("mDictionaryMap is not NULL \n");
                 delete tmp;
+                tmp = NULL;
+                golden_printfd("end mDictionaryMap is not NULL \n");
                 return ;
             }else{
                 golden_printfd("mDictionaryMap is NULL \n");
             }
             golden_printfd("mDictionaryMap tmp_path.getBasePath() %s \n",tmp_path.getBasePath().string());
             mDictionaryMap[tmp->GetDictonaryName()] = tmp;
+            mDictionaryPath[tmp->GetDictonaryName()] = tmp_path;
         }catch(exception &ex){
             golden_printfe("add dict fail %s %s  \n",tmp_path.string(),ex.what());
         }
@@ -167,12 +170,11 @@ void GoldenDictManager::GoldenDictPersist(){
     typename map<String8,SObject<GoldenDictInterface> >::iterator begin,end;
     begin = mDictionaryMap.begin();
     end = mDictionaryMap.end();
-    SObject<SimpleFile> fileObj = new SimpleFile(GOLDEN_IDX_DICT_PATH,0);
+    SObject<SimpleFile> fileObj = new SimpleFile(GOLDEN_IDX_DICT_PATH,O_CREAT|O_RDWR,0666);
     char buff[4096]={0};
     while(begin != end){
         memset(buff,0,sizeof(buff));
-        snprintf(buff,sizeof(buff),"%s ==> %s \n", begin->first.string(),
-                        begin->second->GetIdentifyPath().string());
+        snprintf(buff,sizeof(buff),"%s==>%s\n", begin->first.string(),begin->second->GetIdentifyPath().string());
         fileObj->Write((unsigned char *)buff,strlen(buff));
         golden_printfe("%s \n",buff);
         begin ++;
@@ -186,14 +188,20 @@ void GoldenDictManager::GoldenDictReload(){
     char name[1024]={0};
     char path[PATH_MAX]={0};
     while(ret != 0){
-        sscanf(buff,"%s ==> %s \n",name,path);
-        golden_printfe("name %s  path = %s \n",name,path);
-        mDictionaryPath[String8(name)] = String8(path);
+        char *flag = strstr(buff,"==>");
+        memcpy(name,buff,flag - buff);
+        flag += strlen("==>");
+        strcpy(path,flag);
+        path[strlen(path) -1] ='\0';
+        golden_printfe("buff = %s name %s  path = %s \n",buff,name,path);
+        doWithFiles(path);
+        //mDictionaryPath[String8(name)] = String8(path);
         memset(buff,0,sizeof(buff));
         memset(name,0,sizeof(name));
         memset(path,0,sizeof(path));
+        ret = fileObj->ReadLine((unsigned char *)buff,sizeof(buff));
+        golden_printfe("end ret = %d buff = %s \n",ret,buff);
     }
-    doWithFiles(path);
 }
 
 //add a single file
@@ -207,6 +215,21 @@ void GoldenDictManager::GoldenDictRemoveDict(const char *name){
 
 void GoldenDictManager::GoldenDictEnableDict(const char *name ,bool enable){
     mDictionaryMap[String8(name)]->SetEnable(enable);
+}
+
+void GoldenDictManager::GoldenDictGetDicts(const char **list){
+    if(list == NULL){
+        return ;
+    }
+    typename map<String8,String8>::iterator begin,end;
+    begin = mDictionaryPath.begin();
+    end = mDictionaryPath.end();
+    const char **tmp = list;
+    while(begin != end){
+        *tmp = begin->first.string();
+        begin ++;
+        tmp ++;
+    }
 }
 
 #define WRITE_FILE_FOR_DEBUG
@@ -223,7 +246,7 @@ int GoldenDictManager::GoldenDictQuery(const char *word,char *buff){
     html->HTMLAddExpBegin();
     while(begin != end){
         TextMetaData Meta;
-        if(begin->second->IsEnable()){
+        if(begin->second.GetPoint() != NULL && begin->second->IsEnable()){
             if(begin->second->GoldenDictQuery(word,&Meta) == 0){
                 html->HTMLAddDictionaryName(begin->second->GetDictonaryName());
                 if(!Meta.mOther.isEmpty()){

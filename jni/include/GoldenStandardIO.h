@@ -60,6 +60,7 @@ class MemFile:public IOInterface{
 
 class SimpleFile:public IOInterface{
     public :
+        SimpleFile(const char *path,int mode,int permision);
         SimpleFile(const char *path,int mode=O_RDWR);
         ~SimpleFile();
         virtual int Read(unsigned char *buf,int len);

@@ -7,57 +7,49 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#undef com_Dict_DictApp2_DictSearchEngine_MESSAGE_MEANING_ARRIVING
-#define com_Dict_DictApp2_DictSearchEngine_MESSAGE_MEANING_ARRIVING 0L
-#undef com_Dict_DictApp2_DictSearchEngine_MESSAGE_META_ARRIVING
-#define com_Dict_DictApp2_DictSearchEngine_MESSAGE_META_ARRIVING 1L
 /*
  * Class:     com_Dict_DictApp2_DictSearchEngine
- * Method:    engQueryWord
- * Signature: (Ljava/lang/String;)Lcom/Dict/DictApp2/TextMetaData;
+ * Method:    dictEngQueryWord
+ * Signature: (Ljava/lang/String;)Ljava/lang/String;
  */
-JNIEXPORT jobject JNICALL Java_com_Dict_DictApp2_DictSearchEngine_engQueryWord
-  (JNIEnv *, jclass, jstring);
+JNIEXPORT jstring JNICALL Java_com_Dict_DictApp2_DictSearchEngine_dictEngQueryWord (JNIEnv *, jclass, jstring);
 
 /*
  * Class:     com_Dict_DictApp2_DictSearchEngine
- * Method:    engAsyncQueryWord
+ * Method:    dictEngAddDictionary
+ * Signature: (Ljava/lang/String;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_Dict_DictApp2_DictSearchEngine_dictEngAddDictionary (JNIEnv *, jclass, jstring); 
+/*
+ * Class:     com_Dict_DictApp2_DictSearchEngine
+ * Method:    dictEngRemoveDictionary
+ * Signature: (Ljava/lang/String;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_Dict_DictApp2_DictSearchEngine_dictEngRemoveDictionary (JNIEnv *, jclass, jstring); 
+/*
+ * Class:     com_Dict_DictApp2_DictSearchEngine
+ * Method:    dictEngScanPath
  * Signature: (Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_engAsyncQueryWord
-  (JNIEnv *, jclass, jstring);
-
+JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_dictEngScanPath (JNIEnv *, jclass, jstring); 
 /*
  * Class:     com_Dict_DictApp2_DictSearchEngine
- * Method:    engAddDictionary
- * Signature: (Ljava/lang/String;)Z
- */
-JNIEXPORT jboolean JNICALL Java_com_Dict_DictApp2_DictSearchEngine_engAddDictionary
-  (JNIEnv *, jclass, jstring);
-
-/*
- * Class:     com_Dict_DictApp2_DictSearchEngine
- * Method:    engRemoveDictionary
- * Signature: (Ljava/lang/String;)Z
- */
-JNIEXPORT jboolean JNICALL Java_com_Dict_DictApp2_DictSearchEngine_engRemoveDictionary
-  (JNIEnv *, jclass, jstring);
-
-/*
- * Class:     com_Dict_DictApp2_DictSearchEngine
- * Method:    initEng
+ * Method:    dictEngInit
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_initEng
-  (JNIEnv *, jclass);
-
+JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_dictEngInit (JNIEnv *, jclass); 
 /*
  * Class:     com_Dict_DictApp2_DictSearchEngine
- * Method:    destroyEng
+ * Method:    dictEngDeinit
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_destroyEng
-  (JNIEnv *, jclass);
+JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_dictEngDeinit (JNIEnv *, jclass); 
+/*
+ * Class:     com_Dict_DictApp2_DictSearchEngine
+ * Method:    dictEngGetDictList
+ * Signature: ()Ljava/util/ArrayList;
+ */
+JNIEXPORT jobject JNICALL Java_com_Dict_DictApp2_DictSearchEngine_dictEngGetDictList (JNIEnv *, jclass);
 
 #ifdef __cplusplus
 }

@@ -8,100 +8,111 @@ static SObject<GoldenDictManager> GoldenDict = NULL;
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 /*
  * Class:     com_Dict_DictApp2_DictSearchEngine
- * Method:    engQueryWord
- * Signature: (Ljava/lang/String;)Lcom/Dict/DictApp2/TextMetaData;
+ * Method:    dictEngQueryWord
+ * Signature: (Ljava/lang/String;)Ljava/lang/String;
  */
-JNIEXPORT jobject JNICALL  Java_com_Dict_DictApp2_DictSearchEngine_engQueryWord (JNIEnv *pEnv, jclass pobj, jstring pString){
+JNIEXPORT jstring JNICALL Java_com_Dict_DictApp2_DictSearchEngine_dictEngQueryWord (JNIEnv *pEnv, jclass jc, jstring js){
+    const int BUFF_SIZE = 102400;
     jboolean isCopy;
-    const char* str = pEnv->GetStringUTFChars(pString, &isCopy);
-    golden_printfi("print UTF-8 string: %s, %d", str, isCopy);
-    char queryResult[40960]={0};
+    const char* str = pEnv->GetStringUTFChars(js, &isCopy);
+    golden_printfe("print UTF-8 string: %s, %d", str, isCopy);
+    char *queryResult = (char *)malloc(BUFF_SIZE);
     GoldenDict->GoldenDictQuery(str,queryResult);
-    pEnv->ReleaseStringUTFChars(pString, str);
-
-    jclass tmd_class = pEnv->FindClass("com/Dict/DictApp2/TextMetaData");
-    if(tmd_class == NULL){
-        return NULL;
-    }
-    jmethodID cid = pEnv->GetMethodID(tmd_class,"<init>", "()V");
-    jobject obj = pEnv->NewObject(tmd_class,cid);
-    if(obj == NULL){
-        pEnv->DeleteLocalRef(tmd_class);
-        return NULL;
-    }
-    jfieldID meaning_fid= pEnv->GetFieldID(tmd_class,"mTextMeaning","Ljava/lang/String;");
-    if(meaning_fid == NULL){
-        pEnv->DeleteLocalRef(tmd_class);
-        pEnv->DeleteLocalRef(obj);
-        return NULL;
-    }
-    jstring text = pEnv->NewStringUTF(queryResult);
-    pEnv->SetObjectField(obj,meaning_fid,text);
-
+    pEnv->ReleaseStringUTFChars(js, str);
+    jstring obj= pEnv->NewStringUTF(queryResult);
+    free(queryResult);
+    queryResult = NULL;
     return obj ; 
 }
 
 /*
  * Class:     com_Dict_DictApp2_DictSearchEngine
- * Method:    engAsyncQueryWord
+ * Method:    dictEngAddDictionary
+ * Signature: (Ljava/lang/String;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_Dict_DictApp2_DictSearchEngine_dictEngAddDictionary (JNIEnv *pEnv, jclass jc, jstring js){
+    jboolean isCopy;
+    const char* str = pEnv->GetStringUTFChars(js, &isCopy);
+    golden_printfe("print UTF-8 string: %s, %d", str, isCopy);
+    GoldenDict->GoldenDictAddDict(str);
+    pEnv->ReleaseStringUTFChars(js, str);
+    return true; 
+
+}
+/*
+ * Class:     com_Dict_DictApp2_DictSearchEngine
+ * Method:    dictEngRemoveDictionary
+ * Signature: (Ljava/lang/String;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_Dict_DictApp2_DictSearchEngine_dictEngRemoveDictionary (JNIEnv *pEnv, jclass jc, jstring js){
+    jboolean isCopy;
+    const char* str = pEnv->GetStringUTFChars(js, &isCopy);
+    golden_printfe("print UTF-8 string: %s, %d", str, isCopy);
+    GoldenDict->GoldenDictRemoveDict(str);
+    pEnv->ReleaseStringUTFChars(js, str);
+    return true; 
+}
+/*
+ * Class:     com_Dict_DictApp2_DictSearchEngine
+ * Method:    dictEngScanPath
  * Signature: (Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_engAsyncQueryWord (JNIEnv *penv, jclass pobj, jstring pstring){
-    return ;
-}
-
-/*
- * Class:     com_Dict_DictApp2_DictSearchEngine
- * Method:    engAddDictionary
- * Signature: (Ljava/lang/String;)Z
- */
-JNIEXPORT jboolean JNICALL Java_com_Dict_DictApp2_DictSearchEngine_engAddDictionary (JNIEnv *pEnv, jclass pObj, jstring pString){
-    const char *str = NULL;
-    jboolean *isCopy;
-    str = pEnv->GetStringUTFChars(pString, isCopy);
+JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_dictEngScanPath (JNIEnv *pEnv, jclass jc, jstring js){
+    jboolean isCopy;
+    const char* str = pEnv->GetStringUTFChars(js, &isCopy);
+    golden_printfe("print UTF-8 string: %s, %d", str, isCopy);
     if(GoldenDict.GetPoint() != NULL){
-        GoldenDict->GoldenDictAdd(str);
-    }else{
-        golden_printfe("StardictMain should be init before using\n");
+        GoldenDict->GoldenScanDisk(str);
     }
-    pEnv->ReleaseStringUTFChars(pString,str);
-    return 1;
+    pEnv->ReleaseStringUTFChars(js, str);
 }
-
 /*
  * Class:     com_Dict_DictApp2_DictSearchEngine
- * Method:    engRemoveDictionary
- * Signature: (Ljava/lang/String;)Z
- */
-JNIEXPORT jboolean JNICALL Java_com_Dict_DictApp2_DictSearchEngine_engRemoveDictionary (JNIEnv *penv, jclass pobj, jstring pstring){
-    return 0;
-}
-
-
-/*
- * Class:     com_Dict_DictApp2_DictSearchEngine
- * Method:    initEng
+ * Method:    dictEngInit
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_initEng(JNIEnv *pEnv, jclass pObj){
+JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_dictEngInit (JNIEnv *pEnv, jclass jc){
     if(GoldenDict.GetPoint() != NULL){
         return ;
     }else{
         GoldenDict = new GoldenDictManager();
     }
-    return ;
 }
-
 /*
  * Class:     com_Dict_DictApp2_DictSearchEngine
- * Method:    destroyEng
+ * Method:    dictEngDeinit
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_destroyEng(JNIEnv *pEnv, jclass pObj){
+JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_dictEngDeinit (JNIEnv *pEnv, jclass jc){
+    return ;
+}
+/*
+ * Class:     com_Dict_DictApp2_DictSearchEngine
+ * Method:    dictEngGetDictList
+ * Signature: ()Ljava/util/ArrayList;
+ */
+JNIEXPORT jobject JNICALL Java_com_Dict_DictApp2_DictSearchEngine_dictEngGetDictList (JNIEnv *pEnv, jclass jc){
+    const char **dictList = (const char **)malloc(sizeof(const char *) * 20);
+    memset(dictList,0,sizeof(const char *) * 20);
+    if(GoldenDict.GetPoint() != NULL){
+        jclass cls_ArrayList = pEnv->FindClass("java/util/ArrayList");  
+        jmethodID construct = pEnv->GetMethodID(cls_ArrayList,"<init>","()V");  
+        jobject obj_ArrayList = pEnv->NewObject(cls_ArrayList,construct,"");  
+        jmethodID arrayList_add = pEnv->GetMethodID(cls_ArrayList,"add","(Ljava/lang/String;)");  
 
+        GoldenDict->GoldenDictGetDicts(dictList);
+        const char **tmp = dictList ;
+        while(*tmp != NULL){
+            jstring obj= pEnv->NewStringUTF(*tmp);
+            pEnv->CallObjectMethod(obj_ArrayList,arrayList_add,obj);
+            tmp ++;
+        }
+        return obj_ArrayList ;
+    }
+    free(dictList);
+    return NULL;
 }
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved){
@@ -109,12 +120,9 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved){
     if (jvm->GetEnv((void **)&env, JNI_VERSION_1_6)) {
         return -1;
     }
-    
     return JNI_VERSION_1_6;
 }
-
 
 #ifdef __cplusplus
 }
 #endif
-

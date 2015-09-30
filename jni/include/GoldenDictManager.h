@@ -81,6 +81,7 @@ class GoldenDictManager :public Ref,GoldenPathFilter{
         void GoldenDictAddDict(const char *name);
         void GoldenDictRemoveDict(const char *name);
         void GoldenDictEnableDict(const char *name,bool enable);
+        void GoldenDictGetDicts(const char **list);
 
 
         static const char *GoldenGetCachePath();

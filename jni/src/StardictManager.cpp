@@ -75,7 +75,7 @@ StardictInstance::StardictInstance(String8 path):mStarInfo(NULL),mStarIdx(NULL),
         throw exception();//"dict file error");
     }
     mStarDictName = mStarInfo->getBookName();
-    mIdentifyPath = path;
+    mIdentifyPath = path + ".idx";
 }
 
 
