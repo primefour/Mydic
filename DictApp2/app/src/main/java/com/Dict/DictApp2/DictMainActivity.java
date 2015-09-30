@@ -70,14 +70,4 @@ public class DictMainActivity extends FragmentActivity implements SlotListFragme
 
     }
 
-    public void onWordMeaningArriving(String searchResult) {
-        //for async query
-        MainFragment mainFlagment = (MainFragment)mPagerAdapter.getItem(MAIN_PAGE_IDX);
-        mainFlagment.setWordMeaningString(searchResult);
-    }
-
-    public void onWordMetaArriving(TextMetaData mt){
-
-    }
-
 }

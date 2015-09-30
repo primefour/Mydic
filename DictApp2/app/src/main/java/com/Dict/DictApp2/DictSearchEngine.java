@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 
+import java.util.ArrayList;
+
 /**
  * Created by crazyhorse on 15-4-5.
  */
@@ -16,6 +18,7 @@ public class DictSearchEngine {
     public static native void dictEngScanPath(String path);
     public static native void dictEngInit();
     public static native void dictEngDeinit();
+    public static native ArrayList<String> dictEngGetDictList();
 
     static {
         System.loadLibrary("searchEngine");
