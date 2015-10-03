@@ -163,10 +163,8 @@ public class SlotListFragment extends ListFragment {
     class DictAdapter extends ArrayAdapter<String>{
         int mResourceId ;
         LayoutInflater mInflater;
-
         public DictAdapter(Context context, int resource) {
             super(context, resource);
-            mResourceId = resource;
             mInflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
@@ -176,19 +174,21 @@ public class SlotListFragment extends ListFragment {
             if(convertView != null){
                 holder = new ViewHolder();
                 convertView = mInflater.inflate(R.layout.fragment_list_item, null);
+                holder.dictName = (TextView) convertView.findViewById(R.id.dict_name);
+                holder.enableButton = (Button) convertView.findViewById(R.id.enable_button);
                 convertView.setTag(holder);
             }else{
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            TextView dictName = (TextView) convertView.findViewById(R.id.dict_name);
-            dictName.setText("MiGuoDictionary");
-            Button enableButton = (Button) convertView.findViewById(R.id.enable_button);
-            enableButton.setText("Enable");
+            holder.dictName.setText("MiGuoDictionary");
+            holder.enableButton.setText("Enable");
             return convertView;
         }
 
         private class ViewHolder {
+            public TextView dictName;
+            public Button   enableButton;
         }
     }
 }
