@@ -47,14 +47,10 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
 
-
         if(getSearchWord() == null){
             return ;
         }
         String wordMeaning = mCallbacks.onSearchButtonClick(getSearchWord());
-        if(wordMeaning == null){
-            wordMeaning = NOT_FOUND_WORD;
-        }
         //show word Meaning
         WebView webView = ((WebView) mRootView.findViewById(R.id.MeaningWebView));
         webView.getSettings().setDefaultTextEncodingName(WEB_ENCODE_FORMAT);
@@ -86,27 +82,12 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 return false ;
             }
 
-            });/*
-        String wordMeaning ="<html>\n" +
-                "    <head>\n" +
-                "    <title>My Awesome Page</title>\n" +
-                "        <script type=\"text/javascript\" charset=\"utf-8\">\n" +
-                "            function sayHello() {\n" +
-                "                document.getElementById('foo').innerHTML = 'Hi there!';\n" +
-                "            }\n" +
-                "        </script>\n" +
-                "    </head>\n" +
-                "    <body>\n" +
-                "        <h1 id=\"foo\" onclick=\"sayHello()\">Click me!</h1>\n" +
-                "    </body>\n" +
-                "</html>\n" ;
-                */
+            });
         webView.loadData(wordMeaning, "text/html; charset=UTF-8", null);
         //webView.loadDataWithBaseURL("file:///mnt/sdcard/",wordMeaning, "text/html","charset=UTF-8", null);
         //webView.loadDataWithBaseURL("file:///mnt/sdcard/",wordMeaning, "text/html","charset=UTF-8", null);
         //webView.loadData(wordMeaning,WEB_MIME_TYPE,WEB_ENCODE_FORMAT) ;
         //webView.loadUrl("file:///android_asset/index.html");
-
     }
 
     public interface Callbacks {
@@ -142,14 +123,5 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
         return null;
     }
-
-    public void setWordMeaningString(String searchResult){
-        WebView webView = ((WebView) mRootView.findViewById(R.id.MeaningWebView));
-        webView.getSettings().setDefaultTextEncodingName(WEB_ENCODE_FORMAT);
-        //webView.loadData(searchResult,WEB_MIME_TYPE,WEB_ENCODE_FORMAT) ;
-        //webView.loadUrl("http://news.sina.com.cn/");
-    }
-
-
 }
 
