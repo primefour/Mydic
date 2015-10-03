@@ -1,11 +1,18 @@
 package com.Dict.DictApp2;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.support.v4.app.ListFragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 
 import com.Dict.DictApp2.dummy.DummyContent;
@@ -49,7 +56,6 @@ public class SlotListFragment extends ListFragment {
          */
         public void onItemSelected(String id);
     }
-
     /**
      * A dummy implementation of the {@link Callbacks} interface that does
      * nothing. Used only when this fragment is not attached to an activity.
@@ -72,11 +78,15 @@ public class SlotListFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         // TODO: replace with a real list adapter.
-        setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(
-                getActivity(),
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
-                DummyContent.ITEMS));
+        try {
+            setListAdapter(new ArrayAdapter<String>(
+                    getActivity(),
+                    android.R.layout.simple_list_item_activated_1,
+                    android.R.id.text1,
+                    DictUtils.getService().getDictList()));
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -148,5 +158,37 @@ public class SlotListFragment extends ListFragment {
         }
 
         mActivatedPosition = position;
+    }
+
+    class DictAdapter extends ArrayAdapter<String>{
+        int mResourceId ;
+        LayoutInflater mInflater;
+
+        public DictAdapter(Context context, int resource) {
+            super(context, resource);
+            mResourceId = resource;
+            mInflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        }
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder holder ;
+            if(convertView != null){
+                holder = new ViewHolder();
+                convertView = mInflater.inflate(R.layout.fragment_list_item, null);
+                convertView.setTag(holder);
+            }else{
+                holder = (ViewHolder) convertView.getTag();
+            }
+
+            TextView dictName = (TextView) convertView.findViewById(R.id.dict_name);
+            dictName.setText("MiGuoDictionary");
+            Button enableButton = (Button) convertView.findViewById(R.id.enable_button);
+            enableButton.setText("Enable");
+            return convertView;
+        }
+
+        private class ViewHolder {
+        }
     }
 }

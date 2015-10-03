@@ -128,7 +128,6 @@ public class DictQueryService extends Service {
 
     //interface
     public List<String> getDictList(){
-
         return mEngine.dictEngGetDictList();
     }
 
@@ -140,23 +139,29 @@ public class DictQueryService extends Service {
         super.onCreate();
         mPreferences = getSharedPreferences("Dictionary",MODE_PRIVATE);
         mIsFirstStart  = mPreferences.getBoolean(FIRST_START,true);
+
+        Log.e(TAG,"##########onCreate ==>" + mIsFirstStart);
+
         File sdCard = Environment.getExternalStorageDirectory();
         DICT_ROOT_DIR = sdCard.getAbsolutePath();
-        File directory = new File (DICT_ROOT_DIR + DICT_DIR);
+        File directory = new File (DICT_ROOT_DIR + "/" + DICT_DIR);
+        Log.e(TAG,"##########onCreate ==>" + DICT_ROOT_DIR + "/" + DICT_DIR);
         directory.mkdirs();
+        init();
+        Thread scanner = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                scanPath(null);
+            }
+        });
+        scanner.start();
     }
 
     @Override
     public void onDestroy() {
+        deInit();
         // Check that we're not being destroyed while something is still playing.
         super.onDestroy();
-    }
-
-
-    class MyBinder extends Binder{
-        public DictQueryService getService(){
-            return DictQueryService.this;
-        }
     }
 
 
@@ -174,7 +179,7 @@ public class DictQueryService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.e(TAG,"##########onStartCommand");
+        Log.e(TAG,"##########onStartCommand startId = " + startId);
         mServiceStartId = startId;
         if (intent != null) {
             String action = intent.getAction();
@@ -187,7 +192,7 @@ public class DictQueryService extends Service {
     public boolean onUnbind(Intent intent) {
         Log.e(TAG,"##########onUnbind");
         // No active playlist, OK to stop the service right now
-        stopSelf(mServiceStartId);
+        //stopSelf(mServiceStartId);
         return true;
     }
 
