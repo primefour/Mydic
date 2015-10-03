@@ -19,12 +19,17 @@ JNIEXPORT jstring JNICALL Java_com_Dict_DictApp2_DictSearchEngine_dictEngQueryWo
     const char* str = pEnv->GetStringUTFChars(js, &isCopy);
     golden_printfe("print UTF-8 string: %s, %d", str, isCopy);
     char *queryResult = (char *)malloc(BUFF_SIZE);
-    GoldenDict->GoldenDictQuery(str,queryResult);
-    pEnv->ReleaseStringUTFChars(js, str);
-    jstring obj= pEnv->NewStringUTF(queryResult);
-    free(queryResult);
-    queryResult = NULL;
-    return obj ; 
+    if(GoldenDict.GetPoint()){
+        GoldenDict->GoldenDictQuery(str,queryResult);
+        pEnv->ReleaseStringUTFChars(js, str);
+        jstring obj= pEnv->NewStringUTF(queryResult);
+        free(queryResult);
+        queryResult = NULL;
+        return obj ; 
+    }else{
+        golden_printfe("GoldenDict doesn't initialize\n");
+        return NULL;
+    }
 }
 
 /*
