@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.Window;
 import android.widget.Button;
 
+import java.util.HashMap;
+
 
 /**
  * Created by crazyhorse on 15-4-5.

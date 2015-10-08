@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">DictApp2</string>
     <string name="title_slot_detail">Slot1 Detail</string>
     <string name="SearchButtonName">Search</string>
-    <string name="MeaningText">你好！</string>
-
+    <string name="MeaningText">Hello,MiGuo Dictionary!!</string>
+    <string name="full_scanner">Full Scan</string>
+    <string name="scanner">Scan</string>
+    <string name="remove">Remove</string>
+    <string name="add">Add</string>
 </resources>

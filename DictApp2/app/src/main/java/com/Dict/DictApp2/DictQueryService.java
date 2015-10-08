@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.IBinder;
 
 import android.app.Notification;
@@ -25,6 +26,7 @@ import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.media.audiofx.AudioEffect;
 import android.media.AudioManager;
+import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
@@ -56,6 +58,7 @@ public class DictQueryService extends Service {
 
     private String DICT_ROOT_DIR = "/sdcard/";
     private final String DICT_DIR = "MiGuoDict";
+    private final int DICT_SCAN_COMPLETE = 0;
 
 
 
@@ -66,6 +69,58 @@ public class DictQueryService extends Service {
     private void deInit(){
         mEngine.dictEngDeinit();
     }
+
+
+    private Handler mServiceHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch(msg.what){
+                case DICT_SCAN_COMPLETE:
+                    boolean first = mPreferences.getBoolean(FIRST_START,true);
+                    SharedPreferences.Editor ed = mPreferences.edit();
+                    ed.putBoolean(FIRST_START,false);
+                    ArrayList<String> list =  mEngine.dictEngGetDictList();
+                    if(first) {
+                        for (String tmp : list) {
+                            ed.putBoolean(tmp,true);
+                        }
+                    }else{
+                        boolean flag = false;
+                        for (String tmp : list) {
+                            flag = mPreferences.getBoolean(tmp,true);
+                            ed.putBoolean(tmp,flag);
+                        }
+                    }
+                    ed.commit();
+                    ed.apply();
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
+    public boolean getDictStatus(String name) {
+        Log.e(TAG,name + " = " + mPreferences.getBoolean(name,false));
+        return mPreferences.getBoolean(name,false);
+    }
+
+    public void setDictStatus(String name,boolean flag) {
+
+        Log.e(TAG,"setDictStatus" + name + " = " +flag);
+        SharedPreferences.Editor ed = mPreferences.edit();
+        ed.putBoolean(name,flag);
+        ed.commit();
+        ed.apply();
+    }
+
+    private void  scanDisk(String path){
+        scanPath(path);
+        Message msg = mServiceHandler.obtainMessage(DICT_SCAN_COMPLETE);
+        mServiceHandler.dispatchMessage(msg);
+    }
+
+
 
 
     //interface
@@ -135,23 +190,22 @@ public class DictQueryService extends Service {
 
     @Override
     public void onCreate() {
-        Log.e(TAG,"##########onCreate");
+        Log.e(TAG, "##########onCreate");
         super.onCreate();
         mPreferences = getSharedPreferences("Dictionary",MODE_PRIVATE);
         mIsFirstStart  = mPreferences.getBoolean(FIRST_START,true);
-
         Log.e(TAG,"##########onCreate ==>" + mIsFirstStart);
-
         File sdCard = Environment.getExternalStorageDirectory();
         DICT_ROOT_DIR = sdCard.getAbsolutePath();
         File directory = new File (DICT_ROOT_DIR + "/" + DICT_DIR);
         Log.e(TAG,"##########onCreate ==>" + DICT_ROOT_DIR + "/" + DICT_DIR);
         directory.mkdirs();
         init();
+
         Thread scanner = new Thread(new Runnable() {
             @Override
             public void run() {
-                scanPath(null);
+                scanDisk(null);
             }
         });
         scanner.start();
@@ -219,12 +273,20 @@ public class DictQueryService extends Service {
 
         @Override
         public void scanPath(String path) throws RemoteException {
-            mService.get().scanPath(path);
+            mService.get().scanDisk(path);
         }
 
         @Override
         public List<String> getDictList() throws RemoteException {
             return mService.get().getDictList();
+        }
+        @Override
+        public boolean getDictStatus(String name){
+            return mService.get().getDictStatus(name);
+        }
+        @Override
+        public void setDictStatus(String name,boolean flag){
+            mService.get().setDictStatus(name,flag);
         }
     }
 }

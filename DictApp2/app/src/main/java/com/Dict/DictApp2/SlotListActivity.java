@@ -49,8 +49,13 @@ public class SlotListActivity extends FragmentActivity
                     .findFragmentById(R.id.slot_list))
                     .setActivateOnItemClick(true);
         }
-
+        DictUtils.bindToService(this);
         // TODO: If exposing deep links into your app, handle intents here.
+    }
+    @Override
+    public void onDestroy(){
+        DictUtils.unBindFromService(this);
+        super.onDestroy();
     }
 
     /**

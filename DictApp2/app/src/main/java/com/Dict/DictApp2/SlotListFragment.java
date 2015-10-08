@@ -2,9 +2,11 @@ package com.Dict.DictApp2;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,9 @@ import android.widget.TextView;
 
 
 import com.Dict.DictApp2.dummy.DummyContent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A list fragment representing a list of Slot1_Items. This fragment
@@ -50,11 +55,33 @@ public class SlotListFragment extends ListFragment {
      * implement. This mechanism allows activities to be notified of item
      * selections.
      */
+
+    private static final String TAG = "SlotListFragment";
+    private Resources mResources;
+    private List<String> mDictList = new ArrayList<String>();
+
     public interface Callbacks {
         /**
          * Callback for when an item has been selected.
          */
         public void onItemSelected(String id);
+    }
+
+    private List<String> getList() {
+        if(DictUtils.getService() == null || mResources == null){
+            return null;
+        }
+
+        try {
+            mDictList = DictUtils.getService().getDictList();
+            if(mDictList == null){
+                mDictList = new ArrayList<String>();
+            }
+            mDictList.add(0, mResources.getString(R.string.full_scanner));
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        return mDictList;
     }
     /**
      * A dummy implementation of the {@link Callbacks} interface that does
@@ -76,17 +103,12 @@ public class SlotListFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         // TODO: replace with a real list adapter.
-        try {
-            setListAdapter(new ArrayAdapter<String>(
-                    getActivity(),
-                    android.R.layout.simple_list_item_activated_1,
-                    android.R.id.text1,
-                    DictUtils.getService().getDictList()));
-        } catch (RemoteException e) {
-            e.printStackTrace();
+        setListAdapter(new DictAdapter(getActivity(),R.layout.fragment_list_item));
+        if(DictUtils.getService() == null){
+            return ;
         }
+        getList();
     }
 
     @Override
@@ -103,12 +125,11 @@ public class SlotListFragment extends ListFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-
+        mResources = activity.getResources();
         // Activities containing this fragment must implement its callbacks.
         if (!(activity instanceof Callbacks)) {
             throw new IllegalStateException("Activity must implement fragment's callbacks.");
         }
-
         mCallbacks = (Callbacks) activity;
     }
 
@@ -164,25 +185,92 @@ public class SlotListFragment extends ListFragment {
         int mResourceId ;
         LayoutInflater mInflater;
         public DictAdapter(Context context, int resource) {
-            super(context, resource);
+            super(context,resource);
             mInflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
         @Override
+        public int getCount(){
+            if(DictUtils.getService() == null){
+                return 0;
+            }
+            return getList().size();
+        }
+        @Override
+        public String getItem(int pos){
+            if(DictUtils.getService() == null){
+                return null;
+            }
+            return getList().get(pos);
+        }
+        @Override
+        public long getItemId(int pos){
+            if(DictUtils.getService() == null){
+                return 0;
+            }
+            return pos;
+        }
+        @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            ViewHolder holder ;
-            if(convertView != null){
+            if(DictUtils.getService() == null){
+                return convertView;
+            }
+            ViewHolder holder = null;
+            if(convertView == null){
                 holder = new ViewHolder();
                 convertView = mInflater.inflate(R.layout.fragment_list_item, null);
                 holder.dictName = (TextView) convertView.findViewById(R.id.dict_name);
                 holder.enableButton = (Button) convertView.findViewById(R.id.enable_button);
                 convertView.setTag(holder);
-            }else{
+            }else {
                 holder = (ViewHolder) convertView.getTag();
             }
+            holder.dictName.setText(getList().get(position));
+            if(position == 0){
+                holder.enableButton.setText(mResources.getString(R.string.scanner));
+                holder.enableButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        try {
+                            DictUtils.getService().scanPath(null);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }else {
+                try {
+                    if (DictUtils.getService().getDictStatus(getList().get(position))) {
+                        holder.enableButton.setText(mResources.getString(R.string.remove));
+                    } else {
+                        holder.enableButton.setText(mResources.getString(R.string.add));
+                    }
+                    holder.enableButton.setTag(getList().get(position));
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
 
-            holder.dictName.setText("MiGuoDictionary");
-            holder.enableButton.setText("Enable");
+                holder.enableButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Button aa = (Button) view;
+                            try {
+                                if (aa.getText().equals(mResources.getString(R.string.add))) {
+                                    DictUtils.getService().addDictionary((String) aa.getTag());
+                                    aa.setText(mResources.getString(R.string.remove));
+                                    DictUtils.getService().setDictStatus((String) aa.getTag(),true);
+                                } else {
+                                    DictUtils.getService().removeDictionary((String) aa.getTag());
+                                    aa.setText(mResources.getString(R.string.add));
+                                    DictUtils.getService().setDictStatus((String) aa.getTag(),false);
+                                }
+                            } catch (RemoteException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+            }
+
             return convertView;
         }
 
