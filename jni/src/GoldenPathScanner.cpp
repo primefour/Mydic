@@ -52,14 +52,14 @@ bool GoldenPathScanner::doProcessDirectory(char *path){
     }
     DIR* dir = opendir(path);
     if (!dir) {
-        golden_printfe("Error opening directory '%s', skipping: %s.\n", path, strerror(errno));
+        golden_printfi("Error opening directory '%s', skipping: %s.\n", path, strerror(errno));
         return false;
     }
 
     char *pathEnd = path + strlen(path);
     while ((entry = readdir(dir))) {
         if (!doProcessDirectoryEntry(path,entry)) {
-            golden_printfe("do entry '%s' skip\n",entry->d_name);
+            golden_printfi("do entry '%s' skip\n",entry->d_name);
             continue;
         }
         memset(pathEnd,0,(mPath + PATH_MAX - pathEnd));

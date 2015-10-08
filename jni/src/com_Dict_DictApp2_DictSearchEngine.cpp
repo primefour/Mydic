@@ -93,6 +93,17 @@ JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_dictEngInit (JNIE
 JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_dictEngDeinit (JNIEnv *pEnv, jclass jc){
     return ;
 }
+
+jobject String2JOBJ(JNIEnv* env, const char* pat){
+    jclass strClass = env->FindClass("Ljava/lang/String;");
+    jmethodID ctorID = env->GetMethodID(strClass, "<init>", "([BLjava/lang/String;)V");
+    jbyteArray bytes = env->NewByteArray(strlen(pat));
+    env->SetByteArrayRegion(bytes, 0, strlen(pat), (jbyte*)pat);
+    jstring encoding = env->NewStringUTF("utf-8");
+    return env->NewObject(strClass, ctorID, bytes, encoding);
+}
+
+
 /*
  * Class:     com_Dict_DictApp2_DictSearchEngine
  * Method:    dictEngGetDictList
@@ -105,13 +116,23 @@ JNIEXPORT jobject JNICALL Java_com_Dict_DictApp2_DictSearchEngine_dictEngGetDict
         jclass cls_ArrayList = pEnv->FindClass("java/util/ArrayList");  
         jmethodID construct = pEnv->GetMethodID(cls_ArrayList,"<init>","()V");  
         jobject obj_ArrayList = pEnv->NewObject(cls_ArrayList,construct,"");  
-        jmethodID arrayList_add = pEnv->GetMethodID(cls_ArrayList,"add","(Ljava/lang/String;)");  
-
+        jmethodID arrayList_add = pEnv->GetMethodID(cls_ArrayList,"add","(Ljava/lang/Object;)Z");
+        if(arrayList_add == NULL){
+            golden_printfe("*****tmp = get  arrayList_add  fail\n");
+            return NULL;
+        }
         GoldenDict->GoldenDictGetDicts(dictList);
         const char **tmp = dictList ;
         while(*tmp != NULL){
+            golden_printfe("*****tmp = %s \n",*tmp);
             jstring obj= pEnv->NewStringUTF(*tmp);
-            pEnv->CallObjectMethod(obj_ArrayList,arrayList_add,obj);
+            jobject o = (jobject) obj;
+            //jobject obj = String2JOBJ(pEnv,*tmp);
+            if(obj != NULL){
+                //pEnv->CallObjectMethod(obj_ArrayList,arrayList_add,o);
+                pEnv->CallBooleanMethod(obj_ArrayList,arrayList_add,o);
+
+            }
             tmp ++;
         }
         return obj_ArrayList ;
@@ -119,6 +140,7 @@ JNIEXPORT jobject JNICALL Java_com_Dict_DictApp2_DictSearchEngine_dictEngGetDict
     free(dictList);
     return NULL;
 }
+
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved){
     JNIEnv* env;
