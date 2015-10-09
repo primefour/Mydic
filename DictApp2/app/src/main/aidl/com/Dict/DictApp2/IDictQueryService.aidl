@@ -11,4 +11,5 @@ void scanPath(String path);
 List<String> getDictList();
 boolean getDictStatus(String name);
 void setDictStatus(String name,boolean flag);
+boolean checkDiskScanComplete();
 }

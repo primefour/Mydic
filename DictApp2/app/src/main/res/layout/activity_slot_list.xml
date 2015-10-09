@@ -7,4 +7,6 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     tools:context="com.Dict.DictApp2.SlotListActivity"
-    tools:layout="@android:layout/list_content" />
+    tools:layout="@layout/fragment_list_frame">
+</fragment>
+

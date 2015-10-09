@@ -18,7 +18,7 @@ import java.util.HashMap;
 /**
  * Created by crazyhorse on 15-4-5.
  */
-public class DictMainActivity extends FragmentActivity implements SlotListFragment.Callbacks,MainFragment.Callbacks {
+public class DictMainActivity extends FragmentActivity implements MainFragment.Callbacks {
     MainPagerAdapter mPagerAdapter;
     ViewPager mViewPager;
     static final String TAG = "DictMainActivity ";

@@ -2,8 +2,12 @@ package com.Dict.DictApp2;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.RemoteException;
 import android.support.v4.app.FragmentActivity;
-
+import android.view.View;
+import android.view.animation.AnimationUtils;
 
 
 /**
@@ -19,12 +23,10 @@ import android.support.v4.app.FragmentActivity;
  * (if present) is a {@link SlotDetailFragment}.
  * <p>
  * This activity also implements the required
- * {@link SlotListFragment.Callbacks} interface
  * to listen for item selections.
  */
-public class SlotListActivity extends FragmentActivity
-        implements SlotListFragment.Callbacks {
-
+public class SlotListActivity extends FragmentActivity{
+    private static final int DISK_SCAN_CHECKER = 0;
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
@@ -45,43 +47,21 @@ public class SlotListActivity extends FragmentActivity
 
             // In two-pane mode, list items should be given the
             // 'activated' state when touched.
+            /*
             ((SlotListFragment) getSupportFragmentManager()
                     .findFragmentById(R.id.slot_list))
                     .setActivateOnItemClick(true);
+                    */
         }
         DictUtils.bindToService(this);
         // TODO: If exposing deep links into your app, handle intents here.
     }
+
+
+
     @Override
     public void onDestroy(){
         DictUtils.unBindFromService(this);
         super.onDestroy();
-    }
-
-    /**
-     * Callback method from {@link SlotListFragment.Callbacks}
-     * indicating that the item with the given ID was selected.
-     */
-    @Override
-    public void onItemSelected(String id) {
-        if (mTwoPane) {
-            // In two-pane mode, show the detail view in this activity by
-            // adding or replacing the detail fragment using a
-            // fragment transaction.
-            Bundle arguments = new Bundle();
-            arguments.putString(SlotDetailFragment.ARG_ITEM_ID, id);
-            SlotDetailFragment fragment = new SlotDetailFragment();
-            fragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.slot_detail_container, fragment)
-                    .commit();
-
-        } else {
-            // In single-pane mode, simply start the detail activity
-            // for the selected item ID.
-            Intent detailIntent = new Intent(this, SlotDetailActivity.class);
-            detailIntent.putExtra(SlotDetailFragment.ARG_ITEM_ID, id);
-            startActivity(detailIntent);
-        }
     }
 }

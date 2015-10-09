@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout android:id="@+id/progressContainer"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <ProgressBar android:id="@+id/progress"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="@string/loading"
+                android:paddingTop="4dip"
+                android:singleLine="true" />
+        </LinearLayout>
+
+        <FrameLayout android:id="@+id/listContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+            <!--android:visibility="gone"> -->
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+                <!-- android:gravity="center"> -->
+
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/title_about_list"
+                    android:paddingTop="4dip"
+                    android:singleLine="true"
+                    android:background="@color/abc_search_url_text_normal" />
+
+                <ListView android:id="@+id/about_list"
+                    android:width="0.5dp"
+                    android:color="@android:color/black"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawSelectorOnTop="false"
+                    android:fastScrollEnabled="true" />
+
+                <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@string/title_dict_list"
+                    android:paddingTop="4dip"
+                    android:singleLine="true"
+                    android:background="@color/abc_search_url_text_normal" />
+
+                <ListView android:id="@+id/dict_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawSelectorOnTop="false"
+                    android:fastScrollEnabled="true" />
+            </LinearLayout>
+
+            <TextView android:id="@+id/empty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="@string/no_tracks_title"
+                android:visibility="invisible"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+        </FrameLayout>
+    </FrameLayout>
+</LinearLayout>

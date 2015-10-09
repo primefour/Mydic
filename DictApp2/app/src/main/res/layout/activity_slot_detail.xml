@@ -4,4 +4,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.Dict.DictApp2.SlotDetailActivity"
-    tools:ignore="MergeRootFrame" />
+    tools:ignore="MergeRootFrame" >
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center_horizontal|top"
+        style="@style/TextAppearance.AppCompat.Base.SearchResult.Title"
+        android:background="@drawable/abc_tab_selected_focused_holo"
+        android:clickable="true">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/editText"
+            android:layout_gravity="center_horizontal"
+            android:accessibilityLiveRegion="polite"
+            style="@style/TextAppearance.AppCompat.Base.SearchResult.Title"
+            android:background="@color/abc_search_url_text_selected" />
+    </LinearLayout>
+</FrameLayout>

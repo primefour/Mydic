@@ -3,16 +3,21 @@ package com.Dict.DictApp2;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.database.DataSetObserver;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.RemoteException;
-import android.support.v4.app.ListFragment;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -20,7 +25,10 @@ import android.widget.TextView;
 import com.Dict.DictApp2.dummy.DummyContent;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * A list fragment representing a list of Slot1_Items. This fragment
@@ -28,23 +36,14 @@ import java.util.List;
  * 'activated' state upon selection. This helps indicate which item is
  * currently being viewed in a {@link SlotDetailFragment}.
  * <p>
- * Activities containing this fragment MUST implement the {@link Callbacks}
- * interface.
  */
-public class SlotListFragment extends ListFragment {
+public class SlotListFragment extends android.support.v4.app.Fragment {
 
     /**
      * The serialization (saved instance state) Bundle key representing the
      * activated item position. Only used on tablets.
      */
     private static final String STATE_ACTIVATED_POSITION = "activated_position";
-
-    /**
-     * The fragment's current callback object, which is notified of list item
-     * clicks.
-     */
-    private Callbacks mCallbacks = sDummyCallbacks;
-
     /**
      * The current activated item position. Only used on tablets.
      */
@@ -58,100 +57,143 @@ public class SlotListFragment extends ListFragment {
 
     private static final String TAG = "SlotListFragment";
     private Resources mResources;
-    private List<String> mDictList = new ArrayList<String>();
+    private List<String> mDictList ;
+    private List<String> mAboutList;
+    View mProgressContainer;
+    View mListContainer;
+    View mEmptyText;
+    DictAdapter mDictAdapter;
+    AboutAdapter mAboutAdapter;
+    ListView mDictListView;
+    ListView mAboutListView;
+    boolean mListShown = false;
+    public static final int DISK_SCAN_CHECKER =  0;
 
-    public interface Callbacks {
-        /**
-         * Callback for when an item has been selected.
-         */
-        public void onItemSelected(String id);
+    void makeListShown() {
+        getDictList();
+        if (!mListShown) {
+            mListShown = true;
+            mDictAdapter= new DictAdapter(getActivity(),R.layout.fragment_list_item);
+            mDictListView.setAdapter(mDictAdapter);
+            if(getDictList().size() == 0){
+                mEmptyText.setVisibility(View.VISIBLE);
+            }else{
+                mEmptyText.setVisibility(View.INVISIBLE);
+            }
+            mProgressContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
+            mProgressContainer.setVisibility(View.GONE);
+            mListContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in));
+            mListContainer.setVisibility(View.VISIBLE);
+        }
     }
 
-    private List<String> getList() {
-        if(DictUtils.getService() == null || mResources == null){
-            return null;
-        }
+    private Handler SlotListHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
 
-        try {
-            mDictList = DictUtils.getService().getDictList();
-            if(mDictList == null){
-                mDictList = new ArrayList<String>();
+            switch (msg.what) {
+                case DISK_SCAN_CHECKER :
+                    Log.e(TAG,"############DISK_SCAN_CHECKER##########");
+                    if(DictUtils.getService() != null){
+                        Log.e(TAG, "############setActivateOnItemClick");
+                        try {
+                            Log.e(TAG,"DictUtils.getService().checkDiskScanComplete() " + DictUtils.getService().checkDiskScanComplete());
+                            if(DictUtils.getService().checkDiskScanComplete()){
+                                makeListShown();
+                            }else{
+                                Message msg1 = SlotListHandler.obtainMessage(DISK_SCAN_CHECKER) ;
+                                SlotListHandler.sendMessageDelayed(msg1,1000);
+                            }
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
+                default:
+                    break;
             }
-            mDictList.add(0, mResources.getString(R.string.full_scanner));
+        }
+    };
+
+    private List<String> getDictList(){
+        try {
+            if(DictUtils.getService() == null || !DictUtils.getService().checkDiskScanComplete()){
+                return null;
+            }
+            mDictList = DictUtils.getService().getDictList();
         } catch (RemoteException e) {
             e.printStackTrace();
         }
         return mDictList;
     }
-    /**
-     * A dummy implementation of the {@link Callbacks} interface that does
-     * nothing. Used only when this fragment is not attached to an activity.
-     */
-    private static Callbacks sDummyCallbacks = new Callbacks() {
-        @Override
-        public void onItemSelected(String id) {
-        }
-    };
 
+    private List<String> getAboutList() {
+        if(mAboutList != null){
+           return mAboutList ;
+        }
+        mAboutList = new ArrayList<String>();
+        String[] about = mResources.getStringArray(R.array.dict_about);
+        int i =0 ;
+        for(String tmp:about){
+            mAboutList.add(tmp);
+        }
+        return mAboutList;
+    }
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
     public SlotListFragment() {
+
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.e(TAG,"############onCreate");
         super.onCreate(savedInstanceState);
-        // TODO: replace with a real list adapter.
-        setListAdapter(new DictAdapter(getActivity(),R.layout.fragment_list_item));
-        if(DictUtils.getService() == null){
-            return ;
-        }
-        getList();
+        mResources = getActivity().getResources();
     }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
 
-        // Restore the previously serialized activated item position.
-        if (savedInstanceState != null
-                && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
-            setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
-        }
-    }
+     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState){
+         Log.e(TAG,"############onCreateViev");
+         View view = inflater.inflate(R.layout.fragment_list_frame, container, false);
+         mProgressContainer = view.findViewById(R.id.progressContainer);
+         mListContainer = view.findViewById(R.id.listContainer);
+         mAboutListView = (ListView) view.findViewById(R.id.about_list);
+         mDictListView = (ListView)view.findViewById(R.id.dict_list);
+         mEmptyText = view.findViewById(R.id.empty);
+         mAboutAdapter = new AboutAdapter(getActivity(),R.layout.fragment_list_item);
+         mAboutListView.setAdapter(mAboutAdapter );
+
+
+         Message msg1 = SlotListHandler.obtainMessage(DISK_SCAN_CHECKER) ;
+         SlotListHandler.sendMessageDelayed(msg1,1000);
+
+         return view;
+     }
 
     @Override
     public void onAttach(Activity activity) {
+        Log.e(TAG,"############onAttach");
         super.onAttach(activity);
-        mResources = activity.getResources();
-        // Activities containing this fragment must implement its callbacks.
-        if (!(activity instanceof Callbacks)) {
-            throw new IllegalStateException("Activity must implement fragment's callbacks.");
-        }
-        mCallbacks = (Callbacks) activity;
     }
 
     @Override
     public void onDetach() {
+        Log.e(TAG,"############onDetach");
         super.onDetach();
-
-        // Reset the active callbacks interface to the dummy implementation.
-        mCallbacks = sDummyCallbacks;
     }
 
-    @Override
     public void onListItemClick(ListView listView, View view, int position, long id) {
-        super.onListItemClick(listView, view, position, id);
-
         // Notify the active callbacks interface (the activity, if the
         // fragment is attached to one) that an item has been selected.
-        mCallbacks.onItemSelected(DummyContent.ITEMS.get(position).id);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
+        Log.e(TAG,"############onSaveInstanceState");
         super.onSaveInstanceState(outState);
         if (mActivatedPosition != ListView.INVALID_POSITION) {
             // Serialize and persist the activated item position.
@@ -164,21 +206,89 @@ public class SlotListFragment extends ListFragment {
      * given the 'activated' state when touched.
      */
     public void setActivateOnItemClick(boolean activateOnItemClick) {
+        Log.e(TAG,"############setActivateOnItemClick");
         // When setting CHOICE_MODE_SINGLE, ListView will automatically
         // give items the 'activated' state when touched.
-        getListView().setChoiceMode(activateOnItemClick
+        mDictListView.setChoiceMode(activateOnItemClick
                 ? ListView.CHOICE_MODE_SINGLE
                 : ListView.CHOICE_MODE_NONE);
+        mAboutListView.setChoiceMode(activateOnItemClick
+                ? ListView.CHOICE_MODE_SINGLE
+                : ListView.CHOICE_MODE_NONE);
+
     }
 
     private void setActivatedPosition(int position) {
+        Log.e(TAG,"############setActivatedPositio");
         if (position == ListView.INVALID_POSITION) {
-            getListView().setItemChecked(mActivatedPosition, false);
+            mDictListView.setItemChecked(mActivatedPosition, false);
+            mAboutListView.setItemChecked(mActivatedPosition, false);
         } else {
-            getListView().setItemChecked(position, true);
+            mDictListView.setItemChecked(position, true);
+            mAboutListView.setItemChecked(position, true);
+        }
+        mActivatedPosition = position;
+    }
+
+    class AboutAdapter extends ArrayAdapter<String> {
+        int mResourceId;
+        LayoutInflater mInflater;
+
+        public AboutAdapter(Context context, int resource) {
+            super(context, resource);
+            mInflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
-        mActivatedPosition = position;
+        @Override
+        public int getCount() {
+            Log.e("AboutAdapter ","getAboutList().size() = " + getAboutList().size());
+            return getAboutList().size();
+        }
+
+        @Override
+        public String getItem(int pos) {
+            return getAboutList().get(pos);
+        }
+
+        @Override
+        public long getItemId(int pos) {
+            return pos;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder holder = null;
+            if (convertView == null) {
+                holder = new ViewHolder();
+                convertView = mInflater.inflate(R.layout.fragment_list_item, null);
+                holder.mAbout= (TextView) convertView.findViewById(R.id.dict_name);
+                holder.mButton= (Button) convertView.findViewById(R.id.enable_button);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+            holder.mAbout.setText(getAboutList().get(position));
+            if (position == 0) {
+                holder.mButton.setText(getActivity().getString(R.string.scanner));
+                holder.mButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        try {
+                            DictUtils.getService().scanPath(null);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+            return convertView;
+        }
+
+        private class ViewHolder {
+            public TextView mAbout;
+            public Button mButton;
+        }
     }
 
     class DictAdapter extends ArrayAdapter<String>{
@@ -191,29 +301,45 @@ public class SlotListFragment extends ListFragment {
         }
         @Override
         public int getCount(){
-            if(DictUtils.getService() == null){
-                return 0;
+            try {
+                if(DictUtils.getService() == null || !DictUtils.getService().checkDiskScanComplete()){
+                    return 0;
+                }
+            } catch (RemoteException e) {
+                e.printStackTrace();
             }
-            return getList().size();
+            return getDictList().size();
         }
         @Override
         public String getItem(int pos){
-            if(DictUtils.getService() == null){
-                return null;
+            try {
+                if(DictUtils.getService() == null || !DictUtils.getService().checkDiskScanComplete()){
+                    return null;
+                }
+            } catch (RemoteException e) {
+                e.printStackTrace();
             }
-            return getList().get(pos);
+            return getDictList().get(pos);
         }
         @Override
         public long getItemId(int pos){
-            if(DictUtils.getService() == null){
-                return 0;
+            try {
+                if(DictUtils.getService() == null || !DictUtils.getService().checkDiskScanComplete()){
+                    return 0;
+                }
+            } catch (RemoteException e) {
+                e.printStackTrace();
             }
             return pos;
         }
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            if(DictUtils.getService() == null){
-                return convertView;
+            try {
+                if(DictUtils.getService() == null || !DictUtils.getService().checkDiskScanComplete()){
+                    return convertView;
+                }
+            } catch (RemoteException e) {
+                e.printStackTrace();
             }
             ViewHolder holder = null;
             if(convertView == null){
@@ -225,52 +351,38 @@ public class SlotListFragment extends ListFragment {
             }else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            holder.dictName.setText(getList().get(position));
-            if(position == 0){
-                holder.enableButton.setText(mResources.getString(R.string.scanner));
-                holder.enableButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        try {
-                            DictUtils.getService().scanPath(null);
-                        } catch (RemoteException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-            }else {
-                try {
-                    if (DictUtils.getService().getDictStatus(getList().get(position))) {
-                        holder.enableButton.setText(mResources.getString(R.string.remove));
-                    } else {
-                        holder.enableButton.setText(mResources.getString(R.string.add));
-                    }
-                    holder.enableButton.setTag(getList().get(position));
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
 
-                holder.enableButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Button aa = (Button) view;
-                            try {
-                                if (aa.getText().equals(mResources.getString(R.string.add))) {
-                                    DictUtils.getService().addDictionary((String) aa.getTag());
-                                    aa.setText(mResources.getString(R.string.remove));
-                                    DictUtils.getService().setDictStatus((String) aa.getTag(),true);
-                                } else {
-                                    DictUtils.getService().removeDictionary((String) aa.getTag());
-                                    aa.setText(mResources.getString(R.string.add));
-                                    DictUtils.getService().setDictStatus((String) aa.getTag(),false);
-                                }
-                            } catch (RemoteException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
+            holder.dictName.setText(getDictList().get(position));
+            try {
+                if (DictUtils.getService().getDictStatus(getDictList().get(position))) {
+                    holder.enableButton.setText(mResources.getString(R.string.remove));
+                } else {
+                    holder.enableButton.setText(mResources.getString(R.string.add));
+                }
+                holder.enableButton.setTag(getDictList().get(position));
+            } catch (RemoteException e) {
+                e.printStackTrace();
             }
 
+            holder.enableButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Button aa = (Button) view;
+                    try {
+                        if (aa.getText().equals(mResources.getString(R.string.add))) {
+                            DictUtils.getService().addDictionary((String) aa.getTag());
+                            aa.setText(mResources.getString(R.string.remove));
+                            DictUtils.getService().setDictStatus((String) aa.getTag(),true);
+                        } else {
+                            DictUtils.getService().removeDictionary((String) aa.getTag());
+                            aa.setText(mResources.getString(R.string.add));
+                            DictUtils.getService().setDictStatus((String) aa.getTag(),false);
+                        }
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
             return convertView;
         }
 

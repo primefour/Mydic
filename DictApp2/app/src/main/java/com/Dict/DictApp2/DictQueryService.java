@@ -59,6 +59,7 @@ public class DictQueryService extends Service {
     private String DICT_ROOT_DIR = "/sdcard/";
     private final String DICT_DIR = "MiGuoDict";
     private final int DICT_SCAN_COMPLETE = 0;
+    boolean mDiskScanComplete = false;
 
 
 
@@ -93,6 +94,7 @@ public class DictQueryService extends Service {
                     }
                     ed.commit();
                     ed.apply();
+                    mDiskScanComplete  = true;
                     break;
                 default:
                     break;
@@ -115,6 +117,7 @@ public class DictQueryService extends Service {
     }
 
     private void  scanDisk(String path){
+        mDiskScanComplete = false;
         scanPath(path);
         Message msg = mServiceHandler.obtainMessage(DICT_SCAN_COMPLETE);
         mServiceHandler.dispatchMessage(msg);
@@ -287,6 +290,10 @@ public class DictQueryService extends Service {
         @Override
         public void setDictStatus(String name,boolean flag){
             mService.get().setDictStatus(name,flag);
+        }
+
+        public boolean checkDiskScanComplete(){
+            return mService.get().mDiskScanComplete;
         }
     }
 }
