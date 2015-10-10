@@ -16,9 +16,12 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 
@@ -261,33 +264,20 @@ public class SlotListFragment extends android.support.v4.app.Fragment {
             ViewHolder holder = null;
             if (convertView == null) {
                 holder = new ViewHolder();
-                convertView = mInflater.inflate(R.layout.fragment_list_item, null);
-                holder.mAbout= (TextView) convertView.findViewById(R.id.dict_name);
-                holder.mButton= (Button) convertView.findViewById(R.id.enable_button);
+                convertView = mInflater.inflate(R.layout.fragment_about_item, null);
+                holder.mAbout= (TextView) convertView.findViewById(R.id.about_text);
+                holder.mButton= (ImageButton) convertView.findViewById(R.id.imageButton);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
             holder.mAbout.setText(getAboutList().get(position));
-            if (position == 0) {
-                holder.mButton.setText(getActivity().getString(R.string.scanner));
-                holder.mButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        try {
-                            DictUtils.getService().scanPath(null);
-                        } catch (RemoteException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-            }
             return convertView;
         }
 
         private class ViewHolder {
             public TextView mAbout;
-            public Button mButton;
+            public ImageButton mButton;
         }
     }
 
@@ -344,27 +334,43 @@ public class SlotListFragment extends android.support.v4.app.Fragment {
             ViewHolder holder = null;
             if(convertView == null){
                 holder = new ViewHolder();
-                convertView = mInflater.inflate(R.layout.fragment_list_item, null);
-                holder.dictName = (TextView) convertView.findViewById(R.id.dict_name);
-                holder.enableButton = (Button) convertView.findViewById(R.id.enable_button);
+                convertView = mInflater.inflate(R.layout.fragment_dict_item, null);
+                holder.mDictName = (TextView) convertView.findViewById(R.id.dict_name);
+                holder.mSwitch= (Switch) convertView.findViewById(R.id.switch1);
                 convertView.setTag(holder);
             }else {
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            holder.dictName.setText(getDictList().get(position));
+            holder.mDictName.setText(getDictList().get(position));
             try {
                 if (DictUtils.getService().getDictStatus(getDictList().get(position))) {
-                    holder.enableButton.setText(mResources.getString(R.string.remove));
+                    holder.mSwitch.setChecked(true);
                 } else {
-                    holder.enableButton.setText(mResources.getString(R.string.add));
+                    holder.mSwitch.setChecked(false);
                 }
-                holder.enableButton.setTag(getDictList().get(position));
+                holder.mSwitch.setTag(getDictList().get(position));
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
+            holder.mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    try {
+                        Switch aa = (Switch)buttonView;
+                        if (isChecked) {
+                            DictUtils.getService().addDictionary((String) aa.getTag());
+                        } else {
+                            DictUtils.getService().removeDictionary((String) aa.getTag());
+                        }
 
-            holder.enableButton.setOnClickListener(new View.OnClickListener() {
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+/*
+            holder.mSwitch.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Button aa = (Button) view;
@@ -383,12 +389,13 @@ public class SlotListFragment extends android.support.v4.app.Fragment {
                     }
                 }
             });
+            */
             return convertView;
         }
 
         private class ViewHolder {
-            public TextView dictName;
-            public Button   enableButton;
+            public TextView mDictName;
+            public Switch mSwitch;
         }
     }
 }

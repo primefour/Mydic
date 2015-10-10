@@ -30,7 +30,7 @@ public class DictMainActivity extends FragmentActivity implements MainFragment.C
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().requestFeature(Window.FEATURE_PROGRESS);
+        //getWindow().requestFeature(Window.FEATURE_PROGRESS);
         setContentView(R.layout.dict_main_activity);
         mPagerAdapter = new MainPagerAdapter( getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.pager);
