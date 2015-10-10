@@ -394,9 +394,13 @@ public class SlotListFragment extends android.support.v4.app.Fragment {
                     try {
                         Switch aa = (Switch)buttonView;
                         if (isChecked) {
+                            Log.e(TAG,"setOnCheckedChangeListener add ");
                             DictUtils.getService().addDictionary((String) aa.getTag());
+                            DictUtils.getService().setDictStatus((String) aa.getTag(),true);
                         } else {
+                            Log.e(TAG,"setOnCheckedChangeListener remove ");
                             DictUtils.getService().removeDictionary((String) aa.getTag());
+                            DictUtils.getService().setDictStatus((String) aa.getTag(),false);
                         }
 
                     } catch (RemoteException e) {

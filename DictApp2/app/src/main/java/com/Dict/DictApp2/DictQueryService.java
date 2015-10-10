@@ -139,6 +139,7 @@ public class DictQueryService extends Service {
         for(String tt:aa){
             Boolean ta =  (Boolean)tmp.get(tt);
             if(!tt.equalsIgnoreCase(FIRST_START) && ta){
+                Log.e(TAG,"addDictionary +++++" + ta);
                 addDictionary(tt);
             }
         }
@@ -172,6 +173,7 @@ public class DictQueryService extends Service {
                 isExist = true;
             }
         }
+        Log.e(TAG,"addDictionary " + name);
 
         if(isExist){
             mEngine.dictEngAddDictionary(name);
