@@ -137,7 +137,8 @@ public class DictQueryService extends Service {
         Map<String,?> tmp = mPreferences.getAll();
         Set<String> aa = tmp.keySet();
         for(String tt:aa){
-            if(!tt.equalsIgnoreCase(FIRST_START)){
+            Boolean ta =  (Boolean)tmp.get(tt);
+            if(!tt.equalsIgnoreCase(FIRST_START) && ta){
                 addDictionary(tt);
             }
         }

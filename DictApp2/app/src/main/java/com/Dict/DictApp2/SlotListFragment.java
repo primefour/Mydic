@@ -76,16 +76,15 @@ public class SlotListFragment extends android.support.v4.app.Fragment {
         getDictList();
         if (!mListShown) {
             mListShown = true;
-            mDictAdapter= new DictAdapter(getActivity(),R.layout.fragment_dict_item);
             mDictListView.setAdapter(mDictAdapter);
             if(getDictList().size() == 0){
                 mEmptyText.setVisibility(View.VISIBLE);
             }else{
                 mEmptyText.setVisibility(View.INVISIBLE);
             }
-            mProgressContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
+            //mProgressContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
             mProgressContainer.setVisibility(View.GONE);
-            mListContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in));
+            //mListContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in));
             mListContainer.setVisibility(View.VISIBLE);
         }
     }
@@ -167,7 +166,8 @@ public class SlotListFragment extends android.support.v4.app.Fragment {
          mAboutListView = (ListView) view.findViewById(R.id.about_list);
          mDictListView = (ListView)view.findViewById(R.id.dict_list);
          mEmptyText = view.findViewById(R.id.empty);
-         mAboutAdapter = new AboutAdapter(getActivity(),R.layout.fragment_list_item);
+         mAboutAdapter = new AboutAdapter(getActivity(),R.layout.fragment_about_item);
+         mDictAdapter= new DictAdapter(getActivity(),R.layout.fragment_dict_item);
          mAboutListView.setAdapter(mAboutAdapter );
          Button ib = (Button)view.findViewById(R.id.reload_button);
          ib.setOnClickListener(new View.OnClickListener() {
