@@ -23,25 +23,30 @@
                 android:paddingTop="4dip"
                 android:singleLine="true" />
         </LinearLayout>
-
+<!--
         <FrameLayout android:id="@+id/listContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             >
+            -->
             <!--android:visibility="gone"> -->
 
             <LinearLayout
+                android:id="@+id/listContainer"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 >
                 <!-- android:gravity="center"> -->
+
                 <Button
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="0dp"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="Reload"
+                    android:text="@string/full_scan"
                     android:id="@+id/reload_button"
-                    style="@android:style/Holo.ButtonBar" />
+                     />
                 <TextView android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
@@ -66,20 +71,27 @@
                     android:singleLine="true"
                     android:background="#929292" />
 
-                <ListView android:id="@+id/dict_list"
+                <FrameLayout android:id="@+id/dict_list_container"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:drawSelectorOnTop="false"
-                    android:fastScrollEnabled="true" />
+                    android:layout_height="match_parent"
+                    >
+                    <ListView android:id="@+id/dict_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawSelectorOnTop="false"
+                        android:fastScrollEnabled="true" />
+                    <TextView android:id="@+id/empty"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="@string/no_tracks_title"
+                        android:visibility="invisible"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:autoText="true"
+                        android:focusable="false"
+                        android:enabled="false" />
+                </FrameLayout>
             </LinearLayout>
-
-            <TextView android:id="@+id/empty"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="@string/no_tracks_title"
-                android:visibility="invisible"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-        </FrameLayout>
+<!--        </FrameLayout> -->
     </FrameLayout>
 </LinearLayout>

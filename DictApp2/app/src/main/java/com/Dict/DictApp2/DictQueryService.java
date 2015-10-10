@@ -36,6 +36,8 @@ import java.io.FileOutputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 public class DictQueryService extends Service {
@@ -43,6 +45,7 @@ public class DictQueryService extends Service {
     private final IBinder mBinder = new ServiceStub(this);
     private boolean mIsFirstStart = true;
     private final String FIRST_START = "first_start";
+    private final String SCAN_SERVER= "server";
     /*
     FIRST_START  ==> BOOLEAN
      dictionary status of last ==> list (store dictionary name)
@@ -89,6 +92,9 @@ public class DictQueryService extends Service {
                         boolean flag = false;
                         for (String tmp : list) {
                             flag = mPreferences.getBoolean(tmp,true);
+                            if(!flag){
+                                removeDictionary(tmp);
+                            }
                             ed.putBoolean(tmp,flag);
                         }
                     }
@@ -103,7 +109,7 @@ public class DictQueryService extends Service {
     };
 
     public boolean getDictStatus(String name) {
-        Log.e(TAG,name + " = " + mPreferences.getBoolean(name,false));
+        Log.e(TAG, name + " = " + mPreferences.getBoolean(name, false));
         return mPreferences.getBoolean(name,false);
     }
 
@@ -118,7 +124,24 @@ public class DictQueryService extends Service {
 
     private void  scanDisk(String path){
         mDiskScanComplete = false;
-        scanPath(path);
+        if(path != null && path.equalsIgnoreCase(SCAN_SERVER)){
+            if(mIsFirstStart){
+                mEngine.dictEngScanPath(DICT_ROOT_DIR);
+            }else{
+                mEngine.dictEngScanPath(DICT_ROOT_DIR + "/" + DICT_DIR +"/");
+            }
+        }else{
+            mEngine.dictEngScanPath(DICT_ROOT_DIR);
+        }
+
+        Map<String,?> tmp = mPreferences.getAll();
+        Set<String> aa = tmp.keySet();
+        for(String tt:aa){
+            if(!tt.equalsIgnoreCase(FIRST_START)){
+                addDictionary(tt);
+            }
+        }
+
         Message msg = mServiceHandler.obtainMessage(DICT_SCAN_COMPLETE);
         mServiceHandler.dispatchMessage(msg);
     }
@@ -173,15 +196,6 @@ public class DictQueryService extends Service {
     //interface
     public void scanPath(String path){
         //check is there path is validatable
-        if(mIsFirstStart){
-            mEngine.dictEngScanPath(DICT_ROOT_DIR);
-        }else{
-            if(path != null){
-                mEngine.dictEngScanPath(path);
-            }else{
-                mEngine.dictEngScanPath(DICT_ROOT_DIR);
-            }
-        }
     }
 
     //interface
@@ -204,11 +218,10 @@ public class DictQueryService extends Service {
         Log.e(TAG,"##########onCreate ==>" + DICT_ROOT_DIR + "/" + DICT_DIR);
         directory.mkdirs();
         init();
-
         Thread scanner = new Thread(new Runnable() {
             @Override
             public void run() {
-                scanDisk(null);
+                scanDisk("server");
             }
         });
         scanner.start();
@@ -224,7 +237,7 @@ public class DictQueryService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.e(TAG,"##########onBind");
+        Log.e(TAG, "##########onBind");
         return mBinder;
     }
 

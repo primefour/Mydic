@@ -76,7 +76,7 @@ public class SlotListFragment extends android.support.v4.app.Fragment {
         getDictList();
         if (!mListShown) {
             mListShown = true;
-            mDictAdapter= new DictAdapter(getActivity(),R.layout.fragment_list_item);
+            mDictAdapter= new DictAdapter(getActivity(),R.layout.fragment_dict_item);
             mDictListView.setAdapter(mDictAdapter);
             if(getDictList().size() == 0){
                 mEmptyText.setVisibility(View.VISIBLE);
@@ -169,7 +169,42 @@ public class SlotListFragment extends android.support.v4.app.Fragment {
          mEmptyText = view.findViewById(R.id.empty);
          mAboutAdapter = new AboutAdapter(getActivity(),R.layout.fragment_list_item);
          mAboutListView.setAdapter(mAboutAdapter );
+         Button ib = (Button)view.findViewById(R.id.reload_button);
+         ib.setOnClickListener(new View.OnClickListener() {
 
+             @Override
+             public void onClick(View view) {
+                 Log.e(TAG,"######################on scan click");
+                try {
+                    mListShown = false;
+                    if (DictUtils.getService() == null || !DictUtils.getService().checkDiskScanComplete()) {
+                        return;
+                    }
+
+                    Thread scanner = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                DictUtils.getService().scanPath(null);
+                            } catch (RemoteException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                    scanner.start();
+
+                    mListContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
+                    mListContainer.setVisibility(View.GONE);
+                    mProgressContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in));
+                    mProgressContainer.setVisibility(View.VISIBLE);
+                    Message msg1 = SlotListHandler.obtainMessage(DISK_SCAN_CHECKER);
+                    SlotListHandler.sendMessageDelayed(msg1, 1000);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+
+             }
+         });
 
          Message msg1 = SlotListHandler.obtainMessage(DISK_SCAN_CHECKER) ;
          SlotListHandler.sendMessageDelayed(msg1,1000);

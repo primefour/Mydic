@@ -15,10 +15,10 @@
 using namespace std;
 
 #ifdef ANDROID_PLATFORM
-const char *GOLDEN_TMP_PHONETIC_PATH = "/sdcard/GoldenDict/Phonetic/";
-const char *GOLDEN_TMP_IMG_PATH = "/sdcard/GoldenDict/Img/";
-const char *GOLDEN_IDX_DICT_PATH = "/sdcard/GoldenDict/DictIdx.dat";
-const char *GOLDEN_CACHE_DICT_PATH = "/sdcard/GoldenDict/Cache/";
+const char *GOLDEN_TMP_PHONETIC_PATH = "/sdcard/MiGuoDict/Phonetic/";
+const char *GOLDEN_TMP_IMG_PATH = "/sdcard/MiGuoDict/Img/";
+const char *GOLDEN_IDX_DICT_PATH = "/sdcard/MiGuoDict/DictIdx.dat";
+const char *GOLDEN_CACHE_DICT_PATH = "/sdcard/MiGuoDict/Cache/";
 const char *GOLDEN_ROOT_PATH= "/sdcard/";
 
 #else
@@ -162,6 +162,7 @@ void GoldenDictManager::GoldenScanDisk(const char *path){
          scanner = new GoldenPathScanner(path,this);
     }
     scanner->GoldenStartScan();
+    GoldenDictPersist();
     delete scanner;
 }
 
@@ -170,7 +171,7 @@ void GoldenDictManager::GoldenDictPersist(){
     typename map<String8,SObject<GoldenDictInterface> >::iterator begin,end;
     begin = mDictionaryMap.begin();
     end = mDictionaryMap.end();
-    SObject<SimpleFile> fileObj = new SimpleFile(GOLDEN_IDX_DICT_PATH,O_CREAT|O_RDWR,0666);
+    SObject<SimpleFile> fileObj = new SimpleFile(GOLDEN_IDX_DICT_PATH,O_APPEND|O_CREAT|O_RDWR,0666);
     char buff[4096]={0};
     while(begin != end){
         memset(buff,0,sizeof(buff));
@@ -180,6 +181,40 @@ void GoldenDictManager::GoldenDictPersist(){
         begin ++;
     }
 }
+
+//read DictIdx and restore dictionaries
+char *GoldenDictManager::GoldenDictGetPersistData(const char *dictName,char *rbuff,int length){
+    SObject<SimpleFile> fileObj = new SimpleFile(GOLDEN_IDX_DICT_PATH,0);
+    char buff[4096]={0};
+    int ret = fileObj->ReadLine((unsigned char *)buff,sizeof(buff));
+    char name[1024]={0};
+    char path[PATH_MAX]={0};
+    int rflag = 0;
+    while(ret != 0){
+        char *flag = strstr(buff,"==>");
+        memcpy(name,buff,flag - buff);
+        flag += strlen("==>");
+        strcpy(path,flag);
+        path[strlen(path) -1] ='\0';
+        golden_printfe("buff = %s name %s  path = %s \n",buff,name,path);
+        if(strcmp(name,dictName) == 0 ){
+            strncpy(rbuff,path,length);
+            rflag  = 1;
+        }
+        memset(buff,0,sizeof(buff));
+        memset(name,0,sizeof(name));
+        memset(path,0,sizeof(path));
+        ret = fileObj->ReadLine((unsigned char *)buff,sizeof(buff));
+        golden_printfe("end ret = %d buff = %s \n",ret,buff);
+    }
+    if(rflag){
+        return rbuff;
+    }else{
+        return NULL;
+    }
+
+}
+
 //read DictIdx and restore dictionaries
 void GoldenDictManager::GoldenDictReload(){
     SObject<SimpleFile> fileObj = new SimpleFile(GOLDEN_IDX_DICT_PATH,0);
@@ -206,6 +241,13 @@ void GoldenDictManager::GoldenDictReload(){
 
 //add a single file
 void GoldenDictManager::GoldenDictAddDict(const char *name){
+    String8 tmp(name);
+    char buff[1024] = {0};
+    if(mDictionaryPath.count(tmp) == 0){
+        if(GoldenDictGetPersistData(name,buff,sizeof(buff)) != NULL){
+            mDictionaryPath[tmp] = String8(buff);
+        }
+    }
     doWithFiles(mDictionaryPath[String8(name)].string());
 }
 

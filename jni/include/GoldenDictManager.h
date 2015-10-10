@@ -84,15 +84,17 @@ class GoldenDictManager :public Ref,GoldenPathFilter{
         void GoldenDictGetDicts(const char **list);
 
 
+
         static const char *GoldenGetCachePath();
         static const char *GoldenGetTmpPhoneticPath();
         static const char *GoldenGetTmpImgPath();
     private:
-       map<String8,SObject<GoldenDictInterface> > mDictionaryMap;
-       map<String8,int> mDictionaryType;
-       map<String8,String8> mDictionaryPath;
+        char *GoldenDictGetPersistData(const char *dictName,char *buff,int length);
+        map<String8,SObject<GoldenDictInterface> > mDictionaryMap;
+        map<String8,int> mDictionaryType;
+        map<String8,String8> mDictionaryPath;
 
-       DictHashSet<SObject<String8> > mIgnoreFileExtend;
-       DictHashSet<SObject<String8> > mIgnorePath;
+        DictHashSet<SObject<String8> > mIgnoreFileExtend;
+        DictHashSet<SObject<String8> > mIgnorePath;
 };
 #endif
