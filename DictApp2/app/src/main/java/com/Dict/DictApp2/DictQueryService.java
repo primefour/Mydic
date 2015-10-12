@@ -92,6 +92,7 @@ public class DictQueryService extends Service {
                         boolean flag = false;
                         for (String tmp : list) {
                             flag = mPreferences.getBoolean(tmp,true);
+                            Log.e(TAG,"flag #########" + flag);
                             if(!flag){
                                 removeDictionary(tmp);
                             }
@@ -109,7 +110,7 @@ public class DictQueryService extends Service {
     };
 
     public boolean getDictStatus(String name) {
-        Log.e(TAG, name + " = " + mPreferences.getBoolean(name, false));
+        Log.e(TAG, "getDictStatus" + name + " = " + mPreferences.getBoolean(name, false));
         return mPreferences.getBoolean(name,false);
     }
 
@@ -138,9 +139,10 @@ public class DictQueryService extends Service {
         Set<String> aa = tmp.keySet();
         for(String tt:aa){
             Boolean ta =  (Boolean)tmp.get(tt);
-            if(!tt.equalsIgnoreCase(FIRST_START) && ta){
+            if(!tt.equalsIgnoreCase(FIRST_START)){
                 Log.e(TAG,"addDictionary +++++" + ta);
-                addDictionary(tt);
+                mEngine.dictEngAddDictionary(tt);
+                //addDictionary(tt);
             }
         }
 

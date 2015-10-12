@@ -378,7 +378,9 @@ public class SlotListFragment extends android.support.v4.app.Fragment {
             }
 
             holder.mDictName.setText(getDictList().get(position));
+            holder.mSwitch.setOnCheckedChangeListener(null);
             try {
+                Log.e(TAG,"getView################");
                 if (DictUtils.getService().getDictStatus(getDictList().get(position))) {
                     holder.mSwitch.setChecked(true);
                 } else {
@@ -394,11 +396,11 @@ public class SlotListFragment extends android.support.v4.app.Fragment {
                     try {
                         Switch aa = (Switch)buttonView;
                         if (isChecked) {
-                            Log.e(TAG,"setOnCheckedChangeListener add ");
+                            Log.e(TAG,"setOnCheckedChangeListener add " + (String) aa.getTag());
                             DictUtils.getService().addDictionary((String) aa.getTag());
                             DictUtils.getService().setDictStatus((String) aa.getTag(),true);
                         } else {
-                            Log.e(TAG,"setOnCheckedChangeListener remove ");
+                            Log.e(TAG,"setOnCheckedChangeListener remove " + (String) aa.getTag());
                             DictUtils.getService().removeDictionary((String) aa.getTag());
                             DictUtils.getService().setDictStatus((String) aa.getTag(),false);
                         }
