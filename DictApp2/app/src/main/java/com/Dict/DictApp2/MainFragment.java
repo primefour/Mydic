@@ -57,6 +57,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         webView.getSettings().setDomStorageEnabled(true);
         webView.getSettings().setAllowFileAccess(true);
         final Activity activity = mMainActivity;
+        /*
         webView.setWebChromeClient(new WebChromeClient() {
             public void onProgressChanged(WebView view, int progress) {
                 // Activities and WebViews measure progress with different scales.
@@ -64,6 +65,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                 activity.setProgress(progress * 1000);
             }
         });
+        */
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -83,6 +85,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
             });
         webView.loadData(wordMeaning, "text/html; charset=UTF-8", null);
+        webView.reload();
         //webView.loadDataWithBaseURL("file:///mnt/sdcard/",wordMeaning, "text/html","charset=UTF-8", null);
         //webView.loadDataWithBaseURL("file:///mnt/sdcard/",wordMeaning, "text/html","charset=UTF-8", null);
         //webView.loadData(wordMeaning,WEB_MIME_TYPE,WEB_ENCODE_FORMAT) ;

@@ -155,10 +155,12 @@ public class DictQueryService extends Service {
 
     //interface
     public String queryWord(String word){
+        Log.e(TAG,"queryWord #############" + word);
         String meaning = null;
         if(word != null){
             meaning = mEngine.dictEngQueryWord(word);
         }
+        Log.e(TAG,"######" + meaning);
         if(meaning == null){
             return "No This Word !";
         }else{

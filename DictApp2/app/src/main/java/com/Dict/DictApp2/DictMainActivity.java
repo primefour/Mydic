@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
 import java.util.HashMap;
@@ -55,6 +56,8 @@ public class DictMainActivity extends FragmentActivity implements MainFragment.C
     }
 
     public String onSearchButtonClick(String searchWord) {
+        Log.e(TAG,"#####onSearchButtonClick ##" + searchWord);
+        ((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         if(DictUtils.getService() != null){
             try {
                 return DictUtils.getService().queryWord(searchWord);

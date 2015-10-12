@@ -6,8 +6,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 
 
 /**
@@ -37,7 +39,7 @@ public class SlotListActivity extends FragmentActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_slot_list);
-
+        Log.e("SlotListActivity", "#######################on create");
         if (findViewById(R.id.slot_detail_container) != null) {
             // The detail container view will be present only in the
             // large-screen layouts (res/values-large and
@@ -54,6 +56,7 @@ public class SlotListActivity extends FragmentActivity{
                     */
         }
         DictUtils.bindToService(this);
+        ((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         // TODO: If exposing deep links into your app, handle intents here.
     }
 
