@@ -14,4 +14,5 @@
     <string name="no_tracks_title">No Dictionary Find!!</string>
     <string name="title_dict_list">Dictionary list</string>
     <string name="title_about_list">About list</string>
+    <string name="search_hint">Search</string>
 </resources>

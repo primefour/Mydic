@@ -52,10 +52,10 @@
                 android:layout_gravity="center"
                 android:layout_weight="1"
                 android:imeOptions="actionSearch|flagNoExtractUi|flagNoFullscreen"
-                android:hint="搜索"
+                android:hint="@string/search_hint"
                 android:singleLine="true"
                 android:background="@null"
-                android:textSize="16sp"
+                android:textSize="20sp"
                 />
             <Button
                 android:id="@+id/clear_button"
