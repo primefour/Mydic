@@ -1,6 +1,7 @@
 package com.Dict.DictApp2;
 
 import android.app.Activity;
+import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,11 +9,16 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -37,18 +43,59 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onAttach(Activity activity) {
+        Log.e(TAG,"onAttach #########################");
         super.onAttach(activity);
         mMainActivity = activity;
         mCallbacks = (Callbacks) activity;
     }
 
+    @Override
+    public void onDetach(){
+        Log.e(TAG,"onAttach #########################");
+        super.onDestroy();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.e(TAG,"onStart #############################");
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        /*
+        ((InputMethodManager)getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(
+                getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                */
+        Log.e(TAG,"###########onPause");
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.e(TAG,"###############onResume ");
+    }
+
+
+        /**
+         * Called when the Fragment is no longer started.  This is generally
+         * tied to {@link Activity#onStop() Activity.onStop} of the containing
+         * Activity's lifecycle.
+         */
+    @Override
+    public void onStop() {
+        Log.e(TAG,"###########onStop");
+        super.onStop();
+    }
+
+
+
 
     @Override
     public void onClick(View view) {
-
         if(getSearchWord() == null){
             return ;
         }
+
         String wordMeaning = mCallbacks.onSearchButtonClick(getSearchWord());
         //show word Meaning
         WebView webView = ((WebView) mRootView.findViewById(R.id.MeaningWebView));
@@ -85,7 +132,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
             });
         webView.loadData(wordMeaning, "text/html; charset=UTF-8", null);
+        webView.scrollTo(0,0);
         webView.reload();
+
         //webView.loadDataWithBaseURL("file:///mnt/sdcard/",wordMeaning, "text/html","charset=UTF-8", null);
         //webView.loadDataWithBaseURL("file:///mnt/sdcard/",wordMeaning, "text/html","charset=UTF-8", null);
         //webView.loadData(wordMeaning,WEB_MIME_TYPE,WEB_ENCODE_FORMAT) ;
@@ -141,16 +190,65 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
     };
 
+    TextWatcher mTextWatcher  = new TextWatcher() {
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+// TODO Auto-generated method stub
+        }
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+// TODO Auto-generated method stub
+        }
+        @Override
+        public void afterTextChanged(Editable s) {
+            EditText et =(EditText)mRootView.findViewById(R.id.SearchEditText);
+
+            Button bt =(Button)mRootView.findViewById(R.id.clear_button);
+            if(et.getText().toString()!=null&&!et.getText().toString().equals("")){
+                bt.setVisibility(View.VISIBLE);
+            }else{
+                bt.setVisibility(View.INVISIBLE);
+            }
+        }
+    };
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_main_page,container,false);
-        Button searchButton = ((Button) mRootView.findViewById(R.id.SearchButton));
+        //Button searchButton = ((Button) mRootView.findViewById(R.id.SearchButton));
         mProgressContainer = mRootView .findViewById(R.id.mainProgressContainer);
         mMainContainer = mRootView.findViewById(R.id.mainLinearLayout);
+        EditText et =(EditText)mRootView.findViewById(R.id.SearchEditText);
 
-        searchButton.setOnClickListener(this);
+
+        et.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                Log.i(TAG, "onEditorAction ----------- actionId:" + actionId);
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    onClick(null);
+                }
+                return false;
+            }
+
+        });
+        et.addTextChangedListener(mTextWatcher);
+        Button bt = (Button) mRootView.findViewById(R.id.clear_button);
+
+        bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText et =(EditText)mRootView.findViewById(R.id.SearchEditText);
+                et.setText("");
+            }
+        });
+
+        //searchButton.setOnClickListener(this);
         //show word Meaning
         WebView mWebView = ((WebView) mRootView.findViewById(R.id.MeaningWebView));
         mWebView.setWebViewClient(new WebViewClient(){

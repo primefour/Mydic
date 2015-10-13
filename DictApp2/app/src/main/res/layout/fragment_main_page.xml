@@ -31,21 +31,40 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
+            android:background="@drawable/search_bar_normal"
+            android:layout_marginLeft="5dip"
+            android:layout_marginRight="5dip"
+            android:layout_marginTop="5dip"
+            android:layout_marginBottom="5dip"
             android:id="@+id/linearLayout"
             >
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/search_bar_icon_normal"
+                android:layout_gravity="center"
+                android:paddingRight="5dip"
+                android:layout_marginLeft="5dip"/>
             <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/SearchEditText"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
                 android:layout_weight="1"
-                android:imeOptions="flagNoExtractUi"
-                android:id="@+id/SearchEditText" />
-
+                android:imeOptions="actionSearch|flagNoExtractUi|flagNoFullscreen"
+                android:hint="搜索"
+                android:singleLine="true"
+                android:background="@null"
+                android:textSize="16sp"
+                />
             <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:text="@string/SearchButtonName"
-                android:id="@+id/SearchButton" />
+                android:id="@+id/clear_button"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center|left"
+                android:background="@drawable/acclist_delete_normal"
+                android:visibility="invisible"
+                />
         </LinearLayout>
 
         <ScrollView
