@@ -19,6 +19,7 @@ public class DictSearchEngine {
     public static native void dictEngInit();
     public static native void dictEngDeinit();
     public static native ArrayList<String> dictEngGetDictList();
+    public static native void  dictEngSetOrderList(ArrayList<String> list);
 
     static {
         System.loadLibrary("searchEngine");

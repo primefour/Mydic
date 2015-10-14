@@ -41,11 +41,8 @@ public class DictMainActivity extends FragmentActivity implements MainFragment.C
     }
     @Override
     public void onPause(){
-        Log.e(TAG,"onPause#########################");
-        //((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         super.onPause();
     }
-
 
     @Override
     public void onDestroy() {

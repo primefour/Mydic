@@ -87,6 +87,8 @@ public class SlotListFragment extends android.support.v4.app.Fragment {
             mProgressContainer.setVisibility(View.GONE);
             //mListContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in));
             mListContainer.setVisibility(View.VISIBLE);
+            mDictListView.setSelector(R.drawable.list_selector_background);
+            mDictListView.setDrawSelectorOnTop(true);
         }
     }
 
@@ -166,6 +168,10 @@ public class SlotListFragment extends android.support.v4.app.Fragment {
          mListContainer = view.findViewById(R.id.listContainer);
          mAboutListView = (ListView) view.findViewById(R.id.about_list);
          mDictListView = (ListView)view.findViewById(R.id.dict_list);
+
+         //mDictListView.setDivider(null);
+         mDictListView.setSelector(R.drawable.list_selector_background);
+
          mEmptyText = view.findViewById(R.id.empty);
          mAboutAdapter = new AboutAdapter(getActivity(),R.layout.fragment_about_item);
          mDictAdapter= new DictAdapter(getActivity(),R.layout.fragment_dict_item);

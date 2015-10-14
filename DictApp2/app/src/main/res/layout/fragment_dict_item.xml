@@ -3,12 +3,19 @@
 <RelativeLayout
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:longClickable="true"
+    android:background="@drawable/list_selector_background">
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:text="Dictionary Name"
+        android:paddingTop="20dp"
+        android:textSize="16sp"
         android:id="@+id/dict_name"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"

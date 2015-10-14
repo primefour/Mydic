@@ -152,6 +152,11 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     View mMainContainer;
     boolean mListShown = false;
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+       Log.e(TAG,"onHiddenChanged##################");
+    }
+
     void makeListShown() {
         if (!mListShown) {
             mListShown = true;

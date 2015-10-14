@@ -274,6 +274,17 @@ void GoldenDictManager::GoldenDictGetDicts(const char **list){
     }
 }
 
+void GoldenDictManager::GoldenDictSetOrder(const char **list){
+    if(list == NULL){
+        return ;
+    }
+    const char **tmp = list;
+    while(*tmp != NULL){
+        mOrderList.push_back(String8(*tmp));
+    }
+    return ;
+}
+
 #define WRITE_FILE_FOR_DEBUG
 
 int GoldenDictManager::GoldenDictQuery(const char *word,char *buff){
@@ -286,26 +297,53 @@ int GoldenDictManager::GoldenDictQuery(const char *word,char *buff){
 
     GoldenHtmlHeader *html = new GoldenHtmlHeader();
     html->HTMLAddExpBegin();
-    while(begin != end){
-        TextMetaData Meta;
-        if(begin->second.GetPoint() != NULL && begin->second->IsEnable()){
-            if(begin->second->GoldenDictQuery(word,&Meta) == 0){
-                html->HTMLAddDictionaryName(begin->second->GetDictonaryName());
-                if(!Meta.mOther.isEmpty()){
-                    golden_printfe("getSameTypeSeq is html \n");
-                    html->AddHtmlPiece(Meta.mOther.string());
-                }else{
-                    html->HTMLAddWord(html->EncodeString(Meta.mWord));
-                    if(!Meta.mTextPhonetic.isEmpty()){
-                        html->HtmlAddPhonetic(html->EncodeString(Meta.mTextPhonetic),Meta.mSoundPath);
-                    }
-                    if(!Meta.mTextMeaning.isEmpty()){
-                        html->HtmlAddOnlyMeaning(html->EncodeString(Meta.mTextMeaning));
+    if(mOrderList.size() == 0 || mOrderList.size() != mDictionaryMap.size()){
+        while(begin != end){
+            TextMetaData Meta;
+            if(begin->second.GetPoint() != NULL && begin->second->IsEnable()){
+                if(begin->second->GoldenDictQuery(word,&Meta) == 0){
+                    html->HTMLAddDictionaryName(begin->second->GetDictonaryName());
+                    if(!Meta.mOther.isEmpty()){
+                        golden_printfe("getSameTypeSeq is html \n");
+                        html->AddHtmlPiece(Meta.mOther.string());
+                    }else{
+                        html->HTMLAddWord(html->EncodeString(Meta.mWord));
+                        if(!Meta.mTextPhonetic.isEmpty()){
+                            html->HtmlAddPhonetic(html->EncodeString(Meta.mTextPhonetic),Meta.mSoundPath);
+                        }
+                        if(!Meta.mTextMeaning.isEmpty()){
+                            html->HtmlAddOnlyMeaning(html->EncodeString(Meta.mTextMeaning));
+                        }
                     }
                 }
             }
+            begin ++;
         }
-        begin ++;
+    }else{
+        vector<String8>::iterator list_begin = mOrderList.begin();
+        vector<String8>::iterator list_end = mOrderList.begin();
+        while(list_begin != list_end){
+            TextMetaData Meta;
+            if(mDictionaryMap.count(*list_begin)){
+                if(mDictionaryMap[*list_begin]->GoldenDictQuery(word,&Meta) == 0){
+                    html->HTMLAddDictionaryName(mDictionaryMap[*list_begin]->GetDictonaryName());
+                    if(!Meta.mOther.isEmpty()){
+                        golden_printfe("getSameTypeSeq is html \n");
+                        html->AddHtmlPiece(Meta.mOther.string());
+                    }else{
+                        html->HTMLAddWord(html->EncodeString(Meta.mWord));
+                        if(!Meta.mTextPhonetic.isEmpty()){
+                            html->HtmlAddPhonetic(html->EncodeString(Meta.mTextPhonetic),Meta.mSoundPath);
+                        }
+                        if(!Meta.mTextMeaning.isEmpty()){
+                            html->HtmlAddOnlyMeaning(html->EncodeString(Meta.mTextMeaning));
+                        }
+                    }
+
+                }
+            }
+            list_begin ++;
+        }
     }
     html->HTMLAddExpEnd();
     strcpy(buff,html->getResult());

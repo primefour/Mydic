@@ -7,9 +7,11 @@
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:text="Dictionary Name"
         android:id="@+id/about_text"
+        android:paddingTop="20dp"
+        android:textSize="16sp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         />
@@ -23,6 +25,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:adjustViewBounds="false"
-        />
+        android:background="#e3e3e3" />
 
 </RelativeLayout>

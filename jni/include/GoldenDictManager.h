@@ -82,6 +82,7 @@ class GoldenDictManager :public Ref,GoldenPathFilter{
         void GoldenDictRemoveDict(const char *name);
         void GoldenDictEnableDict(const char *name,bool enable);
         void GoldenDictGetDicts(const char **list);
+        void GoldenDictSetOrder(const char **list);
 
 
 
@@ -96,5 +97,6 @@ class GoldenDictManager :public Ref,GoldenPathFilter{
 
         DictHashSet<SObject<String8> > mIgnoreFileExtend;
         DictHashSet<SObject<String8> > mIgnorePath;
+        vector<String8> mOrderList;
 };
 #endif

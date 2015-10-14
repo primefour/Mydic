@@ -4,13 +4,14 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
+import android.view.View;
 
 /**
  * Created by crazyhorse on 15-4-4.
  */
 public class MainPagerAdapter extends FragmentPagerAdapter {
-
-
+    final static String TAG="MainPagerAdapter";
     public MainPagerAdapter(FragmentManager fm) {
         super(fm);
     }
