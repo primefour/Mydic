@@ -17,14 +17,16 @@
         />
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:id="@+id/imageButton"
-        android:src="@drawable/abc_ic_go_search_api_holo_light"
+        android:src="@drawable/ico_arrow_right"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:adjustViewBounds="false"
-        android:background="#e3e3e3" />
+        android:background="#e3e3e3"
+        android:alpha="1.0"
+        android:clickable="false" />
 
 </RelativeLayout>

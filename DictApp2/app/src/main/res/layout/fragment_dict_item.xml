@@ -12,10 +12,10 @@
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="60dp"
+        android:layout_height="@dimen/list_item_height"
         android:text="Dictionary Name"
         android:paddingTop="20dp"
-        android:textSize="16sp"
+        android:textSize="@dimen/list_item_text_size"
         android:id="@+id/dict_name"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"

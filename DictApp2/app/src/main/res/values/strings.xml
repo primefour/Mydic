@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">MiGuo</string>
     <string name="title_slot_detail">Slot1 Detail</string>
     <string name="SearchButtonName">Search</string>
@@ -15,4 +16,8 @@
     <string name="title_dict_list">Dictionary list</string>
     <string name="title_about_list">About list</string>
     <string name="search_hint">Search</string>
+    <string name="title_activity_reference">ReferenceActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
 </resources>

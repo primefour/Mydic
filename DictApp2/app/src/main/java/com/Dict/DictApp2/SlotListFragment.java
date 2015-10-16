@@ -2,6 +2,7 @@ package com.Dict.DictApp2;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.database.DataSetObserver;
 import android.os.Bundle;
@@ -68,7 +69,7 @@ public class SlotListFragment extends android.support.v4.app.Fragment {
     View mEmptyText;
     DictAdapter mDictAdapter;
     AboutAdapter mAboutAdapter;
-    ListView mDictListView;
+    TouchInterceptor mDictListView;
     ListView mAboutListView;
     boolean mListShown = false;
     public static final int DISK_SCAN_CHECKER =  0;
@@ -119,15 +120,17 @@ public class SlotListFragment extends android.support.v4.app.Fragment {
             }
         }
     };
-
-    private List<String> getDictList(){
-        try {
-            if(DictUtils.getService() == null || !DictUtils.getService().checkDiskScanComplete()){
-                return null;
+    boolean flag_test = false;
+    private List<String> getDictList() {
+        if (!flag_test){
+            try {
+                if (DictUtils.getService() == null || !DictUtils.getService().checkDiskScanComplete()) {
+                    return null;
+                }
+                mDictList = DictUtils.getService().getDictList();
+            } catch (RemoteException e) {
+                e.printStackTrace();
             }
-            mDictList = DictUtils.getService().getDictList();
-        } catch (RemoteException e) {
-            e.printStackTrace();
         }
         return mDictList;
     }
@@ -152,6 +155,24 @@ public class SlotListFragment extends android.support.v4.app.Fragment {
 
     }
 
+    private TouchInterceptor.DragListener mDragListener =
+            new TouchInterceptor.DragListener () {
+                public void drag(int from, int to) {
+                    flag_test = true;
+                    Log.i(TAG, "##drag " + from + "====> " + to);
+                    for(String kk:mDictList){
+                        Log.e(TAG,"mDictList==>" + kk );
+                    }
+                    String tmp = mDictList.get(from);
+                    mDictList.remove(from);
+                    mDictList.add(to,tmp);
+                    for(String kk:mDictList){
+                        Log.e(TAG,"mDictList==>" + kk );
+                    }
+                }
+            };
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.e(TAG,"############onCreate");
@@ -167,7 +188,8 @@ public class SlotListFragment extends android.support.v4.app.Fragment {
          mProgressContainer = view.findViewById(R.id.progressContainer);
          mListContainer = view.findViewById(R.id.listContainer);
          mAboutListView = (ListView) view.findViewById(R.id.about_list);
-         mDictListView = (ListView)view.findViewById(R.id.dict_list);
+         mDictListView = (TouchInterceptor)view.findViewById(R.id.dict_list);
+         mDictListView.setDragListener(mDragListener );
 
          //mDictListView.setDivider(null);
          mDictListView.setSelector(R.drawable.list_selector_background);
@@ -314,6 +336,13 @@ public class SlotListFragment extends android.support.v4.app.Fragment {
                 holder = (ViewHolder) convertView.getTag();
             }
             holder.mAbout.setText(getAboutList().get(position));
+            holder.mButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent it = new Intent(getContext(),ReferenceActivity.class);
+                    getActivity().startActivity(it);
+                }
+            });
             return convertView;
         }
 
@@ -387,7 +416,6 @@ public class SlotListFragment extends android.support.v4.app.Fragment {
             holder.mDictName.setText(getDictList().get(position));
             holder.mSwitch.setOnCheckedChangeListener(null);
             try {
-                Log.e(TAG,"getView################");
                 if (DictUtils.getService().getDictStatus(getDictList().get(position))) {
                     holder.mSwitch.setChecked(true);
                 } else {

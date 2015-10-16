@@ -2,4 +2,5 @@
 <resources>
     <color name="dict_list_item_select">#e3e3e3</color>
     <color name="dict_list_item_normal">#eeeeee</color>
+    <color name="dragndrop_background">#e0103010</color>
 </resources>
