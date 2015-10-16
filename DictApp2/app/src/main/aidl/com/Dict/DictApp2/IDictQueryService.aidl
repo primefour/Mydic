@@ -12,4 +12,5 @@ List<String> getDictList();
 boolean getDictStatus(String name);
 void setDictStatus(String name,boolean flag);
 boolean checkDiskScanComplete();
+boolean setDictListOrder(in List<String> tt);
 }

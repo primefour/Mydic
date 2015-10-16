@@ -120,17 +120,14 @@ public class SlotListFragment extends android.support.v4.app.Fragment {
             }
         }
     };
-    boolean flag_test = false;
     private List<String> getDictList() {
-        if (!flag_test){
-            try {
-                if (DictUtils.getService() == null || !DictUtils.getService().checkDiskScanComplete()) {
-                    return null;
-                }
-                mDictList = DictUtils.getService().getDictList();
-            } catch (RemoteException e) {
-                e.printStackTrace();
+        try {
+            if (DictUtils.getService() == null || !DictUtils.getService().checkDiskScanComplete()) {
+                return null;
             }
+            mDictList = DictUtils.getService().getDictList();
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
         return mDictList;
     }
@@ -158,7 +155,6 @@ public class SlotListFragment extends android.support.v4.app.Fragment {
     private TouchInterceptor.DragListener mDragListener =
             new TouchInterceptor.DragListener () {
                 public void drag(int from, int to) {
-                    flag_test = true;
                     Log.i(TAG, "##drag " + from + "====> " + to);
                     for(String kk:mDictList){
                         Log.e(TAG,"mDictList==>" + kk );
@@ -168,6 +164,11 @@ public class SlotListFragment extends android.support.v4.app.Fragment {
                     mDictList.add(to,tmp);
                     for(String kk:mDictList){
                         Log.e(TAG,"mDictList==>" + kk );
+                    }
+                    try {
+                        DictUtils.getService().setDictListOrder(mAboutList);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
                     }
                 }
             };

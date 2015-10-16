@@ -210,6 +210,12 @@ public class DictQueryService extends Service {
         return mEngine.dictEngGetDictList();
     }
 
+    public boolean dictEngSetOrderList(List<String> lo){
+        ArrayList<String> tt = new ArrayList<String>(lo);
+        mEngine.dictEngSetOrderList(tt);
+        return true;
+    }
+
 
 
     @Override
@@ -311,9 +317,13 @@ public class DictQueryService extends Service {
         public void setDictStatus(String name,boolean flag){
             mService.get().setDictStatus(name,flag);
         }
-
         public boolean checkDiskScanComplete(){
+
             return mService.get().mDiskScanComplete;
+        }
+
+        public boolean setDictListOrder(java.util.List<java.lang.String> tt) {
+            return mService.get().dictEngSetOrderList(tt);
         }
     }
 }
