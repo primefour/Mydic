@@ -156,6 +156,9 @@ public class SlotListFragment extends android.support.v4.app.Fragment {
             new TouchInterceptor.DragListener () {
                 public void drag(int from, int to) {
                     Log.i(TAG, "##drag " + from + "====> " + to);
+                    if(to < 0 || to >= mDictList.size() ){
+                        return ;
+                    }
                     for(String kk:mDictList){
                         Log.e(TAG,"mDictList==>" + kk );
                     }
