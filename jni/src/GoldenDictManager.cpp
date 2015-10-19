@@ -158,6 +158,8 @@ void GoldenDictManager::GoldenScanDisk(const char *path){
     GoldenPathScanner *scanner = NULL;
     if(path == NULL){
          scanner = new GoldenPathScanner(GOLDEN_ROOT_PATH,this);
+         //update list file
+         unlink(GOLDEN_IDX_DICT_PATH);
     }else{
          scanner = new GoldenPathScanner(path,this);
     }
@@ -246,6 +248,8 @@ void GoldenDictManager::GoldenDictAddDict(const char *name){
     if(mDictionaryPath.count(tmp) == 0){
         if(GoldenDictGetPersistData(name,buff,sizeof(buff)) != NULL){
             mDictionaryPath[tmp] = String8(buff);
+        }else{
+            return ;
         }
     }
     doWithFiles(mDictionaryPath[String8(name)].string());
@@ -281,6 +285,7 @@ void GoldenDictManager::GoldenDictSetOrder(const char **list){
     const char **tmp = list;
     while(*tmp != NULL){
         mOrderList.push_back(String8(*tmp));
+        tmp++;
     }
     return ;
 }

@@ -169,7 +169,7 @@ public class SlotListFragment extends android.support.v4.app.Fragment {
                         Log.e(TAG,"mDictList==>" + kk );
                     }
                     try {
-                        DictUtils.getService().setDictListOrder(mAboutList);
+                        DictUtils.getService().setDictListOrder(mDictList);
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }

@@ -51,6 +51,13 @@ JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_dictEngDeinit (JN
  */
 JNIEXPORT jobject JNICALL Java_com_Dict_DictApp2_DictSearchEngine_dictEngGetDictList (JNIEnv *, jclass);
 
+/*
+ * Class:     com_Dict_DictApp2_DictSearchEngine
+ * Method:    dictEngSetOrderList
+ * Signature: ()Ljava/util/ArrayList;
+ */
+JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_dictEngSetOrderList (JNIEnv *pEnv, jclass jc,jobject list);
+
 #ifdef __cplusplus
 }
 #endif

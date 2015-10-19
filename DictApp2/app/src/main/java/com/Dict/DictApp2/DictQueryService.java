@@ -46,14 +46,14 @@ public class DictQueryService extends Service {
     private boolean mIsFirstStart = true;
     private final String FIRST_START = "first_start";
     private final String SCAN_SERVER= "server";
+    private final String DICT_USER_ORDER = "user_order";
     /*
     FIRST_START  ==> BOOLEAN
      dictionary status of last ==> list (store dictionary name)
 
      */
     private SharedPreferences mPreferences;
-
-    private ArrayList<String> mAllDictionaryList;
+    private ArrayList<String> mDictFinalList = new ArrayList<String>();
 
 
     private int mServiceStartId ;
@@ -138,11 +138,8 @@ public class DictQueryService extends Service {
         Map<String,?> tmp = mPreferences.getAll();
         Set<String> aa = tmp.keySet();
         for(String tt:aa){
-            Boolean ta =  (Boolean)tmp.get(tt);
-            if(!tt.equalsIgnoreCase(FIRST_START)){
-                Log.e(TAG,"addDictionary +++++" + ta);
+            if(!tt.equalsIgnoreCase(FIRST_START) && !tt.equalsIgnoreCase(DICT_USER_ORDER)){
                 mEngine.dictEngAddDictionary(tt);
-                //addDictionary(tt);
             }
         }
 
@@ -170,9 +167,9 @@ public class DictQueryService extends Service {
 
     //interface
     public boolean addDictionary(String name){
-        mAllDictionaryList = mEngine.dictEngGetDictList();
+        List<String> tmpAll= mEngine.dictEngGetDictList();
         boolean isExist = false ;
-        for(String tmp :mAllDictionaryList){
+        for(String tmp :tmpAll){
             if(tmp.equals(name)){
                 isExist = true;
             }
@@ -187,9 +184,9 @@ public class DictQueryService extends Service {
 
     //interface
     public boolean removeDictionary(String name){
-        mAllDictionaryList = mEngine.dictEngGetDictList();
+        List<String> tmpAll= mEngine.dictEngGetDictList();
         boolean isExist = false ;
-        for(String tmp :mAllDictionaryList){
+        for(String tmp :tmpAll){
             if(tmp.equals(name)){
                 isExist = true;
             }
@@ -207,11 +204,62 @@ public class DictQueryService extends Service {
 
     //interface
     public List<String> getDictList(){
-        return mEngine.dictEngGetDictList();
+        List<String> tt = getSharedPreference(DICT_USER_ORDER);
+        List<String> ss = mEngine.dictEngGetDictList();
+        mDictFinalList.clear();
+        if(tt != null && ss != null && tt.size() != 0 && ss.size() != 0){
+            for(String tmp:tt){
+                if(ss.contains(tmp)){
+                    mDictFinalList.add(tmp);
+                }
+            }
+        }
+
+        if(ss.size() != 0){
+            for(String tmp:ss){
+                if(!mDictFinalList.contains(tmp)){
+                    mDictFinalList.add(tmp);
+                }
+            }
+        }
+        setSharedPreference(DICT_USER_ORDER,mDictFinalList);
+        return mDictFinalList;
+    }
+
+    public List<String> getSharedPreference(String key) {
+        String regularEx = "#";
+        String[] str = null;
+        SharedPreferences sp = mPreferences;
+        String values;
+        values = sp.getString(key, "");
+        str = values.split(regularEx);
+        ArrayList<String> tt = new ArrayList<String>();
+        if(str != null && str.length > 0){
+            for(int i = 0 ;i< str.length;i++){
+                tt.add(str[i]);
+            }
+        }
+        return tt;
+    }
+
+    public void setSharedPreference(String key, ArrayList<String> values) {
+        String regularEx = "#";
+        String str = "";
+        SharedPreferences sp = mPreferences;
+        if (values != null && values.size() > 0) {
+            for (String value : values) {
+                str += value;
+                str += regularEx;
+            }
+            Editor et = sp.edit();
+            et.putString(key, str);
+            et.commit();
+        }
     }
 
     public boolean dictEngSetOrderList(List<String> lo){
         ArrayList<String> tt = new ArrayList<String>(lo);
+        setSharedPreference(DICT_USER_ORDER,tt);
         mEngine.dictEngSetOrderList(tt);
         return true;
     }

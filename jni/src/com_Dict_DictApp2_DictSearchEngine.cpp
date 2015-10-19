@@ -147,8 +147,10 @@ JNIEXPORT jobject JNICALL Java_com_Dict_DictApp2_DictSearchEngine_dictEngGetDict
  * Signature: ()Ljava/util/ArrayList;
  */
 JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_dictEngSetOrderList (JNIEnv *pEnv, jclass jc,jobject list){
-    const char **dictList = (const char **)malloc(sizeof(const char *) * 20);
-    golden_printfe("###########\n");
+    const int max_size = 20;
+    const char **dictList = (const char **)malloc(sizeof(const char *) * max_size);
+    memset(dictList,0,max_size * sizeof(const char *) );
+    golden_printfe("KKKKKK==> ###########\n");
     if(list == NULL){
         return ;
     }
@@ -156,12 +158,13 @@ JNIEXPORT void JNICALL Java_com_Dict_DictApp2_DictSearchEngine_dictEngSetOrderLi
     jmethodID getMethodID = (pEnv)->GetMethodID(clazz, "get", "(I)Ljava/lang/Object;");
     jmethodID sizeMethodID = (pEnv)->GetMethodID(clazz, "size", "()I");
     int size = (pEnv)->CallIntMethod(list, sizeMethodID);
-    golden_printfe("arrayList's size is : %d", size);
+    golden_printfe("KKKKKK==> arrayList's size is : %d", size);
     const char **p = dictList;
     for (int i = 0; i < size; i++) {
         jstring str = (jstring)(pEnv)->CallObjectMethod(list, getMethodID, i);
         jboolean isCpopy;
         *p = (pEnv)->GetStringUTFChars(str, &isCpopy);
+        golden_printfe("KKKKKK==> arrayList's is : %s", *p);
         p++;
     }
     GoldenDict->GoldenDictSetOrder(dictList);
