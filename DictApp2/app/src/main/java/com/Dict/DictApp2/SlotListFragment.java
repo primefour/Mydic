@@ -416,6 +416,9 @@ public class SlotListFragment extends android.support.v4.app.Fragment {
             }else {
                 holder = (ViewHolder) convertView.getTag();
             }
+            if(position < 0 || position >getDictList().size() ){
+                return null;
+            }
 
             holder.mDictName.setText(getDictList().get(position));
             holder.mSwitch.setOnCheckedChangeListener(null);
