@@ -63,6 +63,7 @@ public class TouchInterceptor extends ListView {
     private int mSwitchWidth;
     private int mSwitchXOffset;
     private int mSwitchYOffset;
+    private boolean mDragBegin = false;
 
     public TouchInterceptor(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -89,16 +90,36 @@ public class TouchInterceptor extends ListView {
                 }
             });
         }
-/*
-        Resources res = getResources();
-        int w = View.MeasureSpec.makeMeasureSpec(0,
-                View.MeasureSpec.UNSPECIFIED);
-        int h = View.MeasureSpec.makeMeasureSpec(0,
-                View.MeasureSpec.UNSPECIFIED);
-        imageView.measure(w, h);
-        int height = imageView.getMeasuredHeight();
-        int width = imageView.getMeasuredWidth();
-        */
+    }
+
+
+    private void getItemDimension(){
+        if(mSwitchYOffset != 0){
+            return ;
+        }
+        mHeight = getHeight();
+        mWidth = getWidth();
+        ListAdapter listAdapter = getAdapter();
+
+        if(listAdapter != null) {
+            View listItem = listAdapter.getView(0, null, this);
+            if (listItem != null && listItem.getVisibility() == View.VISIBLE) {
+                Switch sh = (Switch) listItem.findViewById(R.id.switch1);
+                listItem.measure(0, 0);
+                mItemHeightNormal = listItem.getMeasuredHeight();
+                mItemWidthNormal = listItem.getMeasuredWidth();
+                mItemHeightHalf = mItemHeightNormal / 2;
+                mItemHeightExpanded = mItemHeightNormal + 30;
+                sh.measure(0, 0);
+                mSwitchHeight = sh.getMeasuredHeight();
+                mSwitchWidth = sh.getMeasuredWidth();
+                mSwitchXOffset = mWidth - mSwitchWidth;
+                //please fix me mSwitchXOffset always return 0
+                //mSwitchXOffset = sh.getTop();
+                //mSwitchYOffset = sh.getLeft();
+                Log.e(TAG, "mItemWidthNormal =" + mItemWidthNormal + "mSwitch === " + mSwitchHeight + "x" + mSwitchWidth + "  offset  " + mSwitchXOffset + "," + mSwitchYOffset);
+            }
+        }
     }
 
     @Override
@@ -107,80 +128,28 @@ public class TouchInterceptor extends ListView {
         int ey = (int) ev.getY();
 
         Log.e(TAG,"onInterceptTouchEvent = " + ex + "," + ey);
-        int xoffset  = 0;
-        mHeight = getHeight();
-        mWidth = getWidth();
-        int itemNo = pointToPosition(ex, ey);
-        if (ev.getAction() == MotionEvent.ACTION_DOWN && itemNo == AdapterView.INVALID_POSITION) {
-            doExpansion();
-            stopDragging();
-            unExpandViews(true);
+
+       /*
+        int itemNo = AdapterView.INVALID_POSITION;
+        ListAdapter listAdapter = getAdapter();
+                pointToPosition(ex, ey);
+        if (itemNo == AdapterView.INVALID_POSITION) {
             Log.e(TAG,"onInterceptTouchEvent listItem == null xxxxxxxxxxxxx");
             return super.onInterceptTouchEvent(ev);
-        }
-        ListAdapter listAdapter = getAdapter();
-        if(listAdapter != null){
-            View listItem = listAdapter.getView(itemNo, null,this);
-            if(listItem != null && listItem.getVisibility() == View.VISIBLE){
-                Switch sh = (Switch)listItem.findViewById(R.id.switch1);
-                listItem.measure(0, 0);
-                mItemHeightNormal = listItem.getMeasuredHeight();
-                mItemWidthNormal = listItem.getMeasuredWidth();
-                mItemHeightHalf = mItemHeightNormal / 2;
-                mItemHeightExpanded = mItemHeightNormal + 30;
-                sh.measure(0,0);
-                mSwitchHeight = sh.getMeasuredHeight();
-                mSwitchWidth = sh.getMeasuredWidth();
-                //please fix me mSwitchXOffset always return 0
-                mSwitchXOffset = sh.getTop();
-                mSwitchYOffset = sh.getLeft();
-                xoffset = mWidth - mSwitchWidth ;
-                Log.e(TAG,"mItemWidthNormal ="  + mItemWidthNormal  + "mSwitch === " + mSwitchHeight + "x" + mSwitchWidth +
-                        "  offset  " + mSwitchXOffset + "," + mSwitchYOffset + "xoffset =" + xoffset );
-            }else{
-                doExpansion();
-                stopDragging();
-                unExpandViews(true);
-                Log.e(TAG,"onInterceptTouchEvent listItem == null xxxxxxxxxxxxx");
-                return super.onInterceptTouchEvent(ev);
-            }
         }else{
 
-            doExpansion();
-            stopDragging();
-            unExpandViews(true);
-            Log.e(TAG,"onInterceptTouchEvent listItem == null kkkkkxxxxxxxxxxxxx");
-            return super.onInterceptTouchEvent(ev);
         }
-
-        if(ex > xoffset ){
-            doExpansion();
-            stopDragging();
-            unExpandViews(true);
-            return super.onInterceptTouchEvent(ev);
-        }
+        */
+        getItemDimension();
 
         switch (ev.getAction()) {
             case MotionEvent.ACTION_UP: {
-                int x = (int) ev.getX();
-                int y = (int) ev.getY();
-                itemNo = getItemForPosition(y);
-                if (mDragListener != null) {
-                    mDragListener.drag(mDragPos,itemNo);
-                }
-                mDragPos = itemNo;
-                doExpansion();
-                stopDragging();
-                unExpandViews(true);
-            }
-            return false;
-            case MotionEvent.ACTION_MOVE: {
-                int x = (int) ev.getX();
-                int y = (int) ev.getY();
-
-                if(y < 0 || x > xoffset){
-                    itemNo= getItemForPosition(0);
-                    Log.e(TAG,"itemnum ==================" + itemNo);
+                if (mDragBegin) {
+                    int itemNo = 0;
+                    mDragBegin = false;
+                    int x = (int) ev.getX();
+                    int y = (int) ev.getY();
+                    itemNo = getItemForPosition(y);
                     if (mDragListener != null) {
                         mDragListener.drag(mDragPos, itemNo);
                     }
@@ -188,91 +157,90 @@ public class TouchInterceptor extends ListView {
                     doExpansion();
                     stopDragging();
                     unExpandViews(true);
-                    return true;
-                }else if(y > mHeight || x > xoffset){
-                    itemNo = getItemForPosition(mHeight);
-                    Log.e(TAG,"itemnum ==================" + itemNo);
-                    if (mDragListener != null) {
-                        mDragListener.drag(mDragPos,itemNo);
-                    }
-                    mDragPos = itemNo;
-                    doExpansion();
-                    stopDragging();
-                    unExpandViews(true);
-                    return true;
-                }else {
-                    dragView(x, y);
-                    itemNo = getItemForPosition(y);
-                    doExpansion();
-                    Log.e(TAG, "x = " + x + "y = " + y);
-/*
-                    if (itemNo >= 0) {
-                        int speed = 0;
-                        adjustScrollBounds(y);
-                        if (y > mLowerBound) {
-                            // scroll the list up a bit
-                            if (getLastVisiblePosition() < getCount() - 1) {
-                                speed = y > (mHeight + mLowerBound) / 2 ? 16 : 4;
-                            } else {
-                                speed = 1;
-                            }
-                        } else if (y < mUpperBound) {
-                            // scroll the list down a bit
-                            speed = y < mUpperBound / 2 ? -16 : -4;
-                            if (getFirstVisiblePosition() == 0
-                                    && getChildAt(0).getTop() >= getPaddingTop()) {
-                                // if we're already at the top, don't try to scroll, because
-                                // it causes the framework to do some extra drawing that messes
-                                // up our animation
-                                speed = 0;
-                            }
-                        }
-                        if (speed != 0) {
-                            smoothScrollBy(speed, 30);
-                        }
-                    }
-
-                        */
+                    return false;
+                } else {
+                    break;
                 }
             }
-            return false;
+            case MotionEvent.ACTION_MOVE: {
+                if(mDragBegin) {
+                    if(ey < 0){
+                        int itemNo = 0;
+                        itemNo= getItemForPosition(0);
+                        Log.e(TAG,"itemnum ==================" + itemNo);
+                        if (mDragListener != null) {
+                            mDragListener.drag(mDragPos, itemNo);
+                        }
+                        mDragPos = itemNo;
+                        doExpansion();
+                        stopDragging();
+                        unExpandViews(true);
+                    }else if(ey > mHeight){
+                        int itemNo = 0;
+                        itemNo = getItemForPosition(mHeight);
+                        Log.e(TAG,"itemnum ==================" + itemNo);
+                        if (mDragListener != null) {
+                            mDragListener.drag(mDragPos,itemNo);
+                        }
+                        mDragPos = itemNo;
+                        doExpansion();
+                        stopDragging();
+                        unExpandViews(true);
+                    }else {
+                        dragView(ex, ey);
+                        doExpansion();
+                    }
+                    return false;
+                }else{
+                   break;
+                }
+            }
             case MotionEvent.ACTION_CANCEL:
-                Rect r = mTempRect;
-                mDragView.getDrawingRect(r);
-                stopDragging();
-                unExpandViews(false);
+                if(mDragBegin){
+                    mDragBegin = false;
+                    Rect r = mTempRect;
+                    mDragView.getDrawingRect(r);
+                    stopDragging();
+                    unExpandViews(false);
+                    return false;
+                }
                 break;
             case MotionEvent.ACTION_DOWN: {
-                int x = (int) ev.getX();
-                int y = (int) ev.getY();
-                Log.e(TAG,"mItemHeightNormal = " + mItemHeightNormal + "x = " + x + "y = "+ y);
-                Log.e(TAG, "#######getFirstVisiblePosition = " + getFirstVisiblePosition());
-                ViewGroup item = (ViewGroup) getChildAt(itemNo - getFirstVisiblePosition());
-                mDragPointX = x - item.getLeft();
-                mDragPointY = y - item.getTop();
-                Log.e(TAG, "x = " + x + " y = " + y + "ev.getRawX() = " + ev.getRawX() + "ev.getRawY() = "
-                            + ev.getRawY() + "item.getLeft() = " + item.getLeft() + "item.getTop() = " + item.getTop());
+                int itemNo = 0;
+                itemNo = pointToPosition(ex,ey);
+                if (itemNo == AdapterView.INVALID_POSITION) {
+                    return super.onInterceptTouchEvent(ev);
+                }else {
+                    if (ex < mSwitchXOffset) {
+                        Log.e(TAG, "#######getFirstVisiblePosition = " + getFirstVisiblePosition());
+                        mDragBegin = true;
+                        ViewGroup item = (ViewGroup) getChildAt(itemNo - getFirstVisiblePosition());
+                        mDragPointX = ex - item.getLeft();
+                        mDragPointY = ey - item.getTop();
+                        Log.e(TAG, "x = " + ex + " y = " + ey + "ev.getRawX() = " + ev.getRawX() + "ev.getRawY() = "
+                                + ev.getRawY() + "item.getLeft() = " + item.getLeft() + "item.getTop() = " + item.getTop());
 
-                mXOffset = ((int) ev.getRawX()) - x;
-                mYOffset = ((int) ev.getRawY()) - y;
-                Log.e(TAG, "mDragPointX = " + mDragPointX + "mDragPointY  = "
-                        + mDragPointY + "mXOffset =  " + mXOffset + "mYOffset = " + mYOffset);
+                        mXOffset = ((int) ev.getRawX()) - ex;
+                        mYOffset = ((int) ev.getRawY()) - ey;
+                        Log.e(TAG, "mDragPointX = " + mDragPointX + "mDragPointY  = " + mDragPointY + "mXOffset =  " + mXOffset + "mYOffset = " + mYOffset);
 
-                // The left side of the item is the grabber for dragging the item
-                item.setDrawingCacheEnabled(true);
-                // Create a copy of the drawing cache so that it does not get recycled
-                // by the framework when the list tries to clean up memory
-                Bitmap bitmap = Bitmap.createBitmap(item.getDrawingCache());
-                startDragging(bitmap, x, y);
-                mDragPos = itemNo ;
-                mSrcDragPos = mDragPos;
-                int touchSlop = mTouchSlop;
-                mUpperBound = Math.min(y - touchSlop, mHeight / 3);
-                mLowerBound = Math.max(y + touchSlop, mHeight * 2 / 3);
-                Log.e(TAG, "mHeight =  " + mHeight + "mTouchSlop = " + mTouchSlop +
-                        "mUpperBound = " + mUpperBound + "mLowerBound = " + mLowerBound);
+                        // The left side of the item is the grabber for dragging the item
+                        item.setDrawingCacheEnabled(true);
+                        // Create a copy of the drawing cache so that it does not get recycled
+                        // by the framework when the list tries to clean up memory
+                        Bitmap bitmap = Bitmap.createBitmap(item.getDrawingCache());
+                        startDragging(bitmap, ex, ey);
+                        mDragPos = itemNo;
+                        mSrcDragPos = mDragPos;
+                        int touchSlop = mTouchSlop;
+                        mUpperBound = Math.min(ey - touchSlop, mHeight / 3);
+                        mLowerBound = Math.max(ey + touchSlop, mHeight * 2 / 3);
+                        return false;
+                    } else {
+                        break;
+                    }
+                }
             }
-            return false;
             default:
                 break;
         };
