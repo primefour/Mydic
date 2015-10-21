@@ -29,6 +29,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+
 
 /**
  * Created by crazyhorse on 15-4-4.
@@ -284,7 +289,24 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Log.e(TAG,"######url = " + url);
+                Log.e(TAG, "######url = " + url);
+                try {
+                    URI tmp = new URI(url);
+                    String scheme = tmp.getScheme();
+                    if(scheme.equalsIgnoreCase("bword")){
+                        ClipData clip;
+                        String text = tmp.getHost();
+                        Log.e(TAG,"##############txt = " + text);
+                        clip= ClipData.newPlainText("text", text);
+                        mClipboard.setPrimaryClip(clip);
+                        mEditText.setText("");
+                        mClipChange = true;
+                        queryWord();
+                        return true;
+                    }
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
                 return super.shouldOverrideUrlLoading(view,url);
                 //return true;
             }
