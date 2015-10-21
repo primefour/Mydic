@@ -223,6 +223,7 @@ public class DictQueryService extends Service {
             }
         }
         setSharedPreference(DICT_USER_ORDER,mDictFinalList);
+        mEngine.dictEngSetOrderList(mDictFinalList);
         return mDictFinalList;
     }
 

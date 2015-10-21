@@ -283,10 +283,17 @@ void GoldenDictManager::GoldenDictSetOrder(const char **list){
         return ;
     }
     const char **tmp = list;
+    int count = 0;
+    mOrderList.clear();
+    golden_printfe("###count is %d size of list is %d \n",count,mOrderList.size());
+
     while(*tmp != NULL){
         mOrderList.push_back(String8(*tmp));
         tmp++;
+        count ++;
     }
+    golden_printfe("count is %d size of list is %d \n",count,mOrderList.size());
+
     return ;
 }
 
@@ -302,7 +309,7 @@ int GoldenDictManager::GoldenDictQuery(const char *word,char *buff){
 
     GoldenHtmlHeader *html = new GoldenHtmlHeader();
     html->HTMLAddExpBegin();
-    if(mOrderList.size() == 0 || mOrderList.size() != mDictionaryMap.size()){
+    if(mOrderList.size() == 0){ 
         while(begin != end){
             TextMetaData Meta;
             if(begin->second.GetPoint() != NULL && begin->second->IsEnable()){
@@ -325,10 +332,12 @@ int GoldenDictManager::GoldenDictQuery(const char *word,char *buff){
             begin ++;
         }
     }else{
+        golden_printfe("use order list to query word \n");
         vector<String8>::iterator list_begin = mOrderList.begin();
-        vector<String8>::iterator list_end = mOrderList.begin();
+        vector<String8>::iterator list_end = mOrderList.end();
         while(list_begin != list_end){
             TextMetaData Meta;
+            golden_printfe("KKKK %s === %d  %d \n",list_begin->string(),mDictionaryMap.count(*list_begin),mOrderList.size());
             if(mDictionaryMap.count(*list_begin)){
                 if(mDictionaryMap[*list_begin]->GoldenDictQuery(word,&Meta) == 0){
                     html->HTMLAddDictionaryName(mDictionaryMap[*list_begin]->GetDictonaryName());
@@ -344,7 +353,6 @@ int GoldenDictManager::GoldenDictQuery(const char *word,char *buff){
                             html->HtmlAddOnlyMeaning(html->EncodeString(Meta.mTextMeaning));
                         }
                     }
-
                 }
             }
             list_begin ++;
