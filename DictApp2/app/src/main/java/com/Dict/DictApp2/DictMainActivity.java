@@ -37,6 +37,7 @@ public class DictMainActivity extends FragmentActivity implements MainFragment.C
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mPagerAdapter);
         mViewPager.setCurrentItem(MAIN_PAGE_IDX);
+
         DictUtils.bindToService(this);
     }
     @Override
@@ -60,7 +61,10 @@ public class DictMainActivity extends FragmentActivity implements MainFragment.C
 
     public String onSearchButtonClick(String searchWord) {
         Log.e(TAG,"#####onSearchButtonClick ##" + searchWord);
-        ((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        InputMethodManager im = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        if(im != null && this.getCurrentFocus() != null) {
+            im.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
         if(DictUtils.getService() != null){
             try {
                 return DictUtils.getService().queryWord(searchWord);

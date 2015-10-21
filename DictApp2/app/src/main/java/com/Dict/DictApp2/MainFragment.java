@@ -1,6 +1,8 @@
 package com.Dict.DictApp2;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -34,24 +36,40 @@ import android.widget.Toast;
 public class MainFragment extends Fragment implements View.OnClickListener {
     public static final int DISK_SCAN_CHECKER = 0;
     private View mRootView = null;
+    private WebView mWebView ;
+    private EditText mEditText;
+    private Button mButton;
+    private ClipboardManager mClipboard;
     private Callbacks mCallbacks = null;
     private final String WEB_ENCODE_FORMAT = "utf-8";
     private final String WEB_MIME_TYPE = "text/html";
     private final String NOT_FOUND_WORD = "Hello World!";
     private final String TAG = "MainFragment";
-    private Activity mMainActivity;
+    private String mClipWord = null;
+    private boolean mClipChange = false;
+    ClipboardManager.OnPrimaryClipChangedListener mClipListener = new ClipboardManager.OnPrimaryClipChangedListener(){
+        @Override
+        public void onPrimaryClipChanged() {
+            // TODO Auto-generated method stub
+            //Toast.makeText(getActivity(), "TEXT IS COPIED!!! :", Toast.LENGTH_SHORT).show();
+            mClipChange = true;
+        }
+    };
 
     @Override
     public void onAttach(Activity activity) {
-        Log.e(TAG,"onAttach #########################");
+        Log.e(TAG, "onAttach #########################");
         super.onAttach(activity);
-        mMainActivity = activity;
         mCallbacks = (Callbacks) activity;
+        mClipboard = (ClipboardManager)getActivity().getSystemService(getActivity().CLIPBOARD_SERVICE);
+        //Add listener to listen clipboard changes
+        mClipboard.addPrimaryClipChangedListener( mClipListener);
     }
 
     @Override
     public void onDetach(){
         Log.e(TAG,"onAttach #########################");
+        mClipboard.removePrimaryClipChangedListener(mClipListener);
         super.onDestroy();
     }
 
@@ -71,6 +89,9 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     }
     @Override
     public void onResume() {
+        if(mEditText != null && mClipboard != null && DictUtils.getService() != null) {
+            onClick(null);
+        }
         super.onResume();
         Log.e(TAG,"###############onResume ");
     }
@@ -87,58 +108,60 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         super.onStop();
     }
 
+    private boolean isWordFormat(String tt){
+        if(tt.length() > 50){
+            return false;
+        }
+        return true;
+    }
+
+    private void queryWord(){
+        String word = getSearchWord();
+        if (word == null || word.length() == 0) {
+            ClipData clip = mClipboard.getPrimaryClip();
+            ClipData.Item item = clip.getItemAt(0);
+            word = item.getText().toString();
+            Log.e(TAG, "mClipboard word is  " + word);
+            if (word == null || word.length() == 0 || !isWordFormat(word)) {
+                return;
+            }
+            mEditText.setText(word);
+        }
+
+        String wordMeaning = mCallbacks.onSearchButtonClick(word.toLowerCase());
+        //show word Meaning
+        mWebView.loadData(wordMeaning, "text/html; charset=UTF-8", null);
+        mWebView.reload();
+    }
+
 
 
 
     @Override
     public void onClick(View view) {
-        if(getSearchWord() == null){
-            return ;
+        queryWord();
+        /*
+        String word = getSearchWord();
+        if (word == null || word.length() == 0) {
+            ClipData clip = mClipboard.getPrimaryClip();
+            ClipData.Item item = clip.getItemAt(0);
+            word = item.getText().toString();
+            Log.e(TAG, "mClipboard word is  " + word);
+            if (word == null || word.length() == 0 || !isWordFormat(word)) {
+                return;
+            }
+            mEditText.setText(word);
         }
 
-        String wordMeaning = mCallbacks.onSearchButtonClick(getSearchWord());
+        String wordMeaning = mCallbacks.onSearchButtonClick(word.toLowerCase());
         //show word Meaning
-        WebView webView = ((WebView) mRootView.findViewById(R.id.MeaningWebView));
-        webView.getSettings().setDefaultTextEncodingName(WEB_ENCODE_FORMAT);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setDomStorageEnabled(true);
-        webView.getSettings().setAllowFileAccess(true);
-        final Activity activity = mMainActivity;
-        /*
-        webView.setWebChromeClient(new WebChromeClient() {
-            public void onProgressChanged(WebView view, int progress) {
-                // Activities and WebViews measure progress with different scales.
-                // The progress meter will automatically disappear when we reach 100%
-                activity.setProgress(progress * 1000);
-            }
-        });
-        */
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Log.e(TAG,"######url = " + url);
-                return super.shouldOverrideUrlLoading(view,url);
-                //return true;
-            }
-
-            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                Toast.makeText(activity, "Oh no! " + description, Toast.LENGTH_SHORT).show();
-            }
-
-            public boolean shouldBlockMediaRequest(String url) {
-                Log.e(TAG,"######url = " + url);
-                return false ;
-            }
-
-            });
-        webView.loadData(wordMeaning, "text/html; charset=UTF-8", null);
-        webView.scrollTo(0,0);
-        webView.reload();
-
+        mWebView.loadData(wordMeaning, "text/html; charset=UTF-8", null);
+        mWebView.reload();
         //webView.loadDataWithBaseURL("file:///mnt/sdcard/",wordMeaning, "text/html","charset=UTF-8", null);
         //webView.loadDataWithBaseURL("file:///mnt/sdcard/",wordMeaning, "text/html","charset=UTF-8", null);
         //webView.loadData(wordMeaning,WEB_MIME_TYPE,WEB_ENCODE_FORMAT) ;
         //webView.loadUrl("file:///android_asset/index.html");
+        */
     }
 
     public interface Callbacks {
@@ -152,11 +175,6 @@ public class MainFragment extends Fragment implements View.OnClickListener {
     View mMainContainer;
     boolean mListShown = false;
 
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-       Log.e(TAG,"onHiddenChanged##################");
-    }
-
     void makeListShown() {
         if (!mListShown) {
             mListShown = true;
@@ -164,6 +182,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
             mProgressContainer.setVisibility(View.GONE);
             mMainContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in));
             mMainContainer.setVisibility(View.VISIBLE);
+            mEditText.setEnabled(true);
         }
     }
 
@@ -180,6 +199,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
                             Log.e(TAG,"DictUtils.getService().checkDiskScanComplete() " + DictUtils.getService().checkDiskScanComplete());
                             if(DictUtils.getService().checkDiskScanComplete()){
                                 makeListShown();
+                                queryWord();
                             }else{
                                 Message msg1 = Myhandler.obtainMessage(DISK_SCAN_CHECKER) ;
                                 Myhandler.sendMessageDelayed(msg1, 1000);
@@ -206,13 +226,10 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         }
         @Override
         public void afterTextChanged(Editable s) {
-            EditText et =(EditText)mRootView.findViewById(R.id.SearchEditText);
-
-            Button bt =(Button)mRootView.findViewById(R.id.clear_button);
-            if(et.getText().toString()!=null&&!et.getText().toString().equals("")){
-                bt.setVisibility(View.VISIBLE);
+            if(mEditText.getText().toString()!=null&&!mEditText.getText().toString().equals("")){
+                mButton.setVisibility(View.VISIBLE);
             }else{
-                bt.setVisibility(View.INVISIBLE);
+                mButton.setVisibility(View.INVISIBLE);
             }
         }
     };
@@ -226,42 +243,59 @@ public class MainFragment extends Fragment implements View.OnClickListener {
         //Button searchButton = ((Button) mRootView.findViewById(R.id.SearchButton));
         mProgressContainer = mRootView .findViewById(R.id.mainProgressContainer);
         mMainContainer = mRootView.findViewById(R.id.mainLinearLayout);
-        EditText et =(EditText)mRootView.findViewById(R.id.SearchEditText);
+        mEditText =(EditText)mRootView.findViewById(R.id.SearchEditText);
 
-
-        et.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+        mEditText.setOnEditorActionListener(new EditText.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 Log.i(TAG, "onEditorAction ----------- actionId:" + actionId);
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                     InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                    onClick(null);
+                    queryWord();
                 }
                 return false;
             }
 
         });
-        et.addTextChangedListener(mTextWatcher);
-        Button bt = (Button) mRootView.findViewById(R.id.clear_button);
+        mEditText.addTextChangedListener(mTextWatcher);
+        mEditText.setEnabled(false);
+        mButton = (Button) mRootView.findViewById(R.id.clear_button);
 
-        bt.setOnClickListener(new View.OnClickListener() {
+        mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText et =(EditText)mRootView.findViewById(R.id.SearchEditText);
-                et.setText("");
+                mEditText.setText("");
+                Log.e(TAG,"mClipChangel ====" + mClipChange);
+                if(mClipChange){
+                    mClipChange = false;
+                    queryWord();
+                }
             }
         });
 
         //searchButton.setOnClickListener(this);
         //show word Meaning
-        WebView mWebView = ((WebView) mRootView.findViewById(R.id.MeaningWebView));
-        mWebView.setWebViewClient(new WebViewClient(){
+        mWebView = ((WebView) mRootView.findViewById(R.id.MeaningWebView));
+        mWebView.getSettings().setDefaultTextEncodingName(WEB_ENCODE_FORMAT);
+        mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.getSettings().setDomStorageEnabled(true);
+        mWebView.getSettings().setAllowFileAccess(true);
+        mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 Log.e(TAG,"######url = " + url);
                 return super.shouldOverrideUrlLoading(view,url);
                 //return true;
+            }
+
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                Toast.makeText(getActivity(), "Oh no! " + description, Toast.LENGTH_SHORT).show();
+            }
+
+            public boolean shouldBlockMediaRequest(String url) {
+                Log.e(TAG,"######url = " + url);
+                return false ;
             }
 
         });
@@ -274,7 +308,7 @@ public class MainFragment extends Fragment implements View.OnClickListener {
 
     public String getSearchWord() {
         if(mRootView != null){
-            return ((EditText) mRootView.findViewById(R.id.SearchEditText)).getText().toString();
+            return mEditText.getText().toString();
         }
         return null;
     }

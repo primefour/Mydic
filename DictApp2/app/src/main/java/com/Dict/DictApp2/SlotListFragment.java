@@ -336,6 +336,7 @@ public class SlotListFragment extends android.support.v4.app.Fragment {
                 holder.mAbout= (TextView) convertView.findViewById(R.id.about_text);
                 holder.mButton= (ImageButton) convertView.findViewById(R.id.imageButton);
                 convertView.setTag(holder);
+                holder.mButton.setTag(getAboutList().get(position));
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
@@ -343,8 +344,10 @@ public class SlotListFragment extends android.support.v4.app.Fragment {
             holder.mButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent it = new Intent(getContext(),ReferenceActivity.class);
-                    getActivity().startActivity(it);
+                    // This is an album, show the songs on it
+                    Intent i = new Intent(getContext(),ReferenceActivity.class);
+                    i.putExtra(ReferenceActivity.WEBVIEW_TITLE_1,(String)view.getTag());
+                    getActivity().startActivity(i);
                 }
             });
             return convertView;
