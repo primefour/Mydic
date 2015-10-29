@@ -183,6 +183,39 @@ fi
 --with-http_realip_module --with-http_xslt_module --with-http_image_filter_module  
 --with-pcre=/home/crazyhorse/test/MyServer/Server/source/pcre-8.36 --with-openssl=/home/crazyhorse/test/MyServer/Server/source/openssl (source code location)
 
+#fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+
+user  www_server www_server;
+error_log logs/error.log;
+pid logs/nginx.pid;
+
+
+
+
+nginx.conf Description
+mime.types A list of file extensions and their associated MIME types
+fastcgi.conf FastCGI-related configuration
+proxy.conf Proxy-related configuration
+sites.conf Configuration of the websites served by Nginx, also known as virtual hosts. It\'s recommended to create separate files for each domain.
+
+
+
+events {
+worker_connections 1024;
+}
+The events block that you can find in the default configuration file is brought in by
+the Events module. The directives that the module enables can only be used within
+that block—in the preceding example, worker_connections will only make sense
+in the context of the events block. There is one important exception though—some
+directives may be placed at the root of the configuration file because they have a
+global effect on the server. The root of the configuration file is also known as the
+main block.
+
+
+
+
+
 
 
 Configuration summary
