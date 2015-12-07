@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout android:orientation="vertical"
+        android:id="@+id/splash_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+        <ImageView android:id="@+id/ad_img"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src ="@drawable/bg_review_exam_day_finish"/>
+        <ImageView android:id="@+id/logo_img"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:src ="@drawable/bg_review_exam_group_finish"/>
+            />
+    </LinearLayout>
+    <ImageView android:layout_gravity="center|right|top"
+        android:id="@+id/skip_splash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10.0dip"
+        android:layout_marginRight="10.0dip"
+        android:src="@drawable/skip" />
+</FrameLayout>

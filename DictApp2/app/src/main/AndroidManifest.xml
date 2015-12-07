@@ -14,12 +14,8 @@
         <activity
             android:name="com.Dict.DictApp2.DictMainActivity"
             android:label="@string/app_name"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="stateAlwaysHidden" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name="com.Dict.DictApp2.SlotListActivity"
@@ -44,6 +40,19 @@
         <activity
             android:name="com.Dict.DictApp2.ReferenceActivity"
             android:label="@string/title_activity_reference" >
+        </activity>
+        <activity
+            android:name="com.Dict.DictApp2.DictLaunchActivity"
+            android:label="@string/title_activity_dict_launch" >
+        </activity>
+        <activity
+            android:name="com.Dict.DictApp2.ListTestActivity"
+            android:label="@string/title_activity_list_test" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 
