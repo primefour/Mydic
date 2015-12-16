@@ -56,7 +56,7 @@ class Graphic{
         typename vector<GraphicType>::iterator end = mAjsList.end();
         int count = 0 ;
         while(begin != end){
-            count += begin.second.size();
+            count += begin->second.size();
             begin ++;
         }
         if(mIsDirected){
@@ -66,7 +66,7 @@ class Graphic{
         }
     }
 
-    vector< Graphic<VectexType,EdgeType>* >& GetCircleAndConnectivity( vector< Graphic<VectexType,EdgeType>* > &cc){
+    vector< Graphic<VectexType,EdgeType>* >& GetConnectComponount( vector< Graphic<VectexType,EdgeType>* > &cc){
         enum {
             NO_VISITED,
             VISITED,
@@ -112,6 +112,7 @@ class Graphic{
                 }
 
             }
+            vectex_idx ++;
         }
     }
 
