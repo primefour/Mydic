@@ -50,7 +50,7 @@ StardictInstance::StardictInstance(String8 path):mStarInfo(NULL),mStarIdx(NULL),
     golden_printfd("mStarInfo->getWordCount() = %d \n",mStarInfo->getWordCount());
     mStarInfo->dumpInfo();
     mWordList = new GoldenWordHashList(mStarInfo->getWordCount());
-
+    //mWordList = new GoldenWordTriTree();
     try{
         mStarIdx = new StardictIdx(mWordList.GetPoint(),path+".idx",mStarInfo->getWordCount(),mStarInfo->getIdxFileSize(),mStarInfo->getOffsetBits());
         mStarIdx->init();
