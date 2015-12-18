@@ -107,8 +107,6 @@ class TriTree{
 
     private:
         TriNode<ItemType,LeavesType> *mRoot;
-
 };
-
 #endif
 
