@@ -4,6 +4,7 @@
 #include"GoldenHashSet.h"
 #include"GoldenRef.h"
 #include"String8.h"
+#include"GoldenTriTree.h"
 
 class WordIdxItem:public Ref{
     public:
@@ -80,14 +81,94 @@ class WordIdxItem:public Ref{
 };
 
 
-class GoldenWordHashList:public Ref{
+class GoldenWordIdxInteface :public Ref{
+    public:
+        GoldenWordIdxInteface(){};
+        virtual void WordInsert(SObject<WordIdxItem> &newItem){ return; };
+        virtual bool WordFind(const SObject<WordIdxItem> &item){return false;};
+        virtual const SObject<WordIdxItem>& WordGet(SObject<WordIdxItem>&item) {return item;};
+};
+
+
+class GoldenWordHashList:public GoldenWordIdxInteface {
     public:
         GoldenWordHashList(int max_count);
-        void DictHashInsert(SObject<WordIdxItem> &newItem);
-        bool DictHashfind(const SObject<WordIdxItem> &item);
-        const SObject<WordIdxItem>& DictHashGet(const SObject<WordIdxItem>&item);
+        virtual void WordInsert(SObject<WordIdxItem> &newItem);
+        virtual bool WordFind(const SObject<WordIdxItem> &item);
+        virtual const SObject<WordIdxItem>& WordGet(SObject<WordIdxItem>&item);
 
     private:
         DictHashSet<SObject<WordIdxItem> > word_hash;
 };
+
+class TriString8 {
+    public:
+        class iterator {
+            public:
+                iterator(char *data){
+                    ptr = data;
+                }
+                iterator& operator++(){
+                    ptr ++;
+                    return *this;
+                }
+                iterator operator++(int){
+                    iterator tmp(*this);
+                    ptr ++;
+                    return tmp;
+                }
+                bool operator==(const iterator &t){
+                    return t.ptr == ptr;
+                }
+                bool operator!=(const iterator &t){
+                    return ptr != t.ptr;
+                }
+
+                char& operator*(){
+                    return *ptr;
+                }
+
+            private:
+               char *ptr; 
+        };
+
+        TriString8(const char *data):mdata(strdup(data)),mBegin(mdata),mEnd(mdata+strlen(mdata)){
+        }
+
+        TriString8::iterator& begin(){
+            return mBegin;
+        }
+
+        TriString8::iterator& end(){
+            return mEnd;
+        }
+    private :
+        char *mdata;
+        TriString8::iterator mBegin;
+        TriString8::iterator mEnd;
+};
+
+struct TriLeaves{
+        TriLeaves(int offset,int size){
+            this->offset = offset;
+            this->size= size;
+        }
+        bool operator==(const TriLeaves &dd) const {
+            return dd.offset == offset && dd.size == size;
+        }
+        int offset ;
+        int size;
+};
+
+
+class GoldenWordTriTree:public GoldenWordIdxInteface {
+    public:
+        GoldenWordTriTree();
+        virtual void WordInsert(SObject<WordIdxItem> &newItem);
+        virtual bool WordFind(const SObject<WordIdxItem> &item);
+        virtual const SObject<WordIdxItem>& WordGet(SObject<WordIdxItem>&item);
+    private:
+        TriTree<TriString8,char,TriLeaves> Root;
+};
+
 #endif

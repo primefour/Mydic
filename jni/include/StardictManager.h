@@ -21,7 +21,7 @@ class StardictInstance:public GoldenDictInterface{
         SObject<StardictDict> mDict;
         String8 mStarDictName;
         String8 mIdentifyPath;
-        SObject<GoldenWordHashList> mWordList;
+        SObject<GoldenWordIdxInteface> mWordList;
 };
 
 #endif

@@ -7,7 +7,7 @@
 
 class StardictIdx:public Ref{
     public:
-        StardictIdx(GoldenWordHashList *idx_list,
+        StardictIdx(GoldenWordIdxInteface *idx_list,
                             const char* path,int word_count,
                             int file_size,
                             int offsetbit = 32);
@@ -19,6 +19,6 @@ class StardictIdx:public Ref{
         long word_count;
         long file_size;
         String8 file_path;
-        SObject<GoldenWordHashList> word_list;
+        SObject<GoldenWordIdxInteface> word_list;
 };
 #endif

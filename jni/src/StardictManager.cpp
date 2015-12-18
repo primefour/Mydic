@@ -82,9 +82,9 @@ StardictInstance::StardictInstance(String8 path):mStarInfo(NULL),mStarIdx(NULL),
 int StardictInstance::GoldenDictQuery(const char *word,TextMetaData *ptrMeta){
     if(word != NULL && strlen(word) != 0){
         SObject<WordIdxItem> tmp = new WordIdxItem(word,-1,-1);
-        if(mWordList->DictHashfind(tmp)){
+        if(mWordList->WordFind(tmp)){
             ptrMeta->setWord(word);
-            const SObject<WordIdxItem>&target = mWordList->DictHashGet(tmp);
+            const SObject<WordIdxItem>&target = mWordList->WordGet(tmp);
             if(target->data_offset == -1){
                 golden_printfe("Don't find this word \n");
                 return -1;

@@ -15,7 +15,7 @@
 using namespace std;
 
 
-StardictIdx:: StardictIdx(GoldenWordHashList *idx_list,const char *file_path,
+StardictIdx:: StardictIdx(GoldenWordIdxInteface *idx_list,const char *file_path,
                     int word_count,int file_size,int offsetbit):word_list(idx_list),file_path(file_path){
     this->word_count = word_count;
     this->offsetbit = offsetbit;
@@ -64,7 +64,7 @@ int StardictIdx::init(){
         SObject<WordIdxItem> newItem(new WordIdxItem((const char *)word_buff,
                                                 ntohl(*(unsigned int *)offset_buff),
                                                 ntohl(*(unsigned int *)(offset_buff+4))));
-        word_list->DictHashInsert(newItem);
+        word_list->WordInsert(newItem);
     }
     return 0;
 }

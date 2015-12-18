@@ -2,8 +2,7 @@
 #include<string.h>
 #include<stdio.h>
 
-
-class String8 {
+class TriString8 {
     public:
         class iterator {
             public:
@@ -34,41 +33,52 @@ class String8 {
                char *ptr; 
         };
 
-        String8(const char *data):mdata(strdup(data)),mBegin(mdata),mEnd(mdata+strlen(mdata)){
-
+        TriString8(const char *data):mdata(strdup(data)),mBegin(mdata),mEnd(mdata+strlen(mdata)){
         }
 
-        String8::iterator& begin(){
+        TriString8::iterator& begin(){
             return mBegin;
         }
 
-        String8::iterator& end(){
+        TriString8::iterator& end(){
             return mEnd;
         }
-
     private :
         char *mdata;
-        String8::iterator mBegin;
-        String8::iterator mEnd;
+        TriString8::iterator mBegin;
+        TriString8::iterator mEnd;
 };
 
+struct TriLeaves{
+        TriLeaves(int offset,int size){
+            this->offset = offset;
+            this->size = size;
+        }
+
+        bool operator==(const TriLeaves &dd) const {
+            return dd.offset == offset && dd.size== size;
+        }
+
+        int offset ;
+        int size;
+};
+
+
 int main(int argc,char **argv){
-    TriTree<String8,char,int> Root;
-    String8 tmp = String8("hello");
-    Root.InsertData(tmp);
-    String8 kk = String8("he");
-    if(Root.FindData(tmp) != NULL){
-        printf("find data \n");
-    }
+    TriTree<TriString8,char,TriLeaves> Root;
+    TriString8 tmp = TriString8("hello");
+    TriNode<char,TriLeaves>* tmp_node = Root.InsertData(tmp);
+    TriLeaves tl(100,3);
+    tmp_node->InsertLeaves(tl);
 
-    if(Root.FindData(kk) != NULL){
-        printf("find data \n");
-    }
+    TriNode<char,TriLeaves> *kk = Root.FindData(tmp);
+    vector<TriLeaves> tt = kk->GetLeaves();
 
-    String8 kkk = String8("world");
-
-    if(Root.FindData(kkk) != NULL){
-        printf("find data \n");
+    vector<TriLeaves>::iterator begin = tt.begin();
+    vector<TriLeaves>::iterator end = tt.end();
+    while(begin != end) {
+        printf("offset = %d idx = %d  \n",begin->offset,begin->idx);
+        begin ++;
     }
 
     return 0;
