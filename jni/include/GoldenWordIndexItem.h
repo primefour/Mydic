@@ -5,6 +5,9 @@
 #include"GoldenRef.h"
 #include"String8.h"
 #include"GoldenTriTree.h"
+#include<list>
+#include"GoldenHashMapExt.h"
+using namespace std;
 
 class WordIdxItem:public Ref{
     public:
@@ -81,6 +84,23 @@ class WordIdxItem:public Ref{
 };
 
 
+struct WordOffsetInfo{
+    WordOffsetInfo(){
+        type = 0;
+        size = 0;
+        offset = 0 ;
+    }
+    WordOffsetInfo(unsigned int t,unsigned int s,int ds){
+        type = t;
+        offset= s;
+        size = ds;
+    }
+    unsigned int type:10;
+    unsigned int size:22;
+    unsigned int offset;
+};
+
+
 class GoldenWordIdxInteface :public Ref{
     public:
         GoldenWordIdxInteface(){};
@@ -88,6 +108,50 @@ class GoldenWordIdxInteface :public Ref{
         virtual bool WordFind(const SObject<WordIdxItem> &item){return false;};
         virtual const SObject<WordIdxItem>& WordGet(SObject<WordIdxItem>&item) {return item;};
 };
+
+
+class GoldenWordOffsetInfoHMap:public Ref{
+    public:
+        GoldenWordOffsetInfoHMap():minValidate(){};
+        virtual void insert(String8 &key,WordOffsetInfo woi){ return; };
+        virtual list<WordOffsetInfo>& find(String8 key) { return minValidate;};
+        list<WordOffsetInfo>  minValidate;
+};
+
+class defaultHashCode {
+    public :
+        int operator()(const String8 &key){
+            unsigned int val;
+            val = 0;
+            const char *ptr = key.string();
+            while (*ptr != '\0') {
+                unsigned int tmp;
+                val = (val << 4) + (*ptr);
+                if (tmp = (val & 0xf0000000)) {
+                    val = val ^ (tmp >> 24);
+                    val = val ^ tmp;
+                }
+                ptr++;
+            }
+            return val ;
+        }
+};
+
+
+class GoldenWordHashMap:public GoldenWordOffsetInfoHMap{
+
+    virtual void insert(String8 &key,WordOffsetInfo &woi){
+        mHMap.insert(key,woi); 
+    };
+
+    virtual list<WordOffsetInfo> & find(String8 key) {
+        return mHMap.find(key);
+    }
+    private:
+        HashMapExt<String8,WordOffsetInfo,defaultHashCode,199999> mHMap ;
+
+};
+
 
 
 class GoldenWordHashList:public GoldenWordIdxInteface {

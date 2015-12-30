@@ -8,12 +8,12 @@
 
 class StardictInstance:public GoldenDictInterface{
     public:
-        StardictInstance(String8 path);
+        //StardictInstance(String8 path,int dict_idx);
+        StardictInstance(String8 path,int dict_idx,GoldenWordHashMap &map);
         virtual const String8& GetDictonaryName();
         virtual const String8& GetIdentifyPath();
-        virtual const String8 GetResourcePath();
-
-        virtual int GoldenDictQuery(const char *word,TextMetaData *ptrMeta);
+        virtual const String8& GetResourcePath();
+        virtual int GoldenDictReadData(WordOffsetInfo &woi,TextMetaData *ptrMeta);
         virtual ~StardictInstance();
     private:
         SObject<StardictInfo> mStarInfo;
@@ -21,7 +21,10 @@ class StardictInstance:public GoldenDictInterface{
         SObject<StardictDict> mDict;
         String8 mStarDictName;
         String8 mIdentifyPath;
+        String8 mResourceDir;
+#ifdef OLD_IDX
         SObject<GoldenWordIdxInteface> mWordList;
+#endif
 };
 
 #endif

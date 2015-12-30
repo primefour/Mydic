@@ -4,6 +4,7 @@
 #include"GoldenRef.h"
 #include"GoldenPathScanner.h"
 #include"GoldenHashSet.h"
+#include"GoldenWordIndexItem.h"
 
 using namespace std;
 
@@ -46,11 +47,10 @@ class GoldenDictInterface:public virtual Ref{
         }
         virtual const String8& GetDictonaryName() = 0;
         virtual const String8& GetIdentifyPath() = 0;
-        virtual const String8 GetResourcePath()=0;
+        virtual const String8& GetResourcePath()=0;
         virtual void SetEnable(bool enable){ mIsEnable = enable; };
         virtual bool IsEnable(){ return mIsEnable; };
-
-        virtual int GoldenDictQuery(const char *word,TextMetaData *ptrMeta) = 0;
+        virtual int GoldenDictReadData(WordOffsetInfo &woi,TextMetaData *ptrMeta) = 0;
     private:
         bool mIsEnable;
 };
@@ -85,18 +85,21 @@ class GoldenDictManager :public Ref,GoldenPathFilter{
         void GoldenDictSetOrder(const char **list);
 
 
-
         static const char *GoldenGetCachePath();
         static const char *GoldenGetTmpPhoneticPath();
         static const char *GoldenGetTmpImgPath();
     private:
         char *GoldenDictGetPersistData(const char *dictName,char *buff,int length);
+        //
         map<String8,SObject<GoldenDictInterface> > mDictionaryMap;
+        //for file detect
         map<String8,int> mDictionaryType;
+
         map<String8,String8> mDictionaryPath;
 
         DictHashSet<SObject<String8> > mIgnoreFileExtend;
         DictHashSet<SObject<String8> > mIgnorePath;
         vector<String8> mOrderList;
+        GoldenWordHashMap mMap; 
 };
 #endif

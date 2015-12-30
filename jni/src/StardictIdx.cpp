@@ -15,11 +15,12 @@
 using namespace std;
 
 
-StardictIdx:: StardictIdx(GoldenWordIdxInteface *idx_list,const char *file_path,
-                    int word_count,int file_size,int offsetbit):word_list(idx_list),file_path(file_path){
+StardictIdx:: StardictIdx(GoldenWordOffsetInfoHMap *map,const char *file_path,
+                    int word_count,int file_size,unsigned int dict_size,int offsetbit):Hmap(map),file_path(file_path){
     this->word_count = word_count;
     this->offsetbit = offsetbit;
     this->file_size = file_size;
+    this->dict_idx = dict_idx;
     golden_printfi("word_count  = %d file_size = %d  offsetbit=%d \n",word_count,file_size,offsetbit);
 }
 
@@ -55,16 +56,22 @@ int StardictIdx::init(){
         if(ret < 0){
             break;
         }
-#if 0
+#if 1 
         if(i%5000 == 0){
-            golden_printfi("word = %s %d\n",word_buff,::ntohl(*((long*)offset_buff)));
+            golden_printfe("word = %s %d\n",word_buff,::ntohl(*((long*)offset_buff)));
         }
 #endif
         i++;
+#ifdef OLD_IDX 
         SObject<WordIdxItem> newItem(new WordIdxItem((const char *)word_buff,
                                                 ntohl(*(unsigned int *)offset_buff),
                                                 ntohl(*(unsigned int *)(offset_buff+4))));
         word_list->WordInsert(newItem);
+#endif
+        WordOffsetInfo woi(dict_idx,ntohl(*(unsigned int *)offset_buff),
+                                                ntohl(*(unsigned int *)(offset_buff+4)));
+        String8 ss((const char *)word_buff);
+        Hmap->insert(ss,woi);
     }
     return 0;
 }

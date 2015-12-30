@@ -7,18 +7,22 @@
 
 class StardictIdx:public Ref{
     public:
-        StardictIdx(GoldenWordIdxInteface *idx_list,
-                            const char* path,int word_count,
-                            int file_size,
-                            int offsetbit = 32);
+        StardictIdx(GoldenWordOffsetInfoHMap *map,
+                const char *file_path,
+                int word_count,
+                int file_size,
+                unsigned int dict_idx,
+                int offsetbit = 32);
+
         ~StardictIdx();
         int init();
 
     private:
+        unsigned int dict_idx;
         int  offsetbit;
         long word_count;
         long file_size;
         String8 file_path;
-        SObject<GoldenWordIdxInteface> word_list;
+        SObject<GoldenWordOffsetInfoHMap> Hmap;
 };
 #endif

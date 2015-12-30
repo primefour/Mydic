@@ -110,7 +110,8 @@ void GoldenDictManager::doWithFiles(const char *file){
     if(type == STAR_DICT_TYPE){
         try{
             //get the type of dictionary by the extend of file
-            GoldenDictInterface *tmp =  new StardictInstance(tmp_path.getBasePath());
+            static int dict_idx = 0 ;
+            GoldenDictInterface *tmp =  new StardictInstance(tmp_path.getBasePath(),dict_idx ++,mMap);
             golden_printfe("dictionary name = %s \n",tmp->GetDictonaryName().string());
             SObject<GoldenDictInterface> obj = mDictionaryMap[tmp->GetDictonaryName()];
             if(obj.GetPoint() != NULL ){
@@ -164,7 +165,7 @@ void GoldenDictManager::GoldenScanDisk(const char *path){
          scanner = new GoldenPathScanner(path,this);
     }
     scanner->GoldenStartScan();
-    GoldenDictPersist();
+    //GoldenDictPersist();
     delete scanner;
 }
 

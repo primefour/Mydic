@@ -1,0 +1,4 @@
+#ifndef __DYNAMIC_PRIORITY_QUEUE__
+#define __DYNAMIC_PRIORITY_QUEUE__
+
+#endif

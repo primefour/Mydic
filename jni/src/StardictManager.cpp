@@ -23,18 +23,14 @@ const String8& StardictInstance::GetIdentifyPath(){
     return mIdentifyPath;
 }
 
-const String8 StardictInstance::GetResourcePath(){
-    if(mIdentifyPath.getPathDir().isEmpty()){
-        return String8("/sdcard/"); 
-    }
-    golden_printfe("mIdentifyPath.getPathDir() = %s \n",mIdentifyPath.getPathDir().string());
-    return mIdentifyPath.getPathDir() + String8("res/");
+const String8& StardictInstance::GetResourcePath(){
+    return mResourceDir ;
 }
 
 
 
 
-StardictInstance::StardictInstance(String8 path):mStarInfo(NULL),mStarIdx(NULL),mDict(NULL),mWordList(NULL){
+StardictInstance::StardictInstance(String8 path,int dict_idx,GoldenWordHashMap &map):mStarInfo(NULL),mStarIdx(NULL),mDict(NULL){
     try{
         mStarInfo = new StardictInfo(path + ".ifo");
     }catch (exception &e){
@@ -49,10 +45,10 @@ StardictInstance::StardictInstance(String8 path):mStarInfo(NULL),mStarIdx(NULL),
 
     golden_printfd("mStarInfo->getWordCount() = %d \n",mStarInfo->getWordCount());
     mStarInfo->dumpInfo();
-    mWordList = new GoldenWordHashList(mStarInfo->getWordCount());
+    //mWordList = new GoldenWordHashList(mStarInfo->getWordCount());
     //mWordList = new GoldenWordTriTree();
     try{
-        mStarIdx = new StardictIdx(mWordList.GetPoint(),path+".idx",mStarInfo->getWordCount(),mStarInfo->getIdxFileSize(),mStarInfo->getOffsetBits());
+        mStarIdx = new StardictIdx(&map,path+".idx",mStarInfo->getWordCount(),mStarInfo->getIdxFileSize(),dict_idx,mStarInfo->getOffsetBits());
         mStarIdx->init();
     }catch (exception &e){
         golden_printfe("check fail xx \n");
@@ -76,26 +72,17 @@ StardictInstance::StardictInstance(String8 path):mStarInfo(NULL),mStarIdx(NULL),
     }
     mStarDictName = mStarInfo->getBookName();
     mIdentifyPath = path + ".idx";
-}
-
-
-int StardictInstance::GoldenDictQuery(const char *word,TextMetaData *ptrMeta){
-    if(word != NULL && strlen(word) != 0){
-        SObject<WordIdxItem> tmp = new WordIdxItem(word,-1,-1);
-        if(mWordList->WordFind(tmp)){
-            ptrMeta->setWord(word);
-            const SObject<WordIdxItem>&target = mWordList->WordGet(tmp);
-            if(target->data_offset == -1){
-                golden_printfe("Don't find this word \n");
-                return -1;
-            }
-            mDict->read_word_data(target->data_offset,target->data_size,ptrMeta);
-            return 0;
-        }else{
-            return -1;
-        }
+    mResourceDir = mIdentifyPath.getPathDir() + String8("res/");
+    if(access(mResourceDir.string(),F_OK) != 0){
+        mResourceDir = String8::empty();
     }
-    return -1;
 }
 
-
+int StardictInstance::GoldenDictReadData(WordOffsetInfo &woi,TextMetaData *ptrMeta){
+    if(woi.size != 0 && ptrMeta != NULL){
+        mDict->read_word_data(woi.offset,woi.size,ptrMeta);
+        return 0;
+    }else{
+        return -1;
+    }
+}

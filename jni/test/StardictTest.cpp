@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
+#include<unistd.h>
 #include"GoldenDictManager.h"
 #include"GoldenDictLog.h"
 
@@ -26,6 +27,7 @@ const char *ce_dict_path = "./bin/langdao-ce-gb.dict.dz";
 int main(){
     static GoldenDictManager goldenDict;
     goldenDict.GoldenScanDisk("./bin");//"/home/crazyhorse/test/golden_dic/MyDict/jni/bin/CollinsCOBUILD-BL");//"./bin");
+    /*
     const char **dictList = (const char **)malloc(sizeof(const char *) * 20);
     memset(dictList,0,sizeof(const char *) * 20);
 
@@ -67,5 +69,7 @@ int main(){
         goldenDict.GoldenDictQuery(buff,queryResult);
         golden_printfd("####%s \n",queryResult);
     }
+    */
+    sleep(50);
     return 0;
 }
