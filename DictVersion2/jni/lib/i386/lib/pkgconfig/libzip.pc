@@ -1,0 +1,14 @@
+prefix=/home/crazyhorse/test/golden_dic/MyDict/DictVersion2/jni/lib/i386
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+libincludedir=${exec_prefix}/lib/libzip/include
+
+zipcmp=/home/crazyhorse/test/golden_dic/MyDict/DictVersion2/jni/lib/i386/bin/zipcmp
+
+Name: libzip
+Description: library for handling zip archives
+Version: 0.11.2
+Libs: -L${libdir} -lzip -lz 
+Cflags: -I${includedir} -I${libincludedir}
+

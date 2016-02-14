@@ -10,15 +10,17 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#include <zlib.h>
+#include "zlib.h"
 
 #ifndef HAVE_GETOPT
 #include "getopt.h"
 #endif
 #include "zip.h"
-#include "GoldenRef.h"
+#include "AngelRef.h"
 #include "String8.h"
-#include "GoldenHashSet.h"
+#include<set>
+#include<list>
+using namespace std;
 
 
 struct ZipEntry:public Ref{
@@ -31,7 +33,6 @@ struct ZipEntry:public Ref{
         const char *string()const {
             return mName.string();
         }
-
 };
 
 
@@ -42,12 +43,12 @@ class GoldenZipTool{
         bool IsExist(const char *infile);
         int GetInFile(const char *infile,char *buff,int len);
         int GetInFile(const char *infile,const char *outputFile);
+        void ReleaseAllFiles();
     private:
         int CheckZipFile(int idx, zip_int64_t size, unsigned int crc);
         struct zip*  mZip;
         ZipEntry *mPtrEntries;
         zip_uint64_t mEntryCount;
-        DictHashSet<SObject<ZipEntry> > *mPtrEntryHash;
 };
 
 

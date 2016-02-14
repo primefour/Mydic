@@ -20,12 +20,10 @@
 #include "Unicode.h"
 #include <string.h> // for strcmp
 #include <stdarg.h>
-#include "GoldenRef.h"
-#include"GoldenDictLog.h"
 
 //! This is a string holding UTF-8 characters. Does not allow the value more
 // than 0x10FFFF, which is not valid unicode codepoint.
-class String8 :public Ref{
+class String8{
 public:
     /* use String8(StaticLinkage) if you're statically linking against
      * libutils and declaring an empty static String8, e.g.:

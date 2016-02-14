@@ -6,7 +6,6 @@
 
 #include"GoldenGzipHeaderParser.h"
 #include"GoldenStandardIO.h"
-#include"GoldenRef.h"
 #include"String8.h"
 
 extern "C"{

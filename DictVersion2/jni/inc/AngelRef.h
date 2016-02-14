@@ -41,10 +41,14 @@ template<typename T>
 class Sobj{
     public:
         //constructor
+        Sobj(){
+            mObj = NULL;
+        }
         Sobj(T *obj){
-            assert(obj != NULL);
-            mObj = obj;
-            mObj->get();
+            if(obj != NULL){
+                mObj = obj;
+                mObj->get();
+            }
         }
 
         //copy constructor

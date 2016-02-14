@@ -2,6 +2,7 @@
 #define __GZIP_HEADER_PARSER_H__
 #include<stdio.h>
 #include"String8.h"
+#include"AngelRef.h"
 #define GZIP_ID1  (0x1f)
 #define GZIP_ID2  (0x8b)
 
