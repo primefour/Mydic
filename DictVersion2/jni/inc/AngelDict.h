@@ -1,6 +1,8 @@
 #ifndef __ANGEL_DICT_H__
 #define __ANGEL_DICT_H__
-
+#include<vector>
+#include"String8.h"
+using namespace std;
 /*
  * {
  *  word:Hello,
@@ -50,21 +52,38 @@ const char *DictPictFeild[]={
     "url","res","comment"
 };
 
-class AngelDictWord{
-    public:
-        void AddPict(const char *url,int w,int h,const char *comment);
-        void AddMeaning(const char *text,const char *ex);
-        void AddPhonetic(const char *value,const char *url,int type);
-    private:
-        String8 mContent;
+
+struct PicInst{
+    String8 url;
+    String8 res;
+    String8 comment;
 };
+
+struct MeaningInst{
+    String8 text;
+    vector<String8> ex;
+    vector<PicInst> pic;
+};
+
+struct PhonetInst{
+    String8 value;
+    String8 url;
+    int type;
+};
+
+
 
 class AngelDictWord{
     public:
+        AngelDictWord(const char *word);
         void AddPict(const char *url,int w,int h,const char *comment);
         void AddMeaning(const char *text,const char *ex);
         void AddPhonetic(const char *value,const char *url,int type);
+        int GetJsonString(char *buff,int len);
     private:
+        String8 mWord;
+        vector<PhonetInst> mPhonetic;
+        vector<MeaningInst> mMeaning;
 };
 
 #endif //__ANGEL_DICT_H__
