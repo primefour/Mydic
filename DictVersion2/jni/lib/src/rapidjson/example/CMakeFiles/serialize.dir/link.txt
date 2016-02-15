@@ -1,0 +1,1 @@
+/usr/bin/c++    -march=native -Wall -Wextra -Werror -std=c++0x -Werror -Wall -Wextra -Weffc++ -Wswitch-default -O2 -g    CMakeFiles/serialize.dir/serialize/serialize.cpp.o  -o ../bin/serialize -rdynamic 
