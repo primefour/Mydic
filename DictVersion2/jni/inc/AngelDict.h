@@ -35,6 +35,8 @@ using namespace std;
  *
  */
 
+
+
 const char *DictJsonObject[] = {
     "word","phonetic","meaning"
 };
