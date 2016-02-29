@@ -34,27 +34,6 @@ using namespace std;
  *  }
  *
  */
-
-
-
-const char *DictJsonObject[] = {
-    "word","phonetic","meaning"
-};
-
-
-const char *DictPhoneticField[]={
-    "value","url","type"
-};
-
-const char *DictMeaningField[]={
-    "text","ex","pic"
-};
-
-const char *DictPictFeild[]={
-    "url","res","comment"
-};
-
-
 struct PicInst{
     String8 url;
     String8 res;

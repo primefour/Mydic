@@ -1,5 +1,5 @@
 GCC=g++
-CFLAGS= -g -I ./inc/ -I ./lib/i386/include/ -I ./lib/i386/lib/libzip/include/ -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -DZ_RANDOM_ACCESS_LIB
+CFLAGS= -g -I ./inc/ -I ./lib/i386/include/ -I ./lib/i386/lib/libzip/include/ -I lib/src/rapidjson/include/ -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -DZ_RANDOM_ACCESS_LIB
 LDFLAGS= -L lib/i386/lib/  -L lib/i386/lib/libzip/
 TEST_PATH= ./example
 BIN_PATH= ./bin
@@ -16,7 +16,7 @@ SRC_FILE_LIST:=	$(SRC_PATH)/GoldenZipTool.cpp \
 	$(SRC_PATH)/Unicode.cpp \
 	$(SRC_PATH)/AngelDict.cpp \
 
-all: RefTest zZipTest 
+all: RefTest zZipTest angelWord
 
 REF_TEST_SRC := $(SRC_FILE_LIST)
 REF_TEST_SRC += $(TEST_PATH)/AngelRefTest.cpp
@@ -27,4 +27,9 @@ ZIP_TEST_SRC := $(SRC_FILE_LIST)
 ZIP_TEST_SRC += $(TEST_PATH)/zip_test.cpp
 zZipTest: $(ZIP_TEST_SRC)
 	$(GCC) $(CFLAGS) $(LDFLAGS) $^ -o $(BIN_PATH)/zZipTest -lz -liconv -lzip
+
+WORD_TEST_SRC := $(SRC_FILE_LIST)
+WORD_TEST_SRC += $(TEST_PATH)/AngelWord.cpp
+angelWord: $(WORD_TEST_SRC)
+	$(GCC) $(CFLAGS) $(LDFLAGS) $^ -o $(BIN_PATH)/angelWord -lz -liconv -lzip
 
