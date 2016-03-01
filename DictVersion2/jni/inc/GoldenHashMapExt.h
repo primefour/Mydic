@@ -17,8 +17,15 @@ class HashFunction{
 template<class TypeKey,class TypeItem,class hash_fpn,int Tcount = 1999>
 class HashMapExt{
     public:
-        HashMapExt(const hash_fpn fpn = hash_fpn() ,int count = Tcount):mHashTable(count,NULL),mInvalidList(),mFpn(fpn){
+        HashMapExt(const hash_fpn fpn = hash_fpn() ,int count = Tcount):mHashTable(count,NULL),INVALIDLIST(),mFpn(fpn){
             mSize = count;
+        }
+
+        void reserve(int count){
+            mHashTable.reserve(count);
+        }
+        void setInvalidate(TypeItem &item){
+            INVALIDLIST.insert(item);
         }
 
         class iterator{
@@ -71,17 +78,18 @@ class HashMapExt{
                 typename map<TypeKey,list<TypeItem>* >::iterator map_end = tmp_map->end(); 
                 typename map<TypeKey,list<TypeItem>* >::iterator tmp_pair = tmp_map->find(key);
                 if(tmp_pair == map_end){
-                    return mInvalidList;
+                    return INVALIDLIST;
                 }else{
                     return *(tmp_pair->second) ;
                 }
             }else{
-                return mInvalidList;
+                return INVALIDLIST;
             }
         }
-        
+
     private:
-        list<TypeItem> mInvalidList;
+        //for query fail
+        list<TypeItem> INVALIDLIST;
         vector<map<TypeKey,list<TypeItem>* >* > mHashTable;
         hash_fpn mFpn ;
         int mSize;

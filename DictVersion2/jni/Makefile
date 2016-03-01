@@ -15,6 +15,7 @@ SRC_FILE_LIST:=	$(SRC_PATH)/GoldenZipTool.cpp \
 	$(SRC_PATH)/String8.cpp \
 	$(SRC_PATH)/Unicode.cpp \
 	$(SRC_PATH)/AngelDict.cpp \
+	$(SRC_PATH)/AngelWordIndex.cpp \
 
 all: RefTest zZipTest angelWord
 

@@ -1,5 +1,6 @@
 #include"AngelDict.h"
 #include"AngelLog.h"
+#include"AngelWordIndex.h"
 
 int main(){
     AngelDictWord d("hello");
@@ -33,5 +34,15 @@ int main(){
     }else{
         angel_printfd("json is %s \n",buff);
     }
+
+    WordOffsetInfo woi;
+    WordIndexManager wim;
+    String8 hello("hello");
+    String8 world("world");
+    wim.AddWord(hello,woi);
+    wim.AddWord(world,woi);
+
+    String8 hellox("hellox");
+    wim.QueryWordByIdx(world,0);
     return 0;
 }

@@ -1,5 +1,12 @@
 #ifndef __ANGEL_WORD_INDEX__
 #define __ANGEL_WORD_INDEX__
+#include"GoldenHashMapExt.h"
+#include"String8.h"
+#include<vector>
+#include<list>
+#include<map>
+
+using namespace std;
 
 struct WordOffsetInfo{
     WordOffsetInfo(){
@@ -33,6 +40,7 @@ struct DictInfo{
         int type;
 };
 
+/*
 class DictionaryManager{
     public:
         void AddDictByPath(String8 path);
@@ -44,18 +52,40 @@ class DictionaryManager{
         vector<DictInfo> mDList;
         WordIndexManager mDictIdx;
 }
+*/
 
+class defaultHashCode {
+    public :
+        int operator()(const String8 &key){
+            unsigned int val;
+            val = 0;
+            const char *ptr = key.string();
+            while (*ptr != '\0') {
+                unsigned int tmp;
+                val = (val << 4) + (*ptr);
+                if (tmp = (val & 0xf0000000)) {
+                    val = val ^ (tmp >> 24);
+                    val = val ^ tmp;
+                }
+                ptr++;
+            }
+            return val ;
+        }
+};
+
+typedef HashMapExt<String8,WordOffsetInfo,defaultHashCode> HMAPType;
 
 class WordIndexManager{
     public:
+        WordIndexManager();
         void AddWord(String8 word, WordOffsetInfo t);
         //return offset of word in the dictionary
         const WordOffsetInfo& QueryWordByIdx(String8 &word,int idx);
         //return count of item
-        int QueryWordByAll(String8 &word,vector<WordOffsetInfo> &vW);
-
+        const list<WordOffsetInfo> & QueryWordByAll(String8 &word);
     private :
-        HashMapExt<
+        //hash idx for index word
+        HMAPType  mHashIdx;
 };
 
 
